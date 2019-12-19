@@ -1,5 +1,5 @@
 import crypto from 'crypto'
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 import randtoken from 'rand-token'
 import mongoose, { Schema, SchemaType } from 'mongoose'
 import mongooseKeywords from 'mongoose-keywords'
