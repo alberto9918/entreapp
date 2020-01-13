@@ -28,18 +28,19 @@ const config = {
     apiRoot: process.env.API_ROOT || '',
     masterKey: requireProcessEnv('MASTER_KEY'),
     jwtSecret: requireProcessEnv('JWT_SECRET'),
-    mongo: {
+    /* mongo: {
       options: {
         db: {
           safe: true
         }
       }
-    }
+    } */
   },
   test: { },
   development: {
     mongo: {
-      uri: 'mongodb://entreappuser:salesianosDesarrollo2019@ds161700.mlab.com:61700/entreappdatabase',
+      // uri: 'mongodb://entreappuser:salesianosDesarrollo2019@ds161700.mlab.com:61700/entreappdatabase',
+      uri: 'mongodb://localhost:27017/entreappdb',
       options: {
         debug: true
       }

@@ -1,5 +1,6 @@
 import { EventEmitter } from 'events'
-import MongodbMemoryServer from 'mongodb-memory-server'
+// import MongodbMemoryServer from 'mongodb-memory-server'
+import { mongo } from '../src/config'
 import mongoose from '../src/services/mongoose'
 
 EventEmitter.defaultMaxListeners = Infinity
@@ -21,11 +22,12 @@ global.TypeError = TypeError
 global.parseInt = parseInt
 global.parseFloat = parseFloat
 
-let mongoServer
+// let mongoServer
+const mongoUri = mongo.uri
 
 beforeAll(async () => {
-  mongoServer = new MongodbMemoryServer()
-  const mongoUri = await mongoServer.getConnectionString()
+  // mongoServer = new MongodbMemoryServer()
+  // const mongoUri = await mongoServer.getConnectionString()
   await mongoose.connect(mongoUri, (err) => {
     if (err) console.error(err)
   })
@@ -33,7 +35,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await mongoose.disconnect()
-  await mongoServer.stop()
+  // await mongoServer.stop()
 })
 
 afterEach(async () => {
