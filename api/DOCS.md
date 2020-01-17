@@ -28,11 +28,19 @@
 	- [Retrieve comments](#retrieve-comments)
 	- [Update comment](#update-comment)
 	
+- [Language](#language)
+	- [Create language](#create-language)
+	- [Delete language](#delete-language)
+	- [Retrieve language](#retrieve-language)
+	- [Retrieve languages](#retrieve-languages)
+	- [Update language](#update-language)
+	
 - [Poi](#poi)
 	- [Create poi](#create-poi)
 	- [Delete poi](#delete-poi)
 	- [Retrieve poi](#retrieve-poi)
 	- [Retrieve pois](#retrieve-pois)
+	- [Retrieve translated Poi](#retrieve-translated-poi)
 	- [Update poi](#update-poi)
 	
 - [Route](#route)
@@ -337,6 +345,82 @@
 | poi			| 			|  <p>Comment's poi.</p>							|
 | photos			| 			|  <p>Comment's photos.</p>							|
 
+# Language
+
+## Create language
+
+
+
+	POST /languages
+
+
+### Parameters
+
+| Name    | Type      | Description                          |
+|---------|-----------|--------------------------------------|
+| access_token			| String			|  <p>admin access token.</p>							|
+| name			| 			|  <p>Language's name.</p>							|
+| isoCode			| 			|  <p>Language's isoCode.</p>							|
+
+## Delete language
+
+
+
+	DELETE /languages/:id
+
+
+### Parameters
+
+| Name    | Type      | Description                          |
+|---------|-----------|--------------------------------------|
+| access_token			| String			|  <p>admin access token.</p>							|
+
+## Retrieve language
+
+
+
+	GET /languages/:id
+
+
+### Parameters
+
+| Name    | Type      | Description                          |
+|---------|-----------|--------------------------------------|
+| access_token			| String			|  <p>user access token.</p>							|
+
+## Retrieve languages
+
+
+
+	GET /languages
+
+
+### Parameters
+
+| Name    | Type      | Description                          |
+|---------|-----------|--------------------------------------|
+| access_token			| String			|  <p>user access token.</p>							|
+| q			| String			| **optional** <p>Query to search.</p>							|
+| page			| Number			| **optional** <p>Page number.</p>							|
+| limit			| Number			| **optional** <p>Amount of returned items.</p>							|
+| sort			| String[]			| **optional** <p>Order of returned items.</p>							|
+| fields			| String[]			| **optional** <p>Fields to be returned.</p>							|
+
+## Update language
+
+
+
+	PUT /languages/:id
+
+
+### Parameters
+
+| Name    | Type      | Description                          |
+|---------|-----------|--------------------------------------|
+| access_token			| String			|  <p>admin access token.</p>							|
+| name			| 			|  <p>Language's name.</p>							|
+| isoCode			| 			|  <p>Language's isoCode.</p>							|
+
 # Poi
 
 ## Create poi
@@ -408,6 +492,19 @@
 | limit			| Number			| **optional** <p>Amount of returned items.</p>							|
 | sort			| String[]			| **optional** <p>Order of returned items.</p>							|
 | fields			| String[]			| **optional** <p>Fields to be returned.</p>							|
+
+## Retrieve translated Poi
+
+
+
+	GET /pois/:id
+
+
+### Parameters
+
+| Name    | Type      | Description                          |
+|---------|-----------|--------------------------------------|
+| access_token			| String			|  <p>user access token.</p>							|
 
 ## Update poi
 

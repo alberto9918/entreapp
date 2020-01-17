@@ -40,7 +40,7 @@ const config = {
   development: {
     mongo: {
       // uri: 'mongodb://entreappuser:salesianosDesarrollo2019@ds161700.mlab.com:61700/entreappdatabase',
-      uri: 'mongodb://localhost:27017/entreappdb',
+      uri: 'mongodb://entreapp:Erasmus2020@localhost:27017/entreappdb',
       options: {
         debug: true
       }
@@ -50,7 +50,8 @@ const config = {
     ip: process.env.IP || undefined,
     port: process.env.PORT || 8080,
     mongo: {
-      uri: process.env.MONGODB_URI || 'mongodb://entreappuser:salesianosDesarrollo2019@ds161700.mlab.com:61700/entreappdatabase'
+      //uri: process.env.MONGODB_URI || 'mongodb://entreappuser:salesianosDesarrollo2019@ds161700.mlab.com:61700/entreappdatabase'
+      uri: 'mongodb://entreapp:Erasmus2020@localhost:27017/entreappdb'
     }
   }
 }
