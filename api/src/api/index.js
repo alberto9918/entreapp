@@ -41,7 +41,7 @@ router.use('/comments', comment)
 router.use('/badges', badge)
 router.use('/categories', category)
 router.use('/routes', route)
-router.use('/uploads', upload)
+router.use('/files', upload)
 router.use('/languages', language)
 
 export default router
