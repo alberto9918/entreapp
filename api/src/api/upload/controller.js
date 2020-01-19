@@ -1,7 +1,6 @@
 const multer = require('multer')
 const multers3 = require('multer-s3')
 const path = require('path')
-// const s3 = require('./s3')
 /*
  Necesitamos un método controlador que podamos invocar desde
  index.js, y que pueda subir a AWS S3 un fichero recibido con una petición POST.
@@ -10,10 +9,9 @@ const path = require('path')
 
 */
 const AWS = require('aws-sdk')
-const ID = 'AKIAIHY2MAPS6KWI4VKQ'
-const SECRET = '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'
+const ID = 'THE_ID'
+const SECRET = 'THE_SECRET'
 
-// const BUCKET_NAME = 'entreapp-bucket'
 
 const s3 = new AWS.S3({
   accessKeyId: ID,

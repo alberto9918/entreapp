@@ -89,6 +89,7 @@ export class PoiCreateComponent implements OnInit {
   }
 
   /** Function to upload multiple images to Firebase-Firestorage */
+  // TODO Cambiar para que haga una llamada al servicio de subida de ficheros
   ImgUpload(e) {
     for (let i = 0; i < e.target.files.length; i++) {
       const id = Math.random().toString(36).substring(2);
@@ -108,6 +109,8 @@ export class PoiCreateComponent implements OnInit {
   }
 
   /** Function to upload only one audioguide to Firebase-Firestorage */
+  // TODO Cambiar para que haga una llamada al servicio de subida de ficheros
+
   audioUpload(e) {
     const id = Math.random().toString(36).substring(2);
     const file = e.target.files[0];
