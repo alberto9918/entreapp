@@ -8,7 +8,7 @@ import category from './category'
 import route from './route'
 import upload from './upload'
 import language from './language'
-
+require('dotenv').config()
 const router = new Router()
 
 /**

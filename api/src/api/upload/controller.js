@@ -9,20 +9,20 @@ const path = require('path')
 
 */
 const AWS = require('aws-sdk')
-const ID = 'THE_ID'
-const SECRET = 'THE_SECRET'
-
+const AWS_ID = process.env.AWS_ID
+const AWS_SECRET = process.env.AWS_SECRET
+const AWS_BUCKET_NAME = process.env.AWS_BUCKET_NAME
 
 const s3 = new AWS.S3({
-  accessKeyId: ID,
-  secretAccessKey: SECRET
+  accessKeyId: AWS_ID,
+  secretAccessKey: AWS_SECRET
 })
 
 export const uploadS3 = (type) => {
   return multer({
     storage: multers3({
       s3: s3,
-      bucket: 'entreapp-bucket',
+      bucket: AWS_BUCKET_NAME,
       // acl: 'public-read',
       contentType: multers3.AUTO_CONTENT_TYPE,
       key: function (req, file, cb) {
@@ -44,13 +44,24 @@ export const postUploadS3 = (req, res, next) => {
     return res.status(400).json({ success: false })
   } else {
     console.log('Fichero recibido')
-    console.log(req.file.key)
-    res.status(201).json({ key: req.file.key })
+    // console.log(req.file)
+    const returnFileKey = req.file.key.replace('/', '-')
+    res.status(201).json({
+      // key: req.file.key
+      key: returnFileKey
+    })
   }
 }
 
 export const getFile = (req, res, next) => {
-  const stream = s3.getObject({ Bucket: 'entreapp-bucket', Key: req.params.key }).createReadStream()
+
+  let key
+  if (req.params.key.startsWith('pois-imgs-')) {
+    key = 'pois-imgs/' + req.params.key.substr(10)
+  }
+
+  // const stream = s3.getObject({ Bucket: 'entreapp-bucket', Key: req.params.key }).createReadStream()
+  const stream = s3.getObject({ Bucket: 'entreapp-bucket', Key: key }).createReadStream()
 
   stream.on('error', function (err) {
     // NoSuchKey: The specified key does not exist
