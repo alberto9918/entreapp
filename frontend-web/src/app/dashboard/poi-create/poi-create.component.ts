@@ -63,7 +63,7 @@ export class PoiCreateComponent implements OnInit {
       name: [null, Validators.compose([Validators.required])],
       year: [null, Validators.compose([Validators.required])],
       creator: [null],
-      images: [null, Validators.compose([Validators.required])],
+      //images: [null, Validators.compose([Validators.required])],
       categories: [null, Validators.compose([Validators.required])],
       status: [null, Validators.compose([Validators.required])],
       schedule: [null, Validators.compose([Validators.required])],
@@ -75,7 +75,7 @@ export class PoiCreateComponent implements OnInit {
   onSubmit() {
     const newPoi: PoiCreateDto = <PoiCreateDto>this.form.value;
     newPoi.loc = { coordinates: [this.coordinatesForm.controls['lat'].value, this.coordinatesForm.controls['lng'].value] };
-    newPoi.audioguides = this.audioguidesForm.value;
+    //newPoi.audioguides = this.audioguidesForm.value;
     newPoi.description = this.descriptionForm.value;
 
     console.log(newPoi);

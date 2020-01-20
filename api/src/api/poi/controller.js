@@ -8,7 +8,7 @@ import { Badge } from '../badge';
 
 /** Create a new POI */
 export const create = ({ bodymen: { body } }, res, next) => {
-  body.coverImage = body.images[0];
+  //body.coverImage = body.images[0];
   Poi.create(body)
     .then((poi) => {
       poi.view(2);
