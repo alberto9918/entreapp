@@ -53,13 +53,22 @@ export const postUploadS3 = (req, res, next) => {
   }
 }
 
-export const getFile = (req, res, next) => {
-
+const transformKey = (original) => {
   let key
-  if (req.params.key.startsWith('pois-imgs-')) {
-    key = 'pois-imgs/' + req.params.key.substr(10)
+  if (original.startsWith('pois-imgs-')) {
+    key = 'pois-imgs/' + original.substr(10)
+  } else if (original.startsWith('pois-aud-')) {
+    key = 'pois-aud/' + original.substr(9)
+  } else if (original.startsWith('avatar-')) {
+    key = 'avatar/' + original.substr(7)
+  } else {
+    key = original
   }
+  return key
+}
 
+export const getFile = (req, res, next) => {
+  let key = transformKey(req.params.key)
   // const stream = s3.getObject({ Bucket: 'entreapp-bucket', Key: req.params.key }).createReadStream()
   const stream = s3.getObject({ Bucket: 'entreapp-bucket', Key: key }).createReadStream()
 
@@ -70,4 +79,15 @@ export const getFile = (req, res, next) => {
   })
 
   stream.pipe(res)
+}
+
+export const deleteFile = (req, res, next) => {
+  let key = transformKey(req.params.key)
+  s3.deleteObject({
+    bucket: AWS_BUCKET_NAME,
+    key: key
+  }, function (err, data) {
+    if (err) res.status(400).json({error: err})
+    res.status(200).json({data: data})
+  })
 }

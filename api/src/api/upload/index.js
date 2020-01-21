@@ -1,6 +1,6 @@
 // server.js
 import { Router } from 'express'
-import { uploadS3, postUploadS3, getFile } from './controller'
+import { uploadS3, postUploadS3, getFile, deleteFile } from './controller'
 import { master } from '../../services/passport'
 /*const path = require('path')
 const multer = require('multer')
@@ -50,4 +50,7 @@ router.post('/upload/audio', master(), uploadS3('pois-aud').single('photo'), pos
 router.post('/upload/avatar', master(), uploadS3('pois-aud').single('photo'), postUploadS3)
 
 router.get('/:key', master(), getFile)
+
+router.delete('/:key', master(), deleteFile);
+
 export default router
