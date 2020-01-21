@@ -29,6 +29,7 @@ export class PoiCreateComponent implements OnInit {
   form: FormGroup;
   audioguidesForm: FormGroup;
   descriptionForm: FormGroup;
+  statusList: Array<string> = ['Open','Close'];
 
   constructor(private fb: FormBuilder, private poiService: PoiService, private categoryService: CategoryService,
     public router: Router, public snackBar: MatSnackBar, private afStorage: AngularFireStorage, private titleService: Title) { }
