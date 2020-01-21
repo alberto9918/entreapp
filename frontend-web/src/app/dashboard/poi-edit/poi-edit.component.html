@@ -89,6 +89,11 @@
         <mat-form-field class="w-50">
           <input matInput placeholder="status" type="text" [formControl]="form.controls['status']" required>
         </mat-form-field>
+        <!-- <mat-select [(ngModel)]="form.controls['status']" class="w-50" placeholder="status">
+          <mat-option *ngFor="let status of statusList" value="{{status}}">
+            {{ status }}
+          </mat-option>
+        </mat-select> -->
         <mat-form-field class="w-100">
           <textarea matInput placeholder="schedule" type="text" [formControl]="form.controls['schedule']" required></textarea>
         </mat-form-field>
