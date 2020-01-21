@@ -37,14 +37,19 @@
         <div>
             <!-- Estado, horarios-->
           
-          <mat-form-field fxLayoutAlign="center center">
+          <!--<mat-form-field fxLayoutAlign="center center">
             <input matInput placeholder="status" type="text" [formControl]="form.controls['status']" required>
-          </mat-form-field>
-          <!-- <mat-select [(ngModel)]="form.controls['status']" class="w-50" placeholder="status">
-            <mat-option *ngFor="let status of statusList" value="{{status}}" required>
-              {{ status }}
-            </mat-option>
-          </mat-select> -->
+          </mat-form-field>-->
+                  
+          <div fxLayoutAlign="center center">
+              <mat-select [formControl]="form.controls['status']" class="status-width" placeholder="status" required>
+                  <mat-option *ngFor="let status of statusList" value="{{status}}">
+                    {{ status }}
+                  </mat-option>
+                </mat-select>
+          </div>
+          
+          
           <mat-form-field fxLayoutAlign="center center">
             <textarea matInput placeholder="schedule" type="text" [formControl]="form.controls['schedule']" required></textarea>
           </mat-form-field>
