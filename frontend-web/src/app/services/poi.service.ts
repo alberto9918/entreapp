@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -8,8 +8,14 @@ import { OnePoiResponse } from '../interfaces/one-poi-response';
 import { PoiResponse } from '../interfaces/poi-response';
 import { AuthenticationService } from './authentication.service';
 
-const url = `${environment.apiUrl}/pois`;
+const uploadOptions = {
+  headers: new HttpHeaders({
+    'Content-Type': 'multipart/form-data'
+  })
+};
 
+const url = `${environment.apiUrl}/pois`;
+environment.masterKey
 @Injectable({
   providedIn: 'root'
 })
@@ -20,6 +26,16 @@ export class PoiService {
 
   constructor(private http: HttpClient, private authService: AuthenticationService) { }
 
+  uploadImage(formData: FormData): Observable<FormData> {
+    return this.http.post<any>(
+      `${environment.apiUrl}/files/upload/image?${environment.masterKeyTemporal}`,
+      formData
+    );
+  }
+  
+  getImage(imageKey: String): Observable<String> {
+    return this.http.get<any>(`${environment.apiUrl}/files/:`+imageKey+`?${environment.masterKeyTemporal}`)
+  }
   getAll(): Observable<PoiResponse> {
     return this.http.get<PoiResponse>(`${url}${this.token}`);
   }

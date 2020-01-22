@@ -97,7 +97,7 @@
                     </quill-editor>
                 
 
-                <button mat-fab id="addFloatingButton" type="submit" [disabled]="!form.valid ||!coordinatesForm.valid || !audioguidesForm.valid">
+                <button mat-fab id="addFloatingButton" type="submit" [disabled]="!form.valid ||!coordinatesForm.valid">
                   <mat-icon>send</mat-icon>
                 </button>
                   
@@ -116,7 +116,7 @@
                 <div>
                     <!-- Subir archivos -->
                     <div id="uploadContent" class="w-100">
-                      <input type="file" name="photo" (change)="ImgUpload($event)" multiple accept="image/*" />
+                      <input type="file" name="photo" (change)="onImageSelect($event)" multiple accept="image/*" />
                       <p>Drag your images here or click in this area.</p>
                     </div>
                     <div fxLayout="row wrap" fxLayoutGap="2px" style="margin-top: 10px">

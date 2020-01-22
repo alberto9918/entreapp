@@ -25,14 +25,14 @@ export class PoiEditComponent implements OnInit {
   urlImage: Array<string> = [];
   allCategories: CategoriesResponse;
   selectedCategories = [];
-
+  imagenForm: FormGroup;
   coordinatesForm: FormGroup;
   form: FormGroup;
   audioguidesForm: FormGroup;
   descriptionForm: FormGroup;
   statusList: Array<string> = ['Open','Close'];
 
-  constructor(private fb: FormBuilder, private poiService: PoiService, private categoryService: CategoryService,
+  constructor(private formBuilder: FormBuilder, private fb: FormBuilder, private poiService: PoiService, private categoryService: CategoryService,
     public router: Router, public snackBar: MatSnackBar, private afStorage: AngularFireStorage, private titleService: Title) { }
 
   ngOnInit() {
@@ -41,6 +41,11 @@ export class PoiEditComponent implements OnInit {
     } else {
       this.getData();
     }
+
+    this.imagenForm = this.formBuilder.group({
+      photo: ['']
+    });
+
     this.titleService.setTitle('Edit - POI');
   }
 
@@ -76,7 +81,7 @@ export class PoiEditComponent implements OnInit {
       year: [this.poi.year, Validators.compose([Validators.required])],
       creator: [this.poi.creator],
       coverImage: [this.poi.coverImage],
-      images: [this.poi.images, Validators.compose([Validators.required])],
+      /*images: [this.poi.images, Validators.compose([Validators.required])]*/
       categories: [this.selectedCategories, Validators.compose([Validators.required])],
       status: [this.poi.status, Validators.compose([Validators.required])],
       schedule: [this.poi.schedule, Validators.compose([Validators.required])],
@@ -86,16 +91,30 @@ export class PoiEditComponent implements OnInit {
 
   /** Send all the data to the api */
   onSubmit() {
+    var imgKey;
     const newPoi: PoiCreateDto = <PoiCreateDto>this.form.value;
+   
+    //Subida de imagen
+    const formData = new FormData();
+    formData.append('photo', this.imagenForm.get('photo').value);
+
+    //Subo la imagen y recojo su key
+    this.poiService.uploadImage(formData).subscribe(resp => {
+      imgKey = resp;
+    }, error => {
+      this.snackBar.open('Error uploading image', 'Close', { duration: 3000 });
+    });
+
     newPoi.loc = {coordinates: [this.coordinatesForm.controls['lat'].value, this.coordinatesForm.controls['lng'].value]};
     newPoi.audioguides = this.audioguidesForm.value;
     newPoi.description = this.descriptionForm.value;
+    newPoi.images.push(imgKey);
     newPoi.coverImage ? null : newPoi.coverImage = newPoi.images[0];
-    this.poiService.edit(this.poi.id, newPoi).subscribe(() => {
+    this.poiService.edit(this.poi.id, newPoi).subscribe(resp => {
       this.router.navigate(['/home']);
     }, error => {
-      this.snackBar.open('Error creating the POI.', 'Close', { duration: 3000 });
-    });
+      this.snackBar.open('Error editing the POI', 'Close', { duration: 3000 })
+    })
   }
 
   /** Function to upload multiple images to Firebase-Firestorage */
@@ -134,4 +153,14 @@ export class PoiEditComponent implements OnInit {
     this.urlImage.splice(this.urlImage.indexOf(i), 1);
   }
 
+  onImageSelect(event) {
+      
+    if (event.target.files.length > 0) {
+      const file = event.target.files[0];
+      this.imagenForm.get('photo').setValue(file);
+      console.log("ta lleno")
+    } else {
+      console.log("ta vacío")
+    }
+  }
 }

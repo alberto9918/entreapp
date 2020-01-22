@@ -63,4 +63,9 @@ export class PoiComponent implements OnInit {
     this.router.navigate(['home/details']);
   }
 
+  loadCoverImage(id: String) {
+    return this.poiService.getImage(id).subscribe(resp => {
+      console.log(resp)
+    })
+  }
 }
