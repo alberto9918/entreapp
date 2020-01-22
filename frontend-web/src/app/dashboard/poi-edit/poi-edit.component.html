@@ -95,11 +95,6 @@
                         </span>
                       </div>
                     </quill-editor>
-                
-
-                <button mat-fab id="addFloatingButton" type="submit" [disabled]="!form.valid ||!coordinatesForm.valid || !audioguidesForm.valid">
-                  <mat-icon>send</mat-icon>
-                </button>
                   
               </div>
               
@@ -114,19 +109,21 @@
       
             
             <div fxFlex.gt-md="75" fxFlex="100">
+
                   <div>
-                    <!-- Categorías -->
-                    <mat-form-field class="w-50, margin-right">
-                      <mat-select placeholder="Categories" [formControl]="form.controls['categories']" multiple>
-                        <mat-option *ngFor="let c of allCategories?.rows" [value]="c.id">{{c.name}}</mat-option>
+                    <!-- Idiomas -->
+                    <mat-form-field class="w-100">
+                      <mat-select placeholder="Language" name="language">
+                        <mat-option *ngFor="let language of languages.rows" [value]="language.id">
+                          {{language.name}}
+                        </mat-option>
                       </mat-select>
                     </mat-form-field>
-                    <!-- Autor/Anyo -->
                     
                   </div>
                 
                   <!-- Descripción con librería -->
-                  <quill-editor [formControl]="descriptionForm.controls['originalDescription']" required>
+                  <quill-editor required>
                     <div quill-editor-toolbar>
                       <span class="ql-formats">
                         <button class="ql-bold" [title]="'Bold'"></button>
@@ -204,6 +201,9 @@
         </div>
     </mat-tab>
   </mat-tab-group> 
+  <button mat-fab id="addFloatingButton" type="submit" [disabled]="!form.valid ||!coordinatesForm.valid || !audioguidesForm.valid">
+    <mat-icon>send</mat-icon>
+  </button>
 </form>
 
 

@@ -10,6 +10,9 @@ import { CategoriesResponse } from 'src/app/interfaces/categories-response';
 import { OnePoiResponse } from 'src/app/interfaces/one-poi-response';
 import { CategoryService } from 'src/app/services/category.service';
 import { PoiService } from 'src/app/services/poi.service';
+import { AuthenticationService } from 'src/app/services/authentication.service';
+import { LanguageService } from 'src/app/services/language.service';
+import { LanguagesResponse } from 'src/app/interfaces/languages-response';
 
 @Component({
   selector: 'app-poi-edit',
@@ -30,18 +33,29 @@ export class PoiEditComponent implements OnInit {
   form: FormGroup;
   audioguidesForm: FormGroup;
   descriptionForm: FormGroup;
+  languages: LanguagesResponse;
   statusList: Array<string> = ['Open','Close'];
 
-  constructor(private fb: FormBuilder, private poiService: PoiService, private categoryService: CategoryService,
-    public router: Router, public snackBar: MatSnackBar, private afStorage: AngularFireStorage, private titleService: Title) { }
+  constructor(public languageService: LanguageService, private fb: FormBuilder, private poiService: PoiService, private categoryService: CategoryService,
+    public router: Router, public snackBar: MatSnackBar, private afStorage: AngularFireStorage, private titleService: Title, public authService: AuthenticationService) { }
 
   ngOnInit() {
+    this.getAllLanguages();
     if (this.poiService.selectedPoi == null) {
       this.router.navigate(['home']);
     } else {
       this.getData();
     }
     this.titleService.setTitle('Edit - POI');
+  }
+
+  //get all languages from api
+  getAllLanguages() {
+    this.languageService.getAllLanguages(this.authService.getToken()).subscribe(receivedLanguages => {
+      this.languages = receivedLanguages;
+    }, error => {
+      this.snackBar.open('There was an error when we were loading data.', 'Close', { duration: 3000 });
+    });
   }
 
   /** Get POIData from the API */
