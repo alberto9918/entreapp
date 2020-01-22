@@ -33,10 +33,11 @@ export class PoiEditComponent implements OnInit {
   form: FormGroup;
   audioguidesForm: FormGroup;
   descriptionForm: FormGroup;
-  languages: LanguagesResponse;
   statusList: Array<string> = ['Open','Close'];
 
-  constructor(public languageService: LanguageService, private fb: FormBuilder, private poiService: PoiService, private categoryService: CategoryService,
+  languages: LanguagesResponse;
+
+  constructor(public languageService: LanguageService,private fb: FormBuilder, private poiService: PoiService, private categoryService: CategoryService,
     public router: Router, public snackBar: MatSnackBar, private afStorage: AngularFireStorage, private titleService: Title, public authService: AuthenticationService) { }
 
   ngOnInit() {
@@ -47,6 +48,7 @@ export class PoiEditComponent implements OnInit {
       this.getData();
     }
     this.titleService.setTitle('Edit - POI');
+    this.getAllLanguages();
   }
 
   //get all languages from api
