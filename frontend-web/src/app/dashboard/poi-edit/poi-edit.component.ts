@@ -10,6 +10,9 @@ import { CategoriesResponse } from 'src/app/interfaces/categories-response';
 import { OnePoiResponse } from 'src/app/interfaces/one-poi-response';
 import { CategoryService } from 'src/app/services/category.service';
 import { PoiService } from 'src/app/services/poi.service';
+import { LanguageService } from '../../services/language.service';
+import { LanguagesResponse } from '../../interfaces/languages-response';
+import { AuthenticationService } from '../../services/authentication.service';
 
 @Component({
   selector: 'app-poi-edit',
@@ -32,8 +35,10 @@ export class PoiEditComponent implements OnInit {
   descriptionForm: FormGroup;
   statusList: Array<string> = ['Open','Close'];
 
-  constructor(private fb: FormBuilder, private poiService: PoiService, private categoryService: CategoryService,
-    public router: Router, public snackBar: MatSnackBar, private afStorage: AngularFireStorage, private titleService: Title) { }
+  languages: LanguagesResponse;
+
+  constructor(public languageService: LanguageService,private fb: FormBuilder, private poiService: PoiService, private categoryService: CategoryService,
+    public router: Router, public snackBar: MatSnackBar, private afStorage: AngularFireStorage, private titleService: Title, public authService: AuthenticationService) { }
 
   ngOnInit() {
     if (this.poiService.selectedPoi == null) {
@@ -42,6 +47,7 @@ export class PoiEditComponent implements OnInit {
       this.getData();
     }
     this.titleService.setTitle('Edit - POI');
+    this.getAllLanguages();
   }
 
   /** Get POIData from the API */
@@ -81,6 +87,15 @@ export class PoiEditComponent implements OnInit {
       status: [this.poi.status, Validators.compose([Validators.required])],
       schedule: [this.poi.schedule, Validators.compose([Validators.required])],
       price: [this.poi.price],
+    });
+  }
+
+  //get all languages from api
+  getAllLanguages() {
+    this.languageService.getAllLanguages(this.authService.getToken()).subscribe(receivedLanguages => {
+      this.languages = receivedLanguages;
+    }, error => {
+      this.snackBar.open('There was an error when we were loading data.', 'Close', { duration: 3000 });
     });
   }
 
