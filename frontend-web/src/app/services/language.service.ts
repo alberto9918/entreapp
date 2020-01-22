@@ -18,6 +18,9 @@ export class LanguageService {
   getUserLanguage(id: String, token: String): Observable<LanguageResponse> {
     return this.http.get<LanguageResponse>(`${languageUrl}/${id}?access_token=${token}`);
   }
+  getSpanishLanguage(token: String):Observable<LanguageResponse> {
+    return this.http.get<LanguageResponse>(`${languageUrl}/${"5c5429bf77bca32e879271d6"}?access_token=${token}`);
+  }
   getAllLanguages(token: String): Observable<LanguagesResponse> {
     return this.http.get<LanguagesResponse>(`${languageUrl}?access_token=${token}`);
 
