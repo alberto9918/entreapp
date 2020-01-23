@@ -49,7 +49,7 @@ router.post('/upload/image', master(), uploadS3('pois-imgs').single('photo'), po
 router.post('/upload/audio', master(), uploadS3('pois-aud').single('photo'), postUploadS3)
 router.post('/upload/avatar', master(), uploadS3('pois-aud').single('photo'), postUploadS3)
 
-router.get('/:key', master(), getFile)
+router.get('/:key', getFile)
 
 router.delete('/:key', master(), deleteFile);
 

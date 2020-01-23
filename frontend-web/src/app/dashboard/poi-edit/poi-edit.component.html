@@ -115,18 +115,22 @@
               <div fxFlex.gt-md="100" fxFlex="100" fxLayout="column" fxLayoutGap="5%"> 
                 <div>
                     <!-- Subir archivos -->
-                    <div id="uploadContent" class="w-100">
-                      <input type="file" name="photo" (change)="onImageSelect($event)" multiple accept="image/*" />
+                    <div id="uploadContent" class="w-100" *ngIf="poi.images.length<3">
+                      <input type="file" name="photo" (change)="onImageSelect($event)" multiple accept="image/*"/>
                       <p>Drag your images here or click in this area.</p>
                     </div>
                     <div fxLayout="row wrap" fxLayoutGap="2px" style="margin-top: 10px">
                       <div *ngFor="let i of urlImage">
                         <input type="radio" class="radio-item" [value]="i" name="item" id="radio{{urlImage.indexOf(i)}}" [formControl]="form.controls['coverImage']">
-                        <label class="label_item" for="radio{{urlImage.indexOf(i)}}" [style.background-image]="'url(' + i + ')'">
-                            <a mat-icon-button class="imgButtonDelete" (click)="removeImage(i)">
+                        <label class="label_item" for="radio{{urlImage.indexOf(i)}}" [style.background-image]="'url(' + loadImages(i) + ')'">
+                          <a mat-icon-button class="imgButtonChoose" (click)="selectAsCover(i)">
+                            <mat-icon>flag</mat-icon>
+                          </a>
+                          <a mat-icon-button class="imgButtonDelete" (click)="removeImage(i)">
                               <mat-icon>cancel</mat-icon>
                             </a>
                           </label>
+                          <p *ngIf="comprobarImagen(i)">Portada</p>
                       </div>
                     </div>
                   </div>   

@@ -6,6 +6,7 @@ import { DialogPoiDeleteComponent } from 'src/app/dialogs/dialog-poi-delete/dial
 import { OnePoiResponse } from 'src/app/interfaces/one-poi-response';
 import { PoiService } from 'src/app/services/poi.service';
 import { AuthenticationService } from 'src/app/services/authentication.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-poi-details',
@@ -27,6 +28,14 @@ export class PoiDetailsComponent implements OnInit {
       this.getData();
     }
     this.titleService.setTitle('Details - POI');
+  }
+  
+  loadCoverImage(key: String) {
+    return `${environment.apiUrl}/files/` + key;
+  }
+  
+  loadImages(key: String) {
+    return `${environment.apiUrl}/files/` + key;
   }
   
   checkEnglishUser() {

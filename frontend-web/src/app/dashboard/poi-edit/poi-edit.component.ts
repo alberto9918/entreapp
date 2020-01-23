@@ -10,6 +10,9 @@ import { CategoriesResponse } from 'src/app/interfaces/categories-response';
 import { OnePoiResponse } from 'src/app/interfaces/one-poi-response';
 import { CategoryService } from 'src/app/services/category.service';
 import { PoiService } from 'src/app/services/poi.service';
+import { environment } from 'src/environments/environment';
+import { forEach } from '@angular/router/src/utils/collection';
+import { NONE_TYPE } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'app-poi-edit',
@@ -56,6 +59,7 @@ export class PoiEditComponent implements OnInit {
     this.poiService.getOne(this.poiService.selectedPoi.id).subscribe(p => {
       this.poi = p;
       this.urlImage = p.images;
+      console.log(p.id)
       p.categories.forEach(c => this.selectedCategories.push(c.id));
       this.createForm();
     });
@@ -91,31 +95,88 @@ export class PoiEditComponent implements OnInit {
 
   /** Send all the data to the api */
   onSubmit() {
-    var imgKey;
+
     const newPoi: PoiCreateDto = <PoiCreateDto>this.form.value;
-   
     //Subida de imagen
     const formData = new FormData();
+
     formData.append('photo', this.imagenForm.get('photo').value);
 
-    //Subo la imagen y recojo su key
-    this.poiService.uploadImage(formData).subscribe(resp => {
-      imgKey = resp;
-    }, error => {
-      this.snackBar.open('Error uploading image', 'Close', { duration: 3000 });
-    });
+    if (this.poi.images.length >= 3 || this.imagenForm.get('photo').value == '') {
 
-    newPoi.loc = {coordinates: [this.coordinatesForm.controls['lat'].value, this.coordinatesForm.controls['lng'].value]};
+      //Esto ocurrirá si no se quiere editar o subir una imagen
+      //Seteo los datos
+
+      newPoi.loc = {coordinates: [this.coordinatesForm.controls['lat'].value, this.coordinatesForm.controls['lng'].value]};
+      newPoi.audioguides = this.audioguidesForm.value;
+      newPoi.description = this.descriptionForm.value;
+      newPoi.images = this.poi.images;
+      newPoi.coverImage = this.poi.coverImage;
+
+      if (newPoi.images == null) newPoi.images = [];
+      newPoi.coverImage ? null : newPoi.coverImage = newPoi.images[0];
+
+      //EDICIÓN
+
+      this.poiService.edit(this.poi.id, newPoi).subscribe(resp => {
+        this.router.navigate(['/home']);
+      }, error => {
+        this.snackBar.open('Error editing the POI', 'Close', { duration: 3000 })
+      });
+
+    } else {
+
+    //Esto ocurrirá si se quiere subir una imagen
+
+      //Subo la imagen y recojo su key
+      this.poiService.uploadImage(formData).subscribe(resp => {  
+
+        //Seteo los datos
+
+        newPoi.loc = {coordinates: [this.coordinatesForm.controls['lat'].value, this.coordinatesForm.controls['lng'].value]};
+        newPoi.audioguides = this.audioguidesForm.value;
+        newPoi.description = this.descriptionForm.value;
+        newPoi.images = this.poi.images;
+        
+        if (newPoi.images == null) newPoi.images = [];
+
+        newPoi.images.push(resp.key)
+
+        newPoi.coverImage ? null : newPoi.coverImage = newPoi.images[0];
+
+        //EDICIÓN
+
+        this.poiService.edit(this.poi.id, newPoi).subscribe(resp => {
+          this.router.navigate(['/home']);
+        }, error => {
+          this.snackBar.open('Error editing the POI', 'Close', { duration: 3000 })
+        });
+
+      }, error => {
+        console.log(error);
+      })
+    }
+
+  }
+
+  
+/*     newPoi.loc = {coordinates: [this.coordinatesForm.controls['lat'].value, this.coordinatesForm.controls['lng'].value]};
     newPoi.audioguides = this.audioguidesForm.value;
     newPoi.description = this.descriptionForm.value;
+    //Con esta línea siempre va a haber una única imagen por monumento
+    newPoi.images = [];
     newPoi.images.push(imgKey);
-    newPoi.coverImage ? null : newPoi.coverImage = newPoi.images[0];
+    //newPoi.coverImage = imgKey;
+
+    //newPoi.coverImage ? null : newPoi.coverImage = newPoi.images[0];
     this.poiService.edit(this.poi.id, newPoi).subscribe(resp => {
       this.router.navigate(['/home']);
+      console.log('Se ha "editado"')
     }, error => {
       this.snackBar.open('Error editing the POI', 'Close', { duration: 3000 })
     })
-  }
+     */
+
 
   /** Function to upload multiple images to Firebase-Firestorage */
   ImgUpload(e) {
@@ -147,10 +208,41 @@ export class PoiEditComponent implements OnInit {
     task.snapshotChanges().pipe(
       finalize(() => ref.getDownloadURL().subscribe(r => this.audioguidesForm.controls['originalFile'].setValue(r)))).subscribe();
   }
-
+  loadImages(key: String) {
+    return `${environment.apiUrl}/files/` + key;
+  }
   /** Function to remove an image added */
   removeImage(i) {
     this.urlImage.splice(this.urlImage.indexOf(i), 1);
+  }
+
+  deleteImage(key: String) {
+    //Hay que borrar la imagen del array, y hay que borrar la imagen de amazon
+
+    for (var i = 0; i < this.poi.images.length; i++) {
+      if (this.poi.images[i] == key) {
+        this.poi.images.splice(i, 1);
+      }
+    }
+
+    this.poiService.removeImage(key).subscribe(resp => {
+      console.log(resp)
+    }, error => {
+      console.log(error)
+    })
+
+  }
+
+  selectAsCover(i: string) {
+    this.poi.coverImage = i;
+  }
+  
+  comprobarImagen(i: String) {
+    if (i == this.poi.coverImage) {
+      return true
+    } else {
+      return false
+    }
   }
 
   onImageSelect(event) {
