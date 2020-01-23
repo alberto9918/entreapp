@@ -84,8 +84,8 @@ export const getFile = (req, res, next) => {
 export const deleteFile = (req, res, next) => {
   let key = transformKey(req.params.key)
   s3.deleteObject({
-    bucket: AWS_BUCKET_NAME,
-    key: key
+    Bucket: AWS_BUCKET_NAME,
+    Key: key
   }, function (err, data) {
     if (err) res.status(400).json({error: err})
     res.status(200).json({data: data})

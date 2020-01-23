@@ -9,6 +9,8 @@ import { PoiCreateDto } from 'src/app/dto/poi-create-dto';
 import { CategoriesResponse } from 'src/app/interfaces/categories-response';
 import { CategoryService } from 'src/app/services/category.service';
 import { PoiService } from 'src/app/services/poi.service';
+import { LanguageService } from 'src/app/services/language.service';
+import { AuthenticationService } from 'src/app/services/authentication.service';
 
 
 @Component({
@@ -21,6 +23,7 @@ export class PoiCreateComponent implements OnInit {
   task: AngularFireUploadTask;
   urlImage: Array<string> = [];
   urlAudioguide: string;
+  spanishLanguage: string;
 
   poi: PoiCreateDto;
   allCategories: CategoriesResponse;
@@ -31,12 +34,13 @@ export class PoiCreateComponent implements OnInit {
   descriptionForm: FormGroup;
   statusList: Array<string> = ['Open','Close'];
 
-  constructor(private fb: FormBuilder, private poiService: PoiService, private categoryService: CategoryService,
-    public router: Router, public snackBar: MatSnackBar, private afStorage: AngularFireStorage, private titleService: Title) { }
+  constructor(private fb: FormBuilder, private poiService: PoiService, private categoryService: CategoryService, private authService: AuthenticationService,
+    public router: Router, public snackBar: MatSnackBar, private afStorage: AngularFireStorage, private titleService: Title, private languageService: LanguageService) { }
 
   ngOnInit() {
     this.createForm();
     this.getCategories();
+    this.getSpanishLanguage();
     this.titleService.setTitle('Create - POI');
   }
 
@@ -44,6 +48,11 @@ export class PoiCreateComponent implements OnInit {
   getCategories() {
     this.categoryService.getAllCategories()
       .subscribe(r => this.allCategories = r);
+  }
+
+  getSpanishLanguage() {
+    this.languageService.getSpanishLanguage(this.authService.getToken())
+      .subscribe(r => this.spanishLanguage = r.id);
   }
 
   /** Create an empty form */
@@ -78,6 +87,9 @@ export class PoiCreateComponent implements OnInit {
     newPoi.loc = { coordinates: [this.coordinatesForm.controls['lat'].value, this.coordinatesForm.controls['lng'].value] };
     //newPoi.audioguides = this.audioguidesForm.value;
     newPoi.description = this.descriptionForm.value;
+    //TODO id del idioma español
+    //newPoi.description.language.language = this.spanishLanguage;
+    newPoi.description.language = { language: this.spanishLanguage};
 
     console.log(newPoi);
 

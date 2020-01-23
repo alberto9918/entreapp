@@ -16,7 +16,7 @@ import { LanguageService } from 'src/app/services/language.service';
 })
 
 export class DialogTranslatePoiComponent implements OnInit {
-  audioguidesForm: FormGroup;
+ audioguidesForm: FormGroup;
   descriptionForm: FormGroup;
   urlAudioguide: string;
   poiObtenido: OnePoiResponse;
@@ -28,10 +28,12 @@ export class DialogTranslatePoiComponent implements OnInit {
 
   ngOnInit() {
     //it gets the poi to translate it
-    this.getOnePoi();
-    this.createForm();
-    this.idLanguage = this.authService.getLanguageId();
+    //this.getOnePoi();
+    //this.createForm();
+    //this.idLanguage = this.authService.getLanguageId();
   }
+
+  /*
   getUserIsoCode() {
     const token = this.authService.getToken();
     const languageId = this.authService.getLanguageId();
@@ -203,5 +205,7 @@ export class DialogTranslatePoiComponent implements OnInit {
         )))
       .subscribe();
   }
+
+  */
 
 }

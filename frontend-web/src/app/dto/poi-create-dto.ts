@@ -21,12 +21,12 @@ export class PoiCreateDto {
             language: string;
         }
         originalDescription: string;
-        translations: [
-            {
-                id: string,
-                translatedDescription: string
-            }
-        ]
+        translations: [{
+            language: {
+                language: string;
+            },
+            translatedDescription: string
+        }]
     };
     name: string;
     coverImage: string;

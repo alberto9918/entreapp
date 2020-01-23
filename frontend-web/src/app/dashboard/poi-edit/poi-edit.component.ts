@@ -13,6 +13,9 @@ import { PoiService } from 'src/app/services/poi.service';
 import { environment } from 'src/environments/environment';
 import { forEach } from '@angular/router/src/utils/collection';
 import { NONE_TYPE } from '@angular/compiler/src/output/output_ast';
+import { AuthenticationService } from 'src/app/services/authentication.service';
+import { LanguageService } from 'src/app/services/language.service';
+import { LanguagesResponse } from 'src/app/interfaces/languages-response';
 
 @Component({
   selector: 'app-poi-edit',
@@ -35,21 +38,34 @@ export class PoiEditComponent implements OnInit {
   descriptionForm: FormGroup;
   statusList: Array<string> = ['Open','Close'];
 
-  constructor(private formBuilder: FormBuilder, private fb: FormBuilder, private poiService: PoiService, private categoryService: CategoryService,
-    public router: Router, public snackBar: MatSnackBar, private afStorage: AngularFireStorage, private titleService: Title) { }
+  languages: LanguagesResponse;
+
+  constructor(public languageService: LanguageService,private fb: FormBuilder, private poiService: PoiService, private categoryService: CategoryService,
+    public router: Router, public snackBar: MatSnackBar, private afStorage: AngularFireStorage, private titleService: Title, public authService: AuthenticationService) { }
 
   ngOnInit() {
+    this.getAllLanguages();
     if (this.poiService.selectedPoi == null) {
       this.router.navigate(['home']);
     } else {
       this.getData();
     }
 
-    this.imagenForm = this.formBuilder.group({
+    this.imagenForm = this.fb.group({
       photo: ['']
     });
 
     this.titleService.setTitle('Edit - POI');
+    this.getAllLanguages();
+  }
+
+  //get all languages from api
+  getAllLanguages() {
+    this.languageService.getAllLanguages(this.authService.getToken()).subscribe(receivedLanguages => {
+      this.languages = receivedLanguages;
+    }, error => {
+      this.snackBar.open('There was an error when we were loading data.', 'Close', { duration: 3000 });
+    });
   }
 
   /** Get POIData from the API */
