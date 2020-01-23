@@ -36,7 +36,7 @@ export class PoiService {
 
   removeImage(key: String): Observable<UrlResponse> {
     return this.http.delete<UrlResponse>(
-      `${environment.apiUrl}/files/`+key+`${environment.masterKeyTemporal}`
+      `${environment.apiUrl}/files/`+key+`?${environment.masterKeyTemporal}`
     );
   }
   getAll(): Observable<PoiResponse> {

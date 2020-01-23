@@ -17,6 +17,8 @@ import { AuthenticationService } from 'src/app/services/authentication.service';
 import { LanguageService } from 'src/app/services/language.service';
 import { LanguagesResponse } from 'src/app/interfaces/languages-response';
 
+const notFoundImg = 'pois-imgs-1579797933940_notfound47.png';
+
 @Component({
   selector: 'app-poi-edit',
   templateUrl: './poi-edit.component.html',
@@ -89,7 +91,7 @@ export class PoiEditComponent implements OnInit {
     });
 
     this.audioguidesForm = this.fb.group({
-      originalFile: [this.poi.audioguides.originalFile, Validators.compose([Validators.required])]
+      originalFile: [this.poi.audioguides.originalFile]
     });
 
     this.descriptionForm = this.fb.group({
@@ -227,10 +229,6 @@ export class PoiEditComponent implements OnInit {
   loadImages(key: String) {
     return `${environment.apiUrl}/files/` + key;
   }
-  /** Function to remove an image added */
-  removeImage(i) {
-    this.urlImage.splice(this.urlImage.indexOf(i), 1);
-  }
 
   deleteImage(key: String) {
     //Hay que borrar la imagen del array, y hay que borrar la imagen de amazon
@@ -238,6 +236,9 @@ export class PoiEditComponent implements OnInit {
     for (var i = 0; i < this.poi.images.length; i++) {
       if (this.poi.images[i] == key) {
         this.poi.images.splice(i, 1);
+        /*if (key == this.poi.coverImage) {
+          this.poi.coverImage = notFoundImg;
+        }*/
       }
     }
 
