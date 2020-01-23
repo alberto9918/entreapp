@@ -72,7 +72,7 @@ export class PoiCreateComponent implements OnInit {
     this.form = this.fb.group({
       name: [null, Validators.compose([Validators.required])],
       year: [null, Validators.compose([Validators.required])],
-      creator: [null],
+      creator: [localStorage.getItem('name')],
       //images: [null, Validators.compose([Validators.required])],
       categories: [null, Validators.compose([Validators.required])],
       status: [null, Validators.compose([Validators.required])],
