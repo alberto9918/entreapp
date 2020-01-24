@@ -10,9 +10,14 @@ import { CategoriesResponse } from 'src/app/interfaces/categories-response';
 import { OnePoiResponse } from 'src/app/interfaces/one-poi-response';
 import { CategoryService } from 'src/app/services/category.service';
 import { PoiService } from 'src/app/services/poi.service';
+import { environment } from 'src/environments/environment';
+import { forEach } from '@angular/router/src/utils/collection';
+import { NONE_TYPE } from '@angular/compiler/src/output/output_ast';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { LanguageService } from 'src/app/services/language.service';
 import { LanguagesResponse } from 'src/app/interfaces/languages-response';
+
+const notFoundImg = 'pois-imgs-1579797933940_notfound47.png';
 
 @Component({
   selector: 'app-poi-edit',
@@ -28,12 +33,11 @@ export class PoiEditComponent implements OnInit {
   urlImage: Array<string> = [];
   allCategories: CategoriesResponse;
   selectedCategories = [];
-
+  imagenForm: FormGroup;
   coordinatesForm: FormGroup;
   form: FormGroup;
   audioguidesForm: FormGroup;
   descriptionForm: FormGroup;
-  imagesForm: FormGroup;
   translateForm: FormGroup;
   statusList: Array<string> = ['Open','Close'];
 
@@ -49,6 +53,12 @@ export class PoiEditComponent implements OnInit {
     } else {
       this.getData();
     }
+
+    this.imagenForm = this.fb.group({
+      photo: ['']
+    });
+
+
     this.titleService.setTitle('Edit - POI');
     this.getAllLanguages();
   }
@@ -69,6 +79,7 @@ export class PoiEditComponent implements OnInit {
     this.poiService.getOne(this.poiService.selectedPoi.id).subscribe(p => {
       this.poi = p;
       this.urlImage = p.images;
+      console.log(p.id)
       p.categories.forEach(c => this.selectedCategories.push(c.id));
       this.createForm();
     });
@@ -94,15 +105,12 @@ export class PoiEditComponent implements OnInit {
       originalDescription: [this.poi.description.originalDescription, Validators.compose([Validators.required])]
     });
 
-    this.imagesForm = this.fb.group({
-      images: [this.poi.images]
-    })
-
     this.form = this.fb.group({
       name: [this.poi.name, Validators.compose([Validators.required])],
       year: [this.poi.year, Validators.compose([Validators.required])],
       creator: [this.poi.creator],
       coverImage: [this.poi.coverImage],
+      /*images: [this.poi.images, Validators.compose([Validators.required])]*/
       categories: [this.selectedCategories, Validators.compose([Validators.required])],
       status: [this.poi.status, Validators.compose([Validators.required])],
       schedule: [this.poi.schedule, Validators.compose([Validators.required])],
@@ -112,47 +120,130 @@ export class PoiEditComponent implements OnInit {
 
   /** Send all the data to the api */
   onSubmit() {
+
     const newPoi: PoiCreateDto = <PoiCreateDto>this.form.value;
-    newPoi.images = this.imagesForm.value;
-    newPoi.loc = {coordinates: [this.coordinatesForm.controls['lat'].value, this.coordinatesForm.controls['lng'].value]};
-    newPoi.audioguides = this.audioguidesForm.value;
-    newPoi.description = this.descriptionForm.value;
-    if (newPoi.description.translations == undefined) {
-      newPoi.description.translations = [{
-        language: {
-          language: this.translateForm.controls['languageSelected'].value
-        },
-        translatedDescription: this.translateForm.controls['translateDescripcion'].value
-      }];
-    } else {
-      newPoi.description.translations.push({
-        language: {
-          language: this.translateForm.controls['languageSelected'].value
-        },
-        translatedDescription: this.translateForm.controls['translateDescripcion'].value
+    //newPoi.images = this.imagesForm.value;
+
+    //Subida de imagen
+    const formData = new FormData();
+    //Subida de audio
+    const formData2 = new FormData();
+
+    formData.append('photo', this.imagenForm.get('photo').value);
+    //COMENTADO PORQUE ESTÁ EN DESARROLLO EL AUDIO
+    //formData2.append('audio',this.audioguidesForm.get('audio').value);
+
+    if (this.poi.images.length >= 3 || this.imagenForm.get('photo').value == '') {
+
+      //Esto ocurrirá si no se quiere editar o subir una imagen
+      //Seteo los datos
+
+      newPoi.loc = {coordinates: [this.coordinatesForm.controls['lat'].value, this.coordinatesForm.controls['lng'].value]};
+      newPoi.audioguides = this.audioguidesForm.value;
+      newPoi.description = this.descriptionForm.value;
+
+      if (this.poi.images[0] != null ) {
+        newPoi.images = this.poi.images;
+      }
+
+      newPoi.coverImage = this.poi.coverImage;
+
+      if (newPoi.images == null) newPoi.images = [];
+      //newPoi.coverImage ? null : newPoi.coverImage = newPoi.images[0]; Esto no haría falta pero lo dejo por si a caso
+
+      //Comprobación de existencia de traducciones
+      if (newPoi.description.translations == undefined) {
+        newPoi.description.translations = [{
+          language: {
+            language: this.translateForm.controls['languageSelected'].value
+          },
+          translatedDescription: this.translateForm.controls['translateDescripcion'].value
+        }];
+      } else {
+        newPoi.description.translations.push({
+          language: {
+            language: this.translateForm.controls['languageSelected'].value
+          },
+          translatedDescription: this.translateForm.controls['translateDescripcion'].value
+        });
+      }
+  
+      if(this.poi.coverImage == undefined && newPoi.images.length > 0) {
+        newPoi.coverImage = newPoi.images[0];
+      }
+
+      //EDICIÓN
+
+      this.poiService.edit(this.poi.id, newPoi).subscribe(resp => {
+        this.router.navigate(['/home']);
+      }, error => {
+        this.snackBar.open('Error editing the POI', 'Close', { duration: 3000 })
       });
+
+    } else {
+
+    //Esto ocurrirá si se quiere subir una imagen
+
+      //Subo la imagen y recojo su key
+      this.poiService.uploadImage(formData).subscribe(resp => {  
+
+        //Seteo los datos
+
+        newPoi.loc = {coordinates: [this.coordinatesForm.controls['lat'].value, this.coordinatesForm.controls['lng'].value]};
+        newPoi.audioguides = this.audioguidesForm.value;
+        newPoi.description = this.descriptionForm.value;
+        newPoi.coverImage = this.poi.coverImage;
+        
+        //TESTEANDO
+        if (this.poi.images[0] != null ) {
+          newPoi.images = this.poi.images;
+        }
+        if (newPoi.images == null) newPoi.images = [];
+
+        newPoi.images.push(resp.key)
+
+        newPoi.coverImage ? null && newPoi.images[0] != null || newPoi.coverImage == notFoundImg && newPoi.images[0] != null: newPoi.coverImage = newPoi.images[0];
+
+        //EDICIÓN
+
+        this.poiService.edit(this.poi.id, newPoi).subscribe(resp => {
+          this.router.navigate(['/home']);
+        }, error => {
+          this.snackBar.open('Error editing the POI', 'Close', { duration: 3000 })
+        });
+
+      }, error => {
+        console.log(error);
+      })
     }
 
-    if(this.poi.coverImage == undefined && newPoi.images.length > 0) {
-      newPoi.coverImage = newPoi.images[0];
-    }
-    this.poiService.edit(this.poi.id, newPoi).subscribe(() => {
-      this.router.navigate(['/home']);
-    }, error => {
-      this.snackBar.open('Error creating the POI.', 'Close', { duration: 3000 });
-    });
   }
+
+  
+/*     newPoi.loc = {coordinates: [this.coordinatesForm.controls['lat'].value, this.coordinatesForm.controls['lng'].value]};
+    newPoi.audioguides = this.audioguidesForm.value;
+    newPoi.description = this.descriptionForm.value;
+    //Con esta línea siempre va a haber una única imagen por monumento
+    newPoi.images = [];
+    newPoi.images.push(imgKey);
+    //newPoi.coverImage = imgKey;
+
+    //newPoi.coverImage ? null : newPoi.coverImage = newPoi.images[0];
+    this.poiService.edit(this.poi.id, newPoi).subscribe(resp => {
+      this.router.navigate(['/home']);
+      console.log('Se ha "editado"')
+    }, error => {
+      this.snackBar.open('Error editing the POI', 'Close', { duration: 3000 })
+    })
+     */
+
 
   /** Function to change the translate description*/
   translateChange(e) {
     var searchLanguage;
     for(var i=0; i<this.poi.description.translations.length; i++) {
-      console.log("Entro en el for")
       searchLanguage = this.poi.description.translations.find(element => 
-        this.poi.description.translations[i].language.language
-        == e.value);
-      console.log(e.value)
-      console.log(searchLanguage)
+        this.poi.description.translations[i].language.language == e.value);
       if(searchLanguage != undefined) {
         this.translateForm = this.fb.group({
           languageSelected: [searchLanguage.language.language],
@@ -192,10 +283,50 @@ export class PoiEditComponent implements OnInit {
     task.snapshotChanges().pipe(
       finalize(() => ref.getDownloadURL().subscribe(r => this.audioguidesForm.controls['originalFile'].setValue(r)))).subscribe();
   }
-
-  /** Function to remove an image added */
-  removeImage(i) {
-    this.urlImage.splice(this.urlImage.indexOf(i), 1);
+  loadImages(key: String) {
+    return `${environment.apiUrl}/files/` + key;
   }
 
+  deleteImage(key: String) {
+    //Hay que borrar la imagen del array, y hay que borrar la imagen de amazon
+
+    for (var i = 0; i < this.poi.images.length; i++) {
+      if (this.poi.images[i] == key) {
+        this.poi.images.splice(i, 1);
+        if (key == this.poi.coverImage) {
+          this.poi.coverImage = notFoundImg;
+        } 
+      }
+    }
+
+    this.poiService.removeImage(key).subscribe(resp => {
+      console.log(resp)
+    }, error => {
+      console.log(error)
+    })
+
+  }
+
+  selectAsCover(i: string) {
+    this.poi.coverImage = i;
+  }
+  
+  comprobarImagen(i: String) {
+    if (i == this.poi.coverImage) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  onImageSelect(event) {
+      
+    if (event.target.files.length > 0) {
+      const file = event.target.files[0];
+      this.imagenForm.get('photo').setValue(file);
+      console.log("ta lleno")
+    } else {
+      console.log("ta vacío")
+    }
+  }
 }
