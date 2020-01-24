@@ -132,7 +132,7 @@ export class PoiEditComponent implements OnInit {
       newPoi.coverImage = this.poi.coverImage;
 
       if (newPoi.images == null) newPoi.images = [];
-      newPoi.coverImage ? null : newPoi.coverImage = newPoi.images[0];
+      //newPoi.coverImage ? null : newPoi.coverImage = newPoi.images[0]; Esto no haría falta pero lo dejo por si a caso
 
       //EDICIÓN
 
@@ -154,13 +154,17 @@ export class PoiEditComponent implements OnInit {
         newPoi.loc = {coordinates: [this.coordinatesForm.controls['lat'].value, this.coordinatesForm.controls['lng'].value]};
         newPoi.audioguides = this.audioguidesForm.value;
         newPoi.description = this.descriptionForm.value;
-        newPoi.images = this.poi.images;
+        newPoi.coverImage = this.poi.coverImage;
         
+        //TESTEANDO
+        if (this.poi.images[0] != null ) {
+          newPoi.images = this.poi.images;
+        }
         if (newPoi.images == null) newPoi.images = [];
 
         newPoi.images.push(resp.key)
 
-        newPoi.coverImage ? null : newPoi.coverImage = newPoi.images[0];
+        newPoi.coverImage ? null && newPoi.images[0] != null || newPoi.coverImage == notFoundImg && newPoi.images[0] != null: newPoi.coverImage = newPoi.images[0];
 
         //EDICIÓN
 
@@ -236,9 +240,9 @@ export class PoiEditComponent implements OnInit {
     for (var i = 0; i < this.poi.images.length; i++) {
       if (this.poi.images[i] == key) {
         this.poi.images.splice(i, 1);
-        /*if (key == this.poi.coverImage) {
+        if (key == this.poi.coverImage) {
           this.poi.coverImage = notFoundImg;
-        }*/
+        } 
       }
     }
 
