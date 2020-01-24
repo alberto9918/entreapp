@@ -202,6 +202,23 @@ export class PoiEditComponent implements OnInit {
         }
         if (newPoi.images == null) newPoi.images = [];
 
+        //Comprobación de existencia de traducciones
+      if (newPoi.description.translations == undefined) {
+        newPoi.description.translations = [{
+          language: {
+            language: this.translateForm.controls['languageSelected'].value
+          },
+          translatedDescription: this.translateForm.controls['translateDescripcion'].value
+        }];
+      } else {
+        newPoi.description.translations.push({
+          language: {
+            language: this.translateForm.controls['languageSelected'].value
+          },
+          translatedDescription: this.translateForm.controls['translateDescripcion'].value
+        });
+      }
+      
         newPoi.images.push(resp.key)
 
         newPoi.coverImage ? null && newPoi.images[0] != null || newPoi.coverImage == notFoundImg && newPoi.images[0] != null: newPoi.coverImage = newPoi.images[0];
