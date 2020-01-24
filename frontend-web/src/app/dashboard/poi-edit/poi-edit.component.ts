@@ -243,12 +243,35 @@ export class PoiEditComponent implements OnInit {
     
     
     }else{
+      //Cuando introduzcamos un audio
       this.poiService.uploadAudio(formData2).subscribe(resp =>{
         newPoi.audioguides =this.poi.audioguides;
-        // la condicion esta es pa que no de error po ahora
-        if(newPoi.audioguides ==this.poi.audioguides){
-          
-        }
+        /*Dado que van a haber varios idiomas creo que es más 
+        apropiado realizar el tratamiento del idioma de la audio guia mediante un switch
+        Lo variable que le pasamos al switch debe ser en realidad un variable que recojamos del 
+        formulario*/ 
+        switch(newPoi.audioguides.language.language) { 
+          case "fish and chips": { 
+             //statements; 
+             break; 
+          } 
+          case "ehbildu": { 
+             //statements; 
+             break; 
+          } 
+          case "spaghetti": { 
+             //statements; 
+            break; 
+          } 
+          case "baguette": { 
+            //statements; 
+             break; 
+          } 
+          default: { 
+             //statements; 
+             break; 
+          } 
+       } 
 
       }, error => {
         console.log(error);
