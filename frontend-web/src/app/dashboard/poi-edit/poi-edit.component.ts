@@ -57,6 +57,9 @@ export class PoiEditComponent implements OnInit {
     this.imagenForm = this.fb.group({
       photo: ['']
     });
+    this.audioguidesForm = this.fb.group({
+      audio: ['']
+    });
 
 
     this.titleService.setTitle('Edit - POI');
@@ -97,9 +100,7 @@ export class PoiEditComponent implements OnInit {
       translateDescripcion: [null]
     });
 
-    this.audioguidesForm = this.fb.group({
-      originalFile: [this.poi.audioguides.originalFile]
-    });
+  
 
     this.descriptionForm = this.fb.group({
       originalDescription: [this.poi.description.originalDescription, Validators.compose([Validators.required])]
@@ -131,7 +132,7 @@ export class PoiEditComponent implements OnInit {
 
     formData.append('photo', this.imagenForm.get('photo').value);
     //COMENTADO PORQUE ESTÁ EN DESARROLLO EL AUDIO
-    //formData2.append('audio',this.audioguidesForm.get('audio').value);
+    formData2.append('audio',this.audioguidesForm.get('audio').value);
 
     if (this.poi.images.length >= 3 || this.imagenForm.get('photo').value == '') {
 
@@ -139,7 +140,7 @@ export class PoiEditComponent implements OnInit {
       //Seteo los datos
 
       newPoi.loc = {coordinates: [this.coordinatesForm.controls['lat'].value, this.coordinatesForm.controls['lng'].value]};
-      newPoi.audioguides = this.audioguidesForm.value;
+      //newPoi.audioguides = this.audioguidesForm.value;
       newPoi.description = this.descriptionForm.value;
 
       if (this.poi.images[0] != null ) {
@@ -180,7 +181,8 @@ export class PoiEditComponent implements OnInit {
         this.snackBar.open('Error editing the POI', 'Close', { duration: 3000 })
       });
 
-    } else {
+      
+    }else {
 
     //Esto ocurrirá si se quiere subir una imagen
 
@@ -190,7 +192,7 @@ export class PoiEditComponent implements OnInit {
         //Seteo los datos
 
         newPoi.loc = {coordinates: [this.coordinatesForm.controls['lat'].value, this.coordinatesForm.controls['lng'].value]};
-        newPoi.audioguides = this.audioguidesForm.value;
+        //newPoi.audioguides = this.audioguidesForm.value;
         newPoi.description = this.descriptionForm.value;
         newPoi.coverImage = this.poi.coverImage;
         
@@ -211,6 +213,25 @@ export class PoiEditComponent implements OnInit {
         }, error => {
           this.snackBar.open('Error editing the POI', 'Close', { duration: 3000 })
         });
+
+      }, error => {
+        console.log(error);
+      })
+    }
+    //Comporbaciones para el audio
+
+    //Si no queremos subir ningún audio
+    if( this.audioguidesForm.get('audio').value == ''){
+      newPoi.audioguides =this.poi.audioguides;
+    
+    
+    }else{
+      this.poiService.uploadAudio(formData2).subscribe(resp =>{
+        newPoi.audioguides =this.poi.audioguides;
+        // la condicion esta es pa que no de error po ahora
+        if(newPoi.audioguides ==this.poi.audioguides){
+          
+        }
 
       }, error => {
         console.log(error);
