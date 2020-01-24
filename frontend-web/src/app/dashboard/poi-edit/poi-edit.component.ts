@@ -33,6 +33,8 @@ export class PoiEditComponent implements OnInit {
   form: FormGroup;
   audioguidesForm: FormGroup;
   descriptionForm: FormGroup;
+  imagesForm: FormGroup;
+  translateForm: FormGroup;
   statusList: Array<string> = ['Open','Close'];
 
   languages: LanguagesResponse;
@@ -79,20 +81,28 @@ export class PoiEditComponent implements OnInit {
       lng: [this.poi.loc.coordinates[1], Validators.compose([Validators.required])]
     });
 
+    this.translateForm = this.fb.group({
+      languageSelected: [null],
+      translateDescripcion: [null]
+    });
+
     this.audioguidesForm = this.fb.group({
-      originalFile: [this.poi.audioguides.originalFile, Validators.compose([Validators.required])]
+      originalFile: [this.poi.audioguides.originalFile]
     });
 
     this.descriptionForm = this.fb.group({
       originalDescription: [this.poi.description.originalDescription, Validators.compose([Validators.required])]
     });
 
+    this.imagesForm = this.fb.group({
+      images: [this.poi.images]
+    })
+
     this.form = this.fb.group({
       name: [this.poi.name, Validators.compose([Validators.required])],
       year: [this.poi.year, Validators.compose([Validators.required])],
       creator: [this.poi.creator],
       coverImage: [this.poi.coverImage],
-      images: [this.poi.images, Validators.compose([Validators.required])],
       categories: [this.selectedCategories, Validators.compose([Validators.required])],
       status: [this.poi.status, Validators.compose([Validators.required])],
       schedule: [this.poi.schedule, Validators.compose([Validators.required])],
@@ -103,15 +113,53 @@ export class PoiEditComponent implements OnInit {
   /** Send all the data to the api */
   onSubmit() {
     const newPoi: PoiCreateDto = <PoiCreateDto>this.form.value;
+    newPoi.images = this.imagesForm.value;
     newPoi.loc = {coordinates: [this.coordinatesForm.controls['lat'].value, this.coordinatesForm.controls['lng'].value]};
     newPoi.audioguides = this.audioguidesForm.value;
     newPoi.description = this.descriptionForm.value;
-    newPoi.coverImage ? null : newPoi.coverImage = newPoi.images[0];
+    if (newPoi.description.translations == undefined) {
+      newPoi.description.translations = [{
+        language: {
+          language: this.translateForm.controls['languageSelected'].value
+        },
+        translatedDescription: this.translateForm.controls['translateDescripcion'].value
+      }];
+    } else {
+      newPoi.description.translations.push({
+        language: {
+          language: this.translateForm.controls['languageSelected'].value
+        },
+        translatedDescription: this.translateForm.controls['translateDescripcion'].value
+      });
+    }
+
+    if(this.poi.coverImage == undefined && newPoi.images.length > 0) {
+      newPoi.coverImage = newPoi.images[0];
+    }
     this.poiService.edit(this.poi.id, newPoi).subscribe(() => {
       this.router.navigate(['/home']);
     }, error => {
       this.snackBar.open('Error creating the POI.', 'Close', { duration: 3000 });
     });
+  }
+
+  /** Function to change the translate description*/
+  translateChange(e) {
+    var searchLanguage;
+    for(var i=0; i<this.poi.description.translations.length; i++) {
+      console.log("Entro en el for")
+      searchLanguage = this.poi.description.translations.find(element => 
+        this.poi.description.translations[i].language.language
+        == e.value);
+      console.log(e.value)
+      console.log(searchLanguage)
+      if(searchLanguage != undefined) {
+        this.translateForm = this.fb.group({
+          languageSelected: [searchLanguage.language.language],
+          translateDescripcion: [this.poi.description.translations[i].translatedDescription]
+        });
+      }
+    }
   }
 
   /** Function to upload multiple images to Firebase-Firestorage */

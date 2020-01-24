@@ -1,5 +1,5 @@
 
-<form [formGroup]="form" [formGroup]="coordinatesForm" [formGroup]="audioguidesForm" [formGroup]="descriptionForm"
+<form [formGroup]="form" [formGroup]="imagesForm" [formGroup]="translateForm" [formGroup]="coordinatesForm" [formGroup]="audioguidesForm" [formGroup]="descriptionForm"
 (ngSubmit)="onSubmit()" *ngIf=poi>
 
   <mat-tab-group fxFlex.gt-md="100" fxFlex="100" mat-stretch-tabs>
@@ -107,13 +107,13 @@
           <mat-card fxLayout.gt-md="row" fxLayout="column" fxFlex.gt-sm="70" fxFlex="100" fxLayoutGap="2%">
       
             
-            <div fxFlex.gt-md="75" fxFlex="100">
+            <div fxFlex.gt-md="100" fxFlex="100">
 
                   <div>
                     <!-- Idiomas -->
                     <mat-form-field class="w-100">
-                      <mat-select placeholder="Language" name="language">
-                        <mat-option *ngFor="let language of languages.rows" [value]="language.id">
+                      <mat-select placeholder="Language" name="language" [formControl]="translateForm.controls['languageSelected']" (selectionChange)="translateChange($event)"><!-- [formControl]="form.controls['categories']" -->
+                        <mat-option *ngFor="let language of languages.rows" [value]="language.id"><!-- [(ngModel)]="selectedLanguage" (change)="translateChange($event)" -->
                           {{language.name}}
                         </mat-option>
                       </mat-select>
@@ -122,7 +122,7 @@
                   </div>
                 
                   <!-- Descripción con librería -->
-                  <quill-editor required>
+                  <quill-editor required [formControl]="translateForm.controls['translateDescripcion']"><!-- [formControl]="descriptionForm.controls['originalDescription']" -->
                     <div quill-editor-toolbar>
                       <span class="ql-formats">
                         <button class="ql-bold" [title]="'Bold'"></button>
