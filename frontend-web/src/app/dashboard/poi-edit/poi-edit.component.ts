@@ -57,6 +57,7 @@ export class PoiEditComponent implements OnInit {
       photo: ['']
     });
 
+
     this.titleService.setTitle('Edit - POI');
     this.getAllLanguages();
   }
@@ -117,8 +118,11 @@ export class PoiEditComponent implements OnInit {
     const newPoi: PoiCreateDto = <PoiCreateDto>this.form.value;
     //Subida de imagen
     const formData = new FormData();
+    //Subida de audio
+    const formData2 = new FormData();
 
     formData.append('photo', this.imagenForm.get('photo').value);
+    formData2.append('audio',this.audioguidesForm.get('audio').value);
 
     if (this.poi.images.length >= 3 || this.imagenForm.get('photo').value == '') {
 

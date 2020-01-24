@@ -34,6 +34,13 @@ export class PoiService {
     );
   }
 
+  uploadAudio(formData: FormData): Observable <UrlResponse>{
+    return this.http.post<UrlResponse>(
+      `${environment.apiUrl}/files/upload/audio?${environment.masterKeyTemporal}`,
+      formData
+    );
+  }
+
   removeImage(key: String): Observable<UrlResponse> {
     return this.http.delete<UrlResponse>(
       `${environment.apiUrl}/files/`+key+`?${environment.masterKeyTemporal}`
