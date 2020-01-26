@@ -82,7 +82,7 @@ export class PoiEditComponent implements OnInit {
     this.poiService.getOne(this.poiService.selectedPoi.id).subscribe(p => {
       this.poi = p;
       this.urlImage = p.images;
-      console.log(p.id)
+      console.log(p)
       p.categories.forEach(c => this.selectedCategories.push(c.id));
       this.createForm();
     });
@@ -100,11 +100,9 @@ export class PoiEditComponent implements OnInit {
       translateDescripcion: [null]
     });
 
-  
-
-    this.descriptionForm = this.fb.group({
+    /*this.descriptionForm = this.fb.group({
       originalDescription: [this.poi.description.originalDescription, Validators.compose([Validators.required])]
-    });
+    });*/
 
     this.form = this.fb.group({
       name: [this.poi.name, Validators.compose([Validators.required])],
@@ -141,7 +139,9 @@ export class PoiEditComponent implements OnInit {
 
       newPoi.loc = {coordinates: [this.coordinatesForm.controls['lat'].value, this.coordinatesForm.controls['lng'].value]};
       //newPoi.audioguides = this.audioguidesForm.value;
-      newPoi.description = this.descriptionForm.value;
+      //newPoi.description = this.descriptionForm.value;
+      newPoi.description = this.poi.description;
+      newPoi.description.translations = this.poi.description.translations;
 
       if (this.poi.images[0] != null ) {
         newPoi.images = this.poi.images;
@@ -153,7 +153,8 @@ export class PoiEditComponent implements OnInit {
       //newPoi.coverImage ? null : newPoi.coverImage = newPoi.images[0]; Esto no haría falta pero lo dejo por si a caso
 
       //Comprobación de existencia de traducciones
-      if (newPoi.description.translations == undefined) {
+      if (this.poi.description.translations == undefined) {
+        console.log('this.poi.descriptions.translations indefinido')
         newPoi.description.translations = [{
           language: {
             language: this.translateForm.controls['languageSelected'].value
@@ -161,12 +162,40 @@ export class PoiEditComponent implements OnInit {
           translatedDescription: this.translateForm.controls['translateDescripcion'].value
         }];
       } else {
-        newPoi.description.translations.push({
-          language: {
-            language: this.translateForm.controls['languageSelected'].value
-          },
-          translatedDescription: this.translateForm.controls['translateDescripcion'].value
-        });
+        /*for(var i=0; i<newPoi.description.translations.length; i++) {
+            
+          }*/
+        var buscarIdioma = null;
+        buscarIdioma = newPoi.description.translations.find(element => element.language.language == this.translateForm.controls['languageSelected'].value);
+
+        if (buscarIdioma != undefined) {
+          console.log(buscarIdioma);
+
+          newPoi.description.translations.splice(newPoi.description.translations.indexOf(buscarIdioma), 1, ({
+            language: {
+              language: this.translateForm.controls['languageSelected'].value
+            },
+            translatedDescription: this.translateForm.controls['translateDescripcion'].value
+          }));
+
+          /*this.translateForm = this.fb.group({
+            languageSelected: [
+              this.translateForm.controls['languageSelected'].value
+            ],
+            translateDescripcion: [
+              newPoi.description.translations[i].translatedDescription = this.translateForm.controls['translateDescripcion'].value
+            ]
+          });*/
+
+        } else {
+          console.log('CREA NUEVO IDIOMA EN EL ARRAY');
+          newPoi.description.translations.push({
+            language: {
+              language: this.translateForm.controls['languageSelected'].value
+            },
+            translatedDescription: this.translateForm.controls['translateDescripcion'].value
+          });
+        }
       }
   
       if(this.poi.coverImage == undefined && newPoi.images.length > 0) {
@@ -193,8 +222,10 @@ export class PoiEditComponent implements OnInit {
 
         newPoi.loc = {coordinates: [this.coordinatesForm.controls['lat'].value, this.coordinatesForm.controls['lng'].value]};
         //newPoi.audioguides = this.audioguidesForm.value;
-        newPoi.description = this.descriptionForm.value;
+        //newPoi.description = this.descriptionForm.value;
         newPoi.coverImage = this.poi.coverImage;
+        newPoi.description = this.poi.description;
+        newPoi.description.translations = this.poi.description.translations;
         
         //TESTEANDO
         if (this.poi.images[0] != null ) {
@@ -203,7 +234,8 @@ export class PoiEditComponent implements OnInit {
         if (newPoi.images == null) newPoi.images = [];
 
         //Comprobación de existencia de traducciones
-      if (newPoi.description.translations == undefined) {
+      if (this.poi.description.translations == undefined) {
+        console.log('this.poi.descriptions.translations indefinido')
         newPoi.description.translations = [{
           language: {
             language: this.translateForm.controls['languageSelected'].value
@@ -211,12 +243,40 @@ export class PoiEditComponent implements OnInit {
           translatedDescription: this.translateForm.controls['translateDescripcion'].value
         }];
       } else {
-        newPoi.description.translations.push({
-          language: {
-            language: this.translateForm.controls['languageSelected'].value
-          },
-          translatedDescription: this.translateForm.controls['translateDescripcion'].value
-        });
+        /*for(var i=0; i<newPoi.description.translations.length; i++) {
+            
+          }*/
+        var buscarIdioma = null;
+        buscarIdioma = newPoi.description.translations.find(element => element.language.language == this.translateForm.controls['languageSelected'].value);
+
+        if (buscarIdioma != undefined) {
+          console.log(buscarIdioma);
+
+          newPoi.description.translations.splice(newPoi.description.translations.indexOf(buscarIdioma), 1, ({
+            language: {
+              language: this.translateForm.controls['languageSelected'].value
+            },
+            translatedDescription: this.translateForm.controls['translateDescripcion'].value
+          }));
+
+          /*this.translateForm = this.fb.group({
+            languageSelected: [
+              this.translateForm.controls['languageSelected'].value
+            ],
+            translateDescripcion: [
+              newPoi.description.translations[i].translatedDescription = this.translateForm.controls['translateDescripcion'].value
+            ]
+          });*/
+
+        } else {
+          console.log('CREA NUEVO IDIOMA EN EL ARRAY');
+          newPoi.description.translations.push({
+            language: {
+              language: this.translateForm.controls['languageSelected'].value
+            },
+            translatedDescription: this.translateForm.controls['translateDescripcion'].value
+          });
+        }
       }
       
         newPoi.images.push(resp.key)
@@ -302,15 +362,24 @@ export class PoiEditComponent implements OnInit {
   /** Function to change the translate description*/
   translateChange(e) {
     var searchLanguage;
-    for(var i=0; i<this.poi.description.translations.length; i++) {
-      searchLanguage = this.poi.description.translations.find(element => 
-        this.poi.description.translations[i].language.language == e.value);
-      if(searchLanguage != undefined) {
-        this.translateForm = this.fb.group({
-          languageSelected: [searchLanguage.language.language],
-          translateDescripcion: [this.poi.description.translations[i].translatedDescription]
-        });
-      }
+    searchLanguage = this.poi.description.translations.find(element => element.language.language == e.value);
+
+    if (searchLanguage != undefined) {
+      console.log(searchLanguage);
+      this.translateForm = this.fb.group({
+        languageSelected: [searchLanguage.language.language],
+        translateDescripcion: [
+          /*this.poi.description.translations[i].translatedDescription*/
+          searchLanguage.translatedDescription
+        ]
+      });
+    } else {
+      console.log('searchLanguage indefido')
+      this.translateForm = this.fb.group({
+        languageSelected: [e.value],
+        translateDescripcion: [null]
+      });
+
     }
   }
 

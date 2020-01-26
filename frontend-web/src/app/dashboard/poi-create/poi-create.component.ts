@@ -67,7 +67,7 @@ export class PoiCreateComponent implements OnInit {
     });
 
     this.descriptionForm = this.fb.group({
-      originalDescription: [null, Validators.compose([Validators.required])]
+      spanishDescription: [null, Validators.compose([Validators.required])]
     });
     this.form = this.fb.group({
       name: [null, Validators.compose([Validators.required])],
@@ -89,6 +89,12 @@ export class PoiCreateComponent implements OnInit {
     newPoi.description = this.descriptionForm.value;
     //TODO id del idioma español
     //newPoi.description.language.language = this.spanishLanguage;
+    newPoi.description.translations = [{
+      language: {
+        language: this.spanishLanguage
+      },
+      translatedDescription: this.descriptionForm.controls['spanishDescription'].value
+    }];
     newPoi.description.language = { language: this.spanishLanguage};
 
     console.log(newPoi);
