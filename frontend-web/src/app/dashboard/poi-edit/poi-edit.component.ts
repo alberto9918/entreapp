@@ -382,6 +382,30 @@ export class PoiEditComponent implements OnInit {
 
     }
   }
+//lomismoquearribaperoparaelaudio
+
+  audioChange(e) {
+    var searchLanguage;
+    searchLanguage = this.poi.audioguides.translations.find(element => element.language.language == e.value);
+
+    if (searchLanguage != undefined) {
+      console.log(searchLanguage);
+      this.audioguidesForm = this.fb.group({
+        languageSelected: [searchLanguage.language.language],
+        translatedFile: [
+          /*this.poi.description.translations[i].translatedDescription*/
+          searchLanguage.translatedFile
+        ]
+      });
+    } else {
+      console.log('searchLanguage indefido')
+      this.audioguidesForm = this.fb.group({
+        languageSelected: [e.value],
+        translatedFile: [null]
+      });
+
+    }
+  }
 
   /** Function to upload multiple images to Firebase-Firestorage */
   ImgUpload(e) {

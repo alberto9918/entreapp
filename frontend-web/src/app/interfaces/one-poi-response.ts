@@ -14,9 +14,10 @@ export interface OnePoiResponse {
             language: string;
         }
         originalFile: string;
-        translations: [
-            {
-                id: string,
+        translations: [{
+            language: {
+                language: string;
+            },
                 translatedFile: string
             }
         ]
