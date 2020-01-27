@@ -278,11 +278,11 @@ export class PoiEditComponent implements OnInit {
 
       //EDICIÓN
 
-      /*this.poiService.edit(this.poi.id, newPoi).subscribe(resp => {
+      this.poiService.edit(this.poi.id, newPoi).subscribe(resp => {
         this.router.navigate(['/home']);
       }, error => {
         this.snackBar.open('Error editing the POI', 'Close', { duration: 3000 })
-      });*/
+      });
 
 
 
