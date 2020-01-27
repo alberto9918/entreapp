@@ -208,6 +208,12 @@ export class PoiEditComponent implements OnInit {
         console.log(this.audioguidesForm.get('translatedFile').value)
         newPoi.audioguides = this.poi.audioguides;
 
+        this.poiService.edit(this.poi.id, newPoi).subscribe(resp => {
+          this.router.navigate(['/home']);
+        }, error => {
+          this.snackBar.open('Error editing the POI', 'Close', { duration: 3000 })
+        });
+
 
       } else {
         //Cuando introduzcamos un audio
@@ -278,11 +284,11 @@ export class PoiEditComponent implements OnInit {
 
       //EDICIÓN
 
-      this.poiService.edit(this.poi.id, newPoi).subscribe(resp => {
+      /*this.poiService.edit(this.poi.id, newPoi).subscribe(resp => {
         this.router.navigate(['/home']);
       }, error => {
         this.snackBar.open('Error editing the POI', 'Close', { duration: 3000 })
-      });
+      });*/
 
 
 
@@ -363,6 +369,12 @@ export class PoiEditComponent implements OnInit {
           console.log(this.audioguidesForm.get('translatedFile').value)
           newPoi.audioguides = this.poi.audioguides;
 
+          this.poiService.edit(this.poi.id, newPoi).subscribe(resp => {
+            this.router.navigate(['/home']);
+          }, error => {
+            this.snackBar.open('Error editing the POI', 'Close', { duration: 3000 })
+          });
+
 
         } else {
           //Cuando introduzcamos un audio
@@ -428,11 +440,11 @@ export class PoiEditComponent implements OnInit {
         }
         //EDICIÓN
 
-        this.poiService.edit(this.poi.id, newPoi).subscribe(resp => {
+        /*this.poiService.edit(this.poi.id, newPoi).subscribe(resp => {
           this.router.navigate(['/home']);
         }, error => {
           this.snackBar.open('Error editing the POI', 'Close', { duration: 3000 })
-        });
+        });*/
 
       }, error => {
         console.log(error);
