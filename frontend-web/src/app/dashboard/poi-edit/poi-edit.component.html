@@ -1,5 +1,5 @@
 
-<form [formGroup]="form" [formGroup]="coordinatesForm" [formGroup]="audioguidesForm" [formGroup]="descriptionForm"
+<form [formGroup]="form" [formGroup]="imagenForm" [formGroup]="translateForm" [formGroup]="coordinatesForm" [formGroup]="audioguidesForm" [formGroup]="descriptionForm"
 (ngSubmit)="onSubmit()" *ngIf=poi>
 
   <mat-tab-group fxFlex.gt-md="100" fxFlex="100" mat-stretch-tabs>
@@ -50,7 +50,7 @@
                     </mat-form-field>
                     
                     <mat-form-field class="w-50, margin-right">
-                        <input matInput placeholder="Autor" type="text" [formControl]="form.controls['creator']">
+                        <input matInput placeholder="Autor" type="text" [formControl]="form.controls['creator']" readonly>
                     </mat-form-field>
 
                     <mat-form-field width="30%">
@@ -73,7 +73,7 @@
                     </div>
                   
                     <!-- Descripción con librería -->
-                    <quill-editor [formControl]="descriptionForm.controls['originalDescription']" required>
+                    <!--<quill-editor [formControl]="descriptionForm.controls['originalDescription']" required>
                       <div quill-editor-toolbar>
                         <span class="ql-formats">
                           <button class="ql-bold" [title]="'Bold'"></button>
@@ -94,7 +94,7 @@
                           </select>
                         </span>
                       </div>
-                    </quill-editor>                  
+                    </quill-editor> -->              
               </div>
               
             </mat-card>
@@ -107,13 +107,13 @@
           <mat-card fxLayout.gt-md="row" fxLayout="column" fxFlex.gt-sm="70" fxFlex="100" fxLayoutGap="2%">
       
             
-            <div fxFlex.gt-md="75" fxFlex="100">
+            <div fxFlex.gt-md="100" fxFlex="100">
 
                   <div>
                     <!-- Idiomas -->
                     <mat-form-field class="w-100">
-                      <mat-select placeholder="Language" name="language">
-                        <mat-option *ngFor="let language of languages.rows" [value]="language.id">
+                      <mat-select placeholder="Language" name="language" [formControl]="translateForm.controls['languageSelected']" (selectionChange)="translateChange($event)"><!-- [formControl]="form.controls['categories']" -->
+                        <mat-option *ngFor="let language of languages.rows" [value]="language.id"><!-- [(ngModel)]="selectedLanguage" (change)="translateChange($event)" -->
                           {{language.name}}
                         </mat-option>
                       </mat-select>
@@ -122,7 +122,7 @@
                   </div>
                 
                   <!-- Descripción con librería -->
-                  <quill-editor required>
+                  <quill-editor required [formControl]="translateForm.controls['translateDescripcion']"><!-- [formControl]="descriptionForm.controls['originalDescription']" -->
                     <div quill-editor-toolbar>
                       <span class="ql-formats">
                         <button class="ql-bold" [title]="'Bold'"></button>
@@ -160,18 +160,22 @@
               <div fxFlex.gt-md="100" fxFlex="100" fxLayout="column" fxLayoutGap="5%"> 
                 <div>
                     <!-- Subir archivos -->
-                    <div id="uploadContent" class="w-100">
-                      <input type="file" name="photo" (change)="ImgUpload($event)" multiple accept="image/*" />
+                    <div id="uploadContent" class="w-100" *ngIf="poi.images.length<3">
+                      <input type="file" name="photo" (change)="onImageSelect($event)" multiple accept="image/*"/>
                       <p>Drag your images here or click in this area.</p>
                     </div>
                     <div fxLayout="row wrap" fxLayoutGap="2px" style="margin-top: 10px">
                       <div *ngFor="let i of urlImage">
                         <input type="radio" class="radio-item" [value]="i" name="item" id="radio{{urlImage.indexOf(i)}}" [formControl]="form.controls['coverImage']">
-                        <label class="label_item" for="radio{{urlImage.indexOf(i)}}" [style.background-image]="'url(' + i + ')'">
-                            <a mat-icon-button class="imgButtonDelete" (click)="removeImage(i)">
+                        <label class="label_item" for="radio{{urlImage.indexOf(i)}}" [style.background-image]="'url(' + loadImages(i) + ')'">
+                          <a mat-icon-button class="imgButtonChoose" (click)="selectAsCover(i)">
+                            <mat-icon>flag</mat-icon>
+                          </a>
+                          <a mat-icon-button class="imgButtonDelete" (click)="deleteImage(i)">
                               <mat-icon>cancel</mat-icon>
                             </a>
                           </label>
+                          <p *ngIf="comprobarImagen(i)">Portada</p>
                       </div>
                     </div>
                   </div>   
@@ -190,11 +194,11 @@
                 
                     <h3>Audioguides</h3>
                     <div id="uploadContent" class="w-100" style="height: 50px; margin-bottom: 5px">
-                      <input type="file" name="audioguide" (change)="audioUpload($event)" accept="audio/*" />
+                      <input type="file" name="audio" (change)="audioUpload($event)" accept="audio/*" />
                       <p style="margin-top: -38px">Drag & Drop or click to upload</p>
                     </div>
-                    <audio *ngIf="this.audioguidesForm.controls['originalFile'].value" controls (src)="this.audioguidesForm.controls['originalFile'].value"></audio>
-                  
+                    <!--<audio *ngIf="this.audioguidesForm.controls['originalFile'].value" controls (src)="this.audioguidesForm.controls['originalFile'].value"></audio>
+                    --> 
               </div>
             </mat-card>
         </div>

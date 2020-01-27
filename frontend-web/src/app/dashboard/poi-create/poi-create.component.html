@@ -70,7 +70,7 @@
 
         <!--Autor-->
         <mat-form-field class="w-50">
-          <input matInput placeholder="Autor" type="text" [formControl]="form.controls['creator']">
+          <input matInput placeholder="Autor" type="text" [formControl]="form.controls['creator']" readonly>
         </mat-form-field>
 
         <div>
@@ -91,7 +91,7 @@
         </div>
        
         <!-- Descripción con librería -->
-        <quill-editor [formControl]="descriptionForm.controls['originalDescription']" required>
+        <quill-editor [formControl]="descriptionForm.controls['spanishDescription']" required>
           <div quill-editor-toolbar>
             <span class="ql-formats">
               <button class="ql-bold" [title]="'Bold'"></button>

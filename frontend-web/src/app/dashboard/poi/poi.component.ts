@@ -8,6 +8,7 @@ import { AuthenticationService } from 'src/app/services/authentication.service';
 import { PoiService } from 'src/app/services/poi.service';
 
 import { PoiResponse } from './../../interfaces/poi-response';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-poi',
@@ -25,6 +26,7 @@ export class PoiComponent implements OnInit {
   ngOnInit() {
     this.titleService.setTitle('Home - Points of Interests');
     this.getAll();
+    console.log(this.POIs.rows)
   }
 
   /** Get the list of all POIs from API */
@@ -63,4 +65,7 @@ export class PoiComponent implements OnInit {
     this.router.navigate(['home/details']);
   }
 
+  loadCoverImage(key: String) {
+    return `${environment.apiUrl}/files/` + key;
+  }
 }
