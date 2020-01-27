@@ -39,11 +39,11 @@ export class PoiEditComponent implements OnInit {
   audioguidesForm: FormGroup;
   descriptionForm: FormGroup;
   translateForm: FormGroup;
-  statusList: Array<string> = ['Open','Close'];
+  statusList: Array<string> = ['Open', 'Close'];
 
   languages: LanguagesResponse;
 
-  constructor(public languageService: LanguageService,private fb: FormBuilder, private poiService: PoiService, private categoryService: CategoryService,
+  constructor(public languageService: LanguageService, private fb: FormBuilder, private poiService: PoiService, private categoryService: CategoryService,
     public router: Router, public snackBar: MatSnackBar, private afStorage: AngularFireStorage, private titleService: Title, public authService: AuthenticationService) { }
 
   ngOnInit() {
@@ -131,20 +131,20 @@ export class PoiEditComponent implements OnInit {
 
     formData.append('photo', this.imagenForm.get('photo').value);
     //COMENTADO PORQUE ESTÁ EN DESARROLLO EL AUDIO
-    formData2.append('audio',this.audioguidesForm.controls['translatedFile'].value);
+    formData2.append('audio', this.audioguidesForm.controls['translatedFile'].value);
 
     if (this.poi.images.length >= 3 || this.imagenForm.get('photo').value == '') {
 
       //Esto ocurrirá si no se quiere editar o subir una imagen
       //Seteo los datos
 
-      newPoi.loc = {coordinates: [this.coordinatesForm.controls['lat'].value, this.coordinatesForm.controls['lng'].value]};
+      newPoi.loc = { coordinates: [this.coordinatesForm.controls['lat'].value, this.coordinatesForm.controls['lng'].value] };
       //newPoi.audioguides = this.audioguidesForm.value;
       //newPoi.description = this.descriptionForm.value;
       newPoi.description = this.poi.description;
       newPoi.description.translations = this.poi.description.translations;
 
-      if (this.poi.images[0] != null ) {
+      if (this.poi.images[0] != null) {
         newPoi.images = this.poi.images;
       }
 
@@ -198,28 +198,29 @@ export class PoiEditComponent implements OnInit {
           });
         }
       }
-  
-      if(this.poi.coverImage == undefined && newPoi.images.length > 0) {
+
+      if (this.poi.coverImage == undefined && newPoi.images.length > 0) {
         newPoi.coverImage = newPoi.images[0];
       }
 
-      if( this.audioguidesForm.get('translatedFile').value == ''){
+      if (this.audioguidesForm.get('translatedFile').value == '') {
         console.log('No introduces nada pisha')
         console.log(this.audioguidesForm.get('translatedFile').value)
-        newPoi.audioguides =this.poi.audioguides;
-      
-      
-      }else{
+        newPoi.audioguides = this.poi.audioguides;
+
+
+      } else {
         //Cuando introduzcamos un audio
-        this.poiService.uploadAudio(formData2).subscribe(resp =>{
-          newPoi.audioguides =this.poi.audioguides;
+        this.poiService.uploadAudio(formData2).subscribe(resp => {
+          newPoi.audioguides = this.poi.audioguides;
+          console.log(newPoi.audioguides)
           /*Dado que van a haber varios idiomas creo que es más 
           apropiado realizar el tratamiento del idioma de la audio guia mediante un switch
           Lo variable que le pasamos al switch debe ser en realidad un variable que recojamos del 
-          formulario*/ 
+          formulario*/
           //this.audioguidesForm.get('languageSelected')
-  
-          
+
+
           if (this.poi.audioguides.translations == undefined) {
             console.log('El array esta undefinido')
             console.log('this.poi.audioguides.translations indefinido')
@@ -233,34 +234,43 @@ export class PoiEditComponent implements OnInit {
             console.log('El array esta definido')
             var buscarIdioma = null;
             buscarIdioma = newPoi.audioguides.translations.find(element => element.language.language == this.audioguidesForm.controls['languageSelected'].value);
-  
-  
+
+
             if (buscarIdioma != undefined) {
               console.log('Ha encontrado otro idima')
               console.log(buscarIdioma);
-    
+
               newPoi.audioguides.translations.splice(newPoi.audioguides.translations.indexOf(buscarIdioma), 1, ({
                 language: {
                   language: this.audioguidesForm.controls['languageSelected'].value
                 },
                 translatedFile: resp.key
               }));
-    
+
             } else {
-              console.log('CREA NUEVO IDIOMA EN EL ARRAY DE AUDIOGUIAS'+ resp.key);
+              //console.log('CREA NUEVO IDIOMA EN EL ARRAY DE AUDIOGUIAS'+ resp.key);
+              //console.log(newPoi.audioguides.translations)
+              //console.log('-----------------------------------------')
+
+
               newPoi.audioguides.translations.push({
                 language: {
                   language: this.audioguidesForm.controls['languageSelected'].value
                 },
                 translatedFile: resp.key
               });
+              console.log(newPoi.audioguides.translations)
             }
           }
-          
-          
-            
-         
-  
+
+
+
+          this.poiService.edit(this.poi.id, newPoi).subscribe(resp => {
+            this.router.navigate(['/home']);
+          }, error => {
+            this.snackBar.open('Error editing the POI', 'Close', { duration: 3000 })
+          });
+
         }, error => {
           console.log(error);
         })
@@ -268,104 +278,104 @@ export class PoiEditComponent implements OnInit {
 
       //EDICIÓN
 
-      this.poiService.edit(this.poi.id, newPoi).subscribe(resp => {
+      /*this.poiService.edit(this.poi.id, newPoi).subscribe(resp => {
         this.router.navigate(['/home']);
       }, error => {
         this.snackBar.open('Error editing the POI', 'Close', { duration: 3000 })
-      });
+      });*/
 
 
 
-      
-    }else {
 
-    //Esto ocurrirá si se quiere subir una imagen
+    } else {
+
+      //Esto ocurrirá si se quiere subir una imagen
 
       //Subo la imagen y recojo su key
-      this.poiService.uploadImage(formData).subscribe(resp => {  
+      this.poiService.uploadImage(formData).subscribe(resp => {
 
         //Seteo los datos
 
-        newPoi.loc = {coordinates: [this.coordinatesForm.controls['lat'].value, this.coordinatesForm.controls['lng'].value]};
+        newPoi.loc = { coordinates: [this.coordinatesForm.controls['lat'].value, this.coordinatesForm.controls['lng'].value] };
         //newPoi.audioguides = this.audioguidesForm.value;
         //newPoi.description = this.descriptionForm.value;
         newPoi.coverImage = this.poi.coverImage;
         newPoi.description = this.poi.description;
         newPoi.description.translations = this.poi.description.translations;
-        
+
         //TESTEANDO
-        if (this.poi.images[0] != null ) {
+        if (this.poi.images[0] != null) {
           newPoi.images = this.poi.images;
         }
         if (newPoi.images == null) newPoi.images = [];
 
         //Comprobación de existencia de traducciones
-      if (this.poi.description.translations == undefined) {
-        console.log('this.poi.descriptions.translations indefinido')
-        newPoi.description.translations = [{
-          language: {
-            language: this.translateForm.controls['languageSelected'].value
-          },
-          translatedDescription: this.translateForm.controls['translateDescripcion'].value
-        }];
-      } else {
-        /*for(var i=0; i<newPoi.description.translations.length; i++) {
-            
-          }*/
-        var buscarIdioma = null;
-        buscarIdioma = newPoi.description.translations.find(element => element.language.language == this.translateForm.controls['languageSelected'].value);
-
-        if (buscarIdioma != undefined) {
-          console.log(buscarIdioma);
-
-          newPoi.description.translations.splice(newPoi.description.translations.indexOf(buscarIdioma), 1, ({
+        if (this.poi.description.translations == undefined) {
+          console.log('this.poi.descriptions.translations indefinido')
+          newPoi.description.translations = [{
             language: {
               language: this.translateForm.controls['languageSelected'].value
             },
             translatedDescription: this.translateForm.controls['translateDescripcion'].value
-          }));
-
-
-          
-
-    
-
+          }];
         } else {
-          console.log('CREA NUEVO IDIOMA EN EL ARRAY');
-          newPoi.description.translations.push({
-            language: {
-              language: this.translateForm.controls['languageSelected'].value
-            },
-            translatedDescription: this.translateForm.controls['translateDescripcion'].value
-          });
+          /*for(var i=0; i<newPoi.description.translations.length; i++) {
+              
+            }*/
+          var buscarIdioma = null;
+          buscarIdioma = newPoi.description.translations.find(element => element.language.language == this.translateForm.controls['languageSelected'].value);
+
+          if (buscarIdioma != undefined) {
+            console.log(buscarIdioma);
+
+            newPoi.description.translations.splice(newPoi.description.translations.indexOf(buscarIdioma), 1, ({
+              language: {
+                language: this.translateForm.controls['languageSelected'].value
+              },
+              translatedDescription: this.translateForm.controls['translateDescripcion'].value
+            }));
+
+
+
+
+
+
+          } else {
+            console.log('CREA NUEVO IDIOMA EN EL ARRAY');
+            newPoi.description.translations.push({
+              language: {
+                language: this.translateForm.controls['languageSelected'].value
+              },
+              translatedDescription: this.translateForm.controls['translateDescripcion'].value
+            });
+          }
         }
-      }
-      
+
         newPoi.images.push(resp.key)
 
-        newPoi.coverImage ? null && newPoi.images[0] != null || newPoi.coverImage == notFoundImg && newPoi.images[0] != null: newPoi.coverImage = newPoi.images[0];
+        newPoi.coverImage ? null && newPoi.images[0] != null || newPoi.coverImage == notFoundImg && newPoi.images[0] != null : newPoi.coverImage = newPoi.images[0];
 
 
 
 
-        if( this.audioguidesForm.get('translatedFile').value == ''){
+        if (this.audioguidesForm.get('translatedFile').value == '') {
           console.log('No introduces nada pisha')
           console.log(this.audioguidesForm.get('translatedFile').value)
-          newPoi.audioguides =this.poi.audioguides;
-        
-        
-        }else{
+          newPoi.audioguides = this.poi.audioguides;
+
+
+        } else {
           //Cuando introduzcamos un audio
           console.log(formData2)
-          this.poiService.uploadAudio(formData2).subscribe(resp =>{
-            newPoi.audioguides =this.poi.audioguides;
+          this.poiService.uploadAudio(formData2).subscribe(resp => {
+            newPoi.audioguides = this.poi.audioguides;
             /*Dado que van a haber varios idiomas creo que es más 
             apropiado realizar el tratamiento del idioma de la audio guia mediante un switch
             Lo variable que le pasamos al switch debe ser en realidad un variable que recojamos del 
-            formulario*/ 
+            formulario*/
             //this.audioguidesForm.get('languageSelected')
-    
-            
+
+
             if (this.poi.audioguides.translations == undefined) {
               console.log('El array esta undefinido')
               console.log('this.poi.audioguides.translations indefinido')
@@ -379,21 +389,21 @@ export class PoiEditComponent implements OnInit {
               console.log('El array esta definido')
               var buscarIdioma = null;
               buscarIdioma = newPoi.audioguides.translations.find(element => element.language.language == this.audioguidesForm.controls['languageSelected'].value);
-    
-    
+
+
               if (buscarIdioma != undefined) {
                 console.log('Ha encontrado otro idima')
                 console.log(buscarIdioma);
-      
+
                 newPoi.audioguides.translations.splice(newPoi.audioguides.translations.indexOf(buscarIdioma), 1, ({
                   language: {
                     language: this.audioguidesForm.controls['languageSelected'].value
                   },
                   translatedFile: resp.key
                 }));
-      
+
               } else {
-                console.log('CREA NUEVO IDIOMA EN EL ARRAY DE AUDIOGUIAS'+ resp.key);
+                console.log('CREA NUEVO IDIOMA EN EL ARRAY DE AUDIOGUIAS' + resp.key);
                 console.log(resp.key + 'papa')
                 newPoi.audioguides.translations.push({
                   language: {
@@ -403,11 +413,15 @@ export class PoiEditComponent implements OnInit {
                 });
               }
             }
-            
-            
-              
-           
-    
+
+            this.poiService.edit(this.poi.id, newPoi).subscribe(resp => {
+              this.router.navigate(['/home']);
+            }, error => {
+              this.snackBar.open('Error editing the POI', 'Close', { duration: 3000 })
+            });
+
+
+
           }, error => {
             console.log(error);
           })
@@ -427,27 +441,27 @@ export class PoiEditComponent implements OnInit {
     //Comporbaciones para el audio
 
     //Si no queremos subir ningún audio
-    
+
 
   }
 
-  
-/*     newPoi.loc = {coordinates: [this.coordinatesForm.controls['lat'].value, this.coordinatesForm.controls['lng'].value]};
-    newPoi.audioguides = this.audioguidesForm.value;
-    newPoi.description = this.descriptionForm.value;
-    //Con esta línea siempre va a haber una única imagen por monumento
-    newPoi.images = [];
-    newPoi.images.push(imgKey);
-    //newPoi.coverImage = imgKey;
 
-    //newPoi.coverImage ? null : newPoi.coverImage = newPoi.images[0];
-    this.poiService.edit(this.poi.id, newPoi).subscribe(resp => {
-      this.router.navigate(['/home']);
-      console.log('Se ha "editado"')
-    }, error => {
-      this.snackBar.open('Error editing the POI', 'Close', { duration: 3000 })
-    })
-     */
+  /*     newPoi.loc = {coordinates: [this.coordinatesForm.controls['lat'].value, this.coordinatesForm.controls['lng'].value]};
+      newPoi.audioguides = this.audioguidesForm.value;
+      newPoi.description = this.descriptionForm.value;
+      //Con esta línea siempre va a haber una única imagen por monumento
+      newPoi.images = [];
+      newPoi.images.push(imgKey);
+      //newPoi.coverImage = imgKey;
+  
+      //newPoi.coverImage ? null : newPoi.coverImage = newPoi.images[0];
+      this.poiService.edit(this.poi.id, newPoi).subscribe(resp => {
+        this.router.navigate(['/home']);
+        console.log('Se ha "editado"')
+      }, error => {
+        this.snackBar.open('Error editing the POI', 'Close', { duration: 3000 })
+      })
+       */
 
 
   /** Function to change the translate description*/
@@ -473,7 +487,7 @@ export class PoiEditComponent implements OnInit {
 
     }
   }
-//lomismoquearribaperoparaelaudio
+  //lomismoquearribaperoparaelaudio
 
   audioChange(e) {
     var searchLanguage;
@@ -516,7 +530,7 @@ export class PoiEditComponent implements OnInit {
     }
   }
 
-    /** Function to upload only one audioguide to Firebase-Firestorage */
+  /** Function to upload only one audioguide to Firebase-Firestorage */
   audioUpload(e) {
     const randomId = Math.random().toString(36).substring(2);
     const timeId = new Date().getTime();
@@ -540,7 +554,7 @@ export class PoiEditComponent implements OnInit {
         this.poi.images.splice(i, 1);
         if (key == this.poi.coverImage) {
           this.poi.coverImage = notFoundImg;
-        } 
+        }
       }
     }
 
@@ -555,7 +569,7 @@ export class PoiEditComponent implements OnInit {
   selectAsCover(i: string) {
     this.poi.coverImage = i;
   }
-  
+
   comprobarImagen(i: String) {
     if (i == this.poi.coverImage) {
       return true
@@ -565,7 +579,7 @@ export class PoiEditComponent implements OnInit {
   }
 
   onImageSelect(event) {
-      
+
     if (event.target.files.length > 0) {
       const file = event.target.files[0];
       this.imagenForm.get('photo').setValue(file);
@@ -576,11 +590,11 @@ export class PoiEditComponent implements OnInit {
   }
 
   onAudioSelect(event) {
-      
+
     if (event.target.files.length > 0) {
       const file = event.target.files[0];
       console.log(file);
-     
+
       this.audioguidesForm.get('translatedFile').setValue(file);
       console.log("ta lleno")
     } else {

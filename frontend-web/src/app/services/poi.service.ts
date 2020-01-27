@@ -63,6 +63,8 @@ export class PoiService {
   }
 
   edit(id: string, resource: PoiCreateDto): Observable<OnePoiResponse> {
+    console.log('resource  del edit')
+    console.log(resource)
     return this.http.put<OnePoiResponse>(`${url}/${id}${this.token}`, resource);
   }
 
