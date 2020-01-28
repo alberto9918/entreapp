@@ -96,8 +96,8 @@ export class PoiEditComponent implements OnInit {
     });
 
     this.translateForm = this.fb.group({
-      languageSelected: [null],
-      translateDescripcion: [null]
+      languageSelected: [this.poi.description.language.language],
+      translateDescripcion: [this.poi.description.translations[0].translatedDescription]
     });
 
     /*this.descriptionForm = this.fb.group({
