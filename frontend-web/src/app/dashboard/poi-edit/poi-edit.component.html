@@ -191,14 +191,25 @@
             <mat-card fxLayout.gt-md="row" fxLayout="column" fxFlex.gt-sm="70" fxFlex="100" fxLayoutGap="2%">
         
               <div fxFlex.gt-md="100" fxFlex="100" fxLayout="column" fxLayoutGap="5%"> 
-                
+
                     <h3>Audioguides</h3>
-                    <div id="uploadContent" class="w-100" style="height: 50px; margin-bottom: 5px">
-                      <input type="file" name="audio" (change)="audioUpload($event)" accept="audio/*" />
+                    <div>
+                      <!-- Idiomas -->
+                      <mat-form-field class="w-100">
+                        <mat-select placeholder="Language" name="language" [formControl]="audioguidesForm.controls['languageSelected']" (selectionChange)="audioChange($event)"><!-- [formControl]="form.controls['categories']" -->
+                          <mat-option *ngFor="let language of languages.rows" [value]="language.id"><!-- [(ngModel)]="selectedLanguage" (change)="translateChange($event)" -->
+                            {{language.name}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                      
+                    </div>
+                    <div *ngIf="!this.audioguidesForm.controls['translatedFile'].value" id="uploadContent" class="w-100" style="height: 50px; margin-bottom: 5px">
+                      <input type="file" name="audio" (change)="onAudioSelect($event)" accept="audio/*" />
                       <p style="margin-top: -38px">Drag & Drop or click to upload</p>
                     </div>
-                    <!--<audio *ngIf="this.audioguidesForm.controls['originalFile'].value" controls (src)="this.audioguidesForm.controls['originalFile'].value"></audio>
-                    --> 
+                    <audio *ngIf="this.audioguidesForm.controls['translatedFile'].value" controls [src]="loadImages(this.audioguidesForm.controls['translatedFile'].value)"></audio>
+                    
               </div>
             </mat-card>
         </div>
