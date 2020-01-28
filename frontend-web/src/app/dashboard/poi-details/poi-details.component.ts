@@ -21,6 +21,7 @@ export class PoiDetailsComponent implements OnInit {
   coverImage: string;
   languages: LanguagesResponse;
   arrayLanguages: string[];
+  arrayAudios: string[];
   
   showSettings = false;
   constructor(private poiService: PoiService, public languageService: LanguageService, public router: Router,
@@ -46,12 +47,27 @@ export class PoiDetailsComponent implements OnInit {
       for(var i =0; i<this.poi.description.translations.length; i++) {
         for(var x = 0; x<this.languages.rows.length; x++) {
           if(this.poi.description.translations[i].language.language == this.languages.rows[x].id) {
+            for(var y = 0; y<this.poi.audioguides.translations.length; y++){
+              if(this.poi.audioguides.translations[y].language.language == this.poi.description.translations[x].language.language){
+                if (this.arrayAudios == undefined) {
+                  this.arrayAudios = [this.poi.audioguides.translations[y].translatedFile]
+                } else {
+                  this.arrayAudios.push(this.poi.audioguides.translations[y].translatedFile)
+                }
+              }
+            }
             if (this.arrayLanguages == undefined) {
               this.arrayLanguages = [this.languages.rows[x].name]
             } else {
               this.arrayLanguages.push(this.languages.rows[x].name)
             }
-            
+          }
+        }
+        if(this.poi.audioguides.translations[this.poi.audioguides.translations.length-1].language.language != this.poi.description.translations[x].language.language || this.poi.audioguides.translations == undefined){
+          if (this.arrayAudios == undefined) {
+            this.arrayAudios = ['']
+          } else {
+            this.arrayAudios.push('')
           }
         }
       }
