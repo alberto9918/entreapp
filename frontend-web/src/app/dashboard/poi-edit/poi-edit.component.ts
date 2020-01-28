@@ -381,10 +381,7 @@ export class PoiEditComponent implements OnInit {
           console.log(formData2)
           this.poiService.uploadAudio(formData2).subscribe(resp => {
             newPoi.audioguides = this.poi.audioguides;
-            /*Dado que van a haber varios idiomas creo que es más 
-            apropiado realizar el tratamiento del idioma de la audio guia mediante un switch
-            Lo variable que le pasamos al switch debe ser en realidad un variable que recojamos del 
-            formulario*/
+           
             //this.audioguidesForm.get('languageSelected')
 
 
@@ -557,6 +554,7 @@ export class PoiEditComponent implements OnInit {
   loadImages(key: String) {
     return `${environment.apiUrl}/files/` + key;
   }
+
 
   deleteImage(key: String) {
     //Hay que borrar la imagen del array, y hay que borrar la imagen de amazon
