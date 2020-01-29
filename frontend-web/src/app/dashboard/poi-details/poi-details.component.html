@@ -21,15 +21,16 @@
       </mat-chip-list>
       <p>{{poi.creator}} - {{poi.year}}</p>
       <mat-tab-group mat-align-tabs="center" mat-stretch-tabs id="translations">
-        <mat-tab *ngFor="let translation of poi.description.translations">
+        <mat-tab *ngFor="let translation of arrayLanguages">
           <ng-template mat-tab-label>
-            <img id="imgTranslations" src="../../../assets/images/{{arrayLanguages[poi.description.translations.indexOf(translation)]}}.png">
+            <img *ngIf="arrayDescriptions[arrayLanguages.indexOf(translation)] != '' || arrayAudios[arrayLanguages.indexOf(translation)] != ''" id="imgTranslations" src="../../../assets/images/{{[translation]}}.png"><!--arrayLanguages[arrayLanguages.indexOf(translation)-->
+            <img *ngIf="arrayDescriptions[arrayLanguages.indexOf(translation)] == '' && arrayAudios[arrayLanguages.indexOf(translation)] == ''" id="imgTranslations" src="../../../assets/images/{{[translation]}}Disabled.png">
           </ng-template>
           <div *ngIf="arrayAudios != undefined">
-            <audio class="audio-margin" *ngIf="arrayAudios[poi.description.translations.indexOf(translation)] != ''" controls [src]="loadImages(arrayAudios[poi.description.translations.indexOf(translation)])"></audio>
+            <audio class="audio-margin" *ngIf="arrayAudios[arrayLanguages.indexOf(translation)] != ''" controls [src]="loadImages(arrayAudios[arrayLanguages.indexOf(translation)])"></audio>
           </div>
           <!--<mat-icon><img src="../../../assets/images/Spanish.png"></mat-icon>-->
-          <div [innerHtml]="translation.translatedDescription"></div>
+          <div [innerHtml]="arrayDescriptions[arrayLanguages.indexOf(translation)]"></div>
         </mat-tab>
         <!--<div [innerHtml]="poi.description.translations[0].translatedDescription"></div>-->
       </mat-tab-group>
