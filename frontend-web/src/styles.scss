@@ -15,15 +15,18 @@ html, body {
     padding: 0;
 }
 
-.mat-tab-label, .mat-tab-label-active {
-  height: 15% !important;
+#translations .mat-tab-label, #translations .mat-tab-label{
+  width: 15% !important;
   padding: 0% !important;
   min-width: 0% !important;
 }
 
-.mat-tab-label-container {
+#translations {
   max-width: 70%;
 }
+/**.mat-tab-label-container {
+  max-width: 70%;
+}**/
 #imgTranslations {
  width: 60%;
 }
