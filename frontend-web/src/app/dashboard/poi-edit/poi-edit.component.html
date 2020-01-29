@@ -208,8 +208,14 @@
                       <input type="file" name="audio" (change)="onAudioSelect($event)" accept="audio/*" />
                       <p style="margin-top: -38px">Drag & Drop or click to upload</p>
                     </div>
-                    <audio *ngIf="this.audioguidesForm.controls['translatedFile'].value" controls [src]="loadImages(this.audioguidesForm.controls['translatedFile'].value)"></audio>
+                   
+                    <label id="audioLabel"> 
+                        <audio *ngIf="this.audioguidesForm.controls['translatedFile'].value" controls [src]="loadImages(this.audioguidesForm.controls['translatedFile'].value)"></audio> 
+                        <label><a mat-icon-button  id="audioDelete" class="imgButtonDelete" *ngIf="this.audioguidesForm.controls['translatedFile'].value" (click)="deleteAudio()"></label>
+                        <mat-icon>cancel</mat-icon>
                     
+                      </a>
+                    </label>
               </div>
             </mat-card>
         </div>

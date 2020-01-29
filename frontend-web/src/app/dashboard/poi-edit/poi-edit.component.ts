@@ -554,7 +554,7 @@ export class PoiEditComponent implements OnInit {
   loadImages(key: String) {
     return `${environment.apiUrl}/files/` + key;
   }
-
+  
 
   deleteImage(key: String) {
     //Hay que borrar la imagen del array, y hay que borrar la imagen de amazon

@@ -87,6 +87,16 @@ label {
   width: 150px;
   height: 100px;
 }
+
+#audioLabel{
+  width: 95%;
+}
+
+#audioDelete{
+  width: 5%;
+  float: right;
+  text-align: right;
+}
 .radio-item:checked + label {
   outline: 2px orange solid;
   opacity: 1;
