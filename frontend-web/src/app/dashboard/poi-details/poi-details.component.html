@@ -20,9 +20,21 @@
         <mat-chip *ngFor="let c of poi.categories">{{c.name}}</mat-chip>
       </mat-chip-list>
       <p>{{poi.creator}} - {{poi.year}}</p>
-      <div [innerHtml]="poi.description.translations[0].translatedDescription"></div>
+      <mat-tab-group mat-align-tabs="center" mat-stretch-tabs id="translations">
+        <mat-tab *ngFor="let translation of poi.description.translations">
+          <ng-template mat-tab-label>
+            <img id="imgTranslations" src="../../../assets/images/{{arrayLanguages[poi.description.translations.indexOf(translation)]}}.png">
+          </ng-template>
+          <div *ngIf="arrayAudios != undefined">
+            <audio class="audio-margin" *ngIf="arrayAudios[poi.description.translations.indexOf(translation)] != ''" controls [src]="loadImages(arrayAudios[poi.description.translations.indexOf(translation)])"></audio>
+          </div>
+          <!--<mat-icon><img src="../../../assets/images/Spanish.png"></mat-icon>-->
+          <div [innerHtml]="translation.translatedDescription"></div>
+        </mat-tab>
+        <!--<div [innerHtml]="poi.description.translations[0].translatedDescription"></div>-->
+      </mat-tab-group>
+      <!--<div [innerHtml]="poi.description.translations[0].translatedDescription"></div>-->
     </div>
-
   </mat-card>
   <div fxLayout="column" fxLayoutGap="5%" fxFlex.gt-sm="20" fxFlex="100">
     <mat-card>
@@ -30,10 +42,10 @@
       <p>Status: {{poi.status}}</p>
       <p>Schedule: {{poi.schedule}}</p>
     </mat-card>
-    <mat-card>
+    <!--<mat-card>
       <h3>Audioguides</h3>
       <audio controls [src]="poi.audioguides.originalFile"></audio>
-    </mat-card>
+    </mat-card>-->
   </div>
 </div>
 

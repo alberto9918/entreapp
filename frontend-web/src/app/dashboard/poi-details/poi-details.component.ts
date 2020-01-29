@@ -7,6 +7,8 @@ import { OnePoiResponse } from 'src/app/interfaces/one-poi-response';
 import { PoiService } from 'src/app/services/poi.service';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { environment } from 'src/environments/environment';
+import { LanguageService } from '../../services/language.service';
+import { LanguagesResponse } from '../../interfaces/languages-response';
 
 @Component({
   selector: 'app-poi-details',
@@ -17,17 +19,70 @@ export class PoiDetailsComponent implements OnInit {
 
   poi: OnePoiResponse;
   coverImage: string;
+  languages: LanguagesResponse;
+  arrayLanguages: string[];
+  arrayAudios: string[];
+  
   showSettings = false;
-  constructor(private poiService: PoiService, public router: Router,
+  constructor(private poiService: PoiService, public languageService: LanguageService, public router: Router,
     public dialog: MatDialog, public snackBar: MatSnackBar, private titleService: Title, private authService: AuthenticationService) { }
 
   ngOnInit() {
     if (this.poiService.selectedPoi == null) {
       this.router.navigate(['home']);
     } else {
+      
       this.getData();
     }
     this.titleService.setTitle('Details - POI');
+
+  }
+
+  getAllLanguages() {
+    this.languageService.getAllLanguages(this.authService.getToken()).subscribe(receivedLanguages => {
+      this.languages = receivedLanguages;
+      console.log(this.poi.description.translations)
+      console.log(this.languages.rows)
+      console.log('Este es el array de audios:')
+      console.log(this.arrayAudios)
+
+      for(var i =0; i<this.poi.description.translations.length; i++) {
+        for(var x = 0; x<this.languages.rows.length; x++) {
+          if(this.poi.description.translations[i].language.language == this.languages.rows[x].id) {
+            for(var y = 0; y<this.poi.audioguides.translations.length; y++){
+              if(this.poi.audioguides.translations[y].language.language == this.poi.description.translations[i].language.language){
+                if (this.arrayAudios == undefined) {
+                  this.arrayAudios = [this.poi.audioguides.translations[y].translatedFile]
+                } else {
+                  this.arrayAudios.push(this.poi.audioguides.translations[y].translatedFile)
+                }
+              }
+            }
+            if (this.arrayLanguages == undefined) {
+              this.arrayLanguages = [this.languages.rows[x].name]
+            } else {
+              this.arrayLanguages.push(this.languages.rows[x].name)
+            }
+          }
+        }
+        if(this.poi.audioguides.translations == undefined || this.poi.audioguides.translations[this.poi.audioguides.translations.length-1].language.language != this.poi.description.translations[i].language.language){
+          console.log('La audioguia no existe')
+          if (this.arrayAudios == undefined) {
+            this.arrayAudios = ['']
+          } else {
+            this.arrayAudios.push('')
+          }
+        }else{
+          console.log('la audioguia existe')
+        }
+      }
+      console.log(this.arrayLanguages)
+      console.log('Este es el array de audios:')
+      console.log(this.arrayAudios)
+
+    }, error => {
+      this.snackBar.open('There was an error when we were loading data.', 'Close', { duration: 3000 });
+    });
   }
   
   loadCoverImage(key: String) {
@@ -80,6 +135,9 @@ export class PoiDetailsComponent implements OnInit {
       this.coverImage = p.coverImage;
       let posicionDescripcion = -1, posicionAudio = -1;
       let textoTraducido = '', audioTraducido = '';
+
+      this.getAllLanguages();
+
       if (!this.checkEnglishUser()) {
         // obtenemos posicion del texto
         posicionDescripcion = this.checkExistDescriptionTranslation(this.poi);
@@ -93,6 +151,8 @@ export class PoiDetailsComponent implements OnInit {
           audioTraducido = this.poi.audioguides.translations[posicionAudio].translatedFile;
           this.poi.audioguides.originalFile = audioTraducido;
         }
+
+        
 
       }
 

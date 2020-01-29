@@ -14,3 +14,19 @@ html, body {
     margin: 0;
     padding: 0;
 }
+
+#translations .mat-tab-label, #translations .mat-tab-label{
+  width: 15% !important;
+  padding: 0% !important;
+  min-width: 0% !important;
+}
+
+#translations {
+  max-width: 70%;
+}
+/**.mat-tab-label-container {
+  max-width: 70%;
+}**/
+#imgTranslations {
+ width: 60%;
+}
