@@ -43,12 +43,14 @@ export class PoiDetailsComponent implements OnInit {
       this.languages = receivedLanguages;
       console.log(this.poi.description.translations)
       console.log(this.languages.rows)
+      console.log('Este es el array de audios:')
+      console.log(this.arrayAudios)
 
       for(var i =0; i<this.poi.description.translations.length; i++) {
         for(var x = 0; x<this.languages.rows.length; x++) {
           if(this.poi.description.translations[i].language.language == this.languages.rows[x].id) {
             for(var y = 0; y<this.poi.audioguides.translations.length; y++){
-              if(this.poi.audioguides.translations[y].language.language == this.poi.description.translations[x].language.language){
+              if(this.poi.audioguides.translations[y].language.language == this.poi.description.translations[i].language.language){
                 if (this.arrayAudios == undefined) {
                   this.arrayAudios = [this.poi.audioguides.translations[y].translatedFile]
                 } else {
@@ -63,15 +65,20 @@ export class PoiDetailsComponent implements OnInit {
             }
           }
         }
-        if(this.poi.audioguides.translations[this.poi.audioguides.translations.length-1].language.language != this.poi.description.translations[x].language.language || this.poi.audioguides.translations == undefined){
+        if(this.poi.audioguides.translations == undefined || this.poi.audioguides.translations[this.poi.audioguides.translations.length-1].language.language != this.poi.description.translations[i].language.language){
+          console.log('La audioguia no existe')
           if (this.arrayAudios == undefined) {
             this.arrayAudios = ['']
           } else {
             this.arrayAudios.push('')
           }
+        }else{
+          console.log('la audioguia existe')
         }
       }
       console.log(this.arrayLanguages)
+      console.log('Este es el array de audios:')
+      console.log(this.arrayAudios)
 
     }, error => {
       this.snackBar.open('There was an error when we were loading data.', 'Close', { duration: 3000 });

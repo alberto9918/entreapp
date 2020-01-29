@@ -25,6 +25,9 @@
           <ng-template mat-tab-label>
             <img id="imgTranslations" src="../../../assets/images/{{arrayLanguages[poi.description.translations.indexOf(translation)]}}.png">
           </ng-template>
+          <div *ngIf="arrayAudios != undefined">
+            <audio class="audio-margin" *ngIf="arrayAudios[poi.description.translations.indexOf(translation)] != ''" controls [src]="loadImages(arrayAudios[poi.description.translations.indexOf(translation)])"></audio>
+          </div>
           <!--<mat-icon><img src="../../../assets/images/Spanish.png"></mat-icon>-->
           <div [innerHtml]="translation.translatedDescription"></div>
         </mat-tab>
@@ -39,10 +42,10 @@
       <p>Status: {{poi.status}}</p>
       <p>Schedule: {{poi.schedule}}</p>
     </mat-card>
-    <mat-card>
+    <!--<mat-card>
       <h3>Audioguides</h3>
       <audio controls [src]="poi.audioguides.originalFile"></audio>
-    </mat-card>
+    </mat-card>-->
   </div>
 </div>
 
