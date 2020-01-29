@@ -20,9 +20,9 @@
         <mat-chip *ngFor="let c of poi.categories">{{c.name}}</mat-chip>
       </mat-chip-list>
       <p>{{poi.creator}} - {{poi.year}}</p>
-      <mat-tab-group mat-stretch-tabs >
+      <mat-tab-group mat-stretch-tabs id="translations">
         <mat-tab *ngFor="let translation of poi.description.translations">
-          <ng-template mat-tab-label>
+          <ng-template mat-tab-label class="tabTranslations">
             <img id="imgTranslations" src="../../../assets/images/{{arrayLanguages[poi.description.translations.indexOf(translation)]}}.png">
           </ng-template>
           <!--<mat-icon><img src="../../../assets/images/Spanish.png"></mat-icon>-->
