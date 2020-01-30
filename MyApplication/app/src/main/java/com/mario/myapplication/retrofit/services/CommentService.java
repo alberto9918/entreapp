@@ -14,7 +14,7 @@ import retrofit2.http.Path;
 
 public interface CommentService {
 
-    String BASE_URL = "/comments/";
+    String BASE_URL = "comments/";
 
     @GET(BASE_URL)
     Call<ResponseContainer<Comment>> listComments();

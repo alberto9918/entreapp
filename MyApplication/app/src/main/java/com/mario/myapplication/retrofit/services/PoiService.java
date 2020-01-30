@@ -14,7 +14,7 @@ import retrofit2.http.Query;
 
 public interface PoiService {
 
-    String BASE_URL = "/pois";
+    String BASE_URL = "pois";
 
     @GET(BASE_URL)
     Call<ResponseContainer<PoiResponse>> listPois();

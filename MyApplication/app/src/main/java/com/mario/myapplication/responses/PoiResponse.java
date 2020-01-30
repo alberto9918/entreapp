@@ -3,8 +3,11 @@ package com.mario.myapplication.responses;
 import com.mario.myapplication.model.Audioguide;
 import com.mario.myapplication.model.Category;
 import com.mario.myapplication.model.Description;
+import com.mario.myapplication.retrofit.generator.ServiceGenerator;
 
 public class PoiResponse {
+
+    private String FILES_BASE_URL = ServiceGenerator.BASE_URL + "files/";
 
     private String id;
     private String name;
@@ -60,7 +63,7 @@ public class PoiResponse {
     }
 
     public String getCoverImage() {
-        return coverImage;
+        return FILES_BASE_URL + coverImage;
     }
 
     public String[] getImages() {

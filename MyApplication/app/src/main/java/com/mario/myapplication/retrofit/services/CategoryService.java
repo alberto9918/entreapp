@@ -10,7 +10,7 @@ import retrofit2.http.Path;
 
 public interface CategoryService {
 
-    String BASE_URL = "/categories";
+    String BASE_URL = "categories";
 
     @GET(BASE_URL)
     Call<ResponseContainer<CategoryResponse>> listCategories();

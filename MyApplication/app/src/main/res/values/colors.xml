@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#ff5555</color>
-    <color name="colorPrimaryDark">#a33737</color>
+    <color name="colorPrimary">#43A047</color>
+    <color name="colorPrimaryDark">#1B5E20</color>
     <color name="colorAccent">#4D4D4D</color>
 
-    <color name="color_log_in">#93ff5555</color>
+    <color name="color_log_in">#80B1B1B1</color>
     <color name="color_sign_up">#94418E9A</color>
 
     <color name="white_transparent">#fafafa</color>

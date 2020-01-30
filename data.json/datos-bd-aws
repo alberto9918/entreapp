@@ -1,9 +1,0 @@
-db.createUser(
-  {
-    user: "entreapp",
-    pwd: "Erasmus2020",
-    roles: [
-       { role: "readWrite", db: "entreappdb" }
-    ]
-  }
-)

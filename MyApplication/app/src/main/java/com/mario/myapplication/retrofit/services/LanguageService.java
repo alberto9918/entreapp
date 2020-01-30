@@ -11,7 +11,7 @@ import retrofit2.http.Path;
 
 public interface LanguageService {
 
-    String BASE_URL = "/languages";
+    String BASE_URL = "languages";
 
     @GET(BASE_URL)
     Call<ResponseContainer<LanguageResponse>> listLanguages();

@@ -62,9 +62,6 @@ public class SignUpFragment extends AuthFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-
-
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -106,6 +103,53 @@ public class SignUpFragment extends AuthFragment {
             caption.setVerticalText(true);
             foldStuff();
             caption.setTranslationX(getTextPadding());
+
+            caption.setOnClickListener(v -> {
+
+                // Recoger los datos del formulario
+                String email = email_input.getText().toString();
+                String password = password_input.getText().toString();
+                String confirm = confirm_password.getText().toString();
+                final Pattern EMAIL_REGEX = Pattern.compile("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", Pattern.CASE_INSENSITIVE);
+
+                if (email.equals("") || password.equals("")) {
+                    Toast.makeText(view.getContext(), "Fields can't be clear!", Toast.LENGTH_SHORT).show();
+                } else if (!EMAIL_REGEX.matcher(email).matches()) {
+                    Toast.makeText(ctx, "You need to use a correct email!", Toast.LENGTH_LONG).show();
+                } else if (password.length() < 6) {
+                    Toast.makeText(ctx, "Password must be at least 6 characters!", Toast.LENGTH_LONG).show();
+                } else if (!password.equals(confirm)) {
+                    Toast.makeText(view.getContext(), "Passwords do not match!", Toast.LENGTH_SHORT).show();
+                } else {
+
+
+                    LanguageResponse chosen = (LanguageResponse) language.getSelectedItem();
+                    Register register = new Register(email, password, chosen.getId() );
+                    LoginService service = ServiceGenerator.createService(LoginService.class);
+                    Call<LoginResponse> loginReponseCall = service.doSignUp(register);
+
+                    loginReponseCall.enqueue(new retrofit2.Callback<LoginResponse>() {
+                        @Override
+                        public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                            if (response.code() == 201) {
+                                // éxito
+                                UtilToken.setToken(view.getContext(), response.body().getToken());
+                                startActivity(new Intent(view.getContext(), DashboardActivity.class));
+                            } else {
+                                // error
+                                Toast.makeText(view.getContext(), "Error while signing up.", Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<LoginResponse> call, Throwable t) {
+                            Log.e("NetworkFailure", t.getMessage());
+                            Toast.makeText(view.getContext(), "Network Connection Failure", Toast.LENGTH_SHORT).show();
+
+                        }
+                    });
+                }
+            });
         }
     }
 
@@ -197,55 +241,4 @@ public class SignUpFragment extends AuthFragment {
         return getResources().getDimension(R.dimen.folded_label_padding) / 2.1f;
     }
 
-    // Acciones cuando se está viendo el registro
-    @Override
-    public void unfold() {
-        super.unfold();
-        caption.setOnClickListener(view -> {
-
-            // Recoger los datos del formulario
-            String email = email_input.getText().toString();
-            String password = password_input.getText().toString();
-            String confirm = confirm_password.getText().toString();
-            final Pattern EMAIL_REGEX = Pattern.compile("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", Pattern.CASE_INSENSITIVE);
-
-            if (email.equals("") || password.equals("")) {
-                Toast.makeText(view.getContext(), "Fields can't be clear!", Toast.LENGTH_SHORT).show();
-            } else if (!EMAIL_REGEX.matcher(email).matches()) {
-                Toast.makeText(ctx, "You need to use a correct email!", Toast.LENGTH_LONG).show();
-            } else if (password.length() < 6) {
-                Toast.makeText(ctx, "Password must be at least 6 characters!", Toast.LENGTH_LONG).show();
-            } else if (!password.equals(confirm)) {
-                Toast.makeText(view.getContext(), "Passwords do not match!", Toast.LENGTH_SHORT).show();
-            } else {
-
-
-                LanguageResponse chosen = (LanguageResponse) language.getSelectedItem();
-                Register register = new Register(email, password, chosen.getId() );
-                LoginService service = ServiceGenerator.createService(LoginService.class);
-                Call<LoginResponse> loginReponseCall = service.doSignUp(register);
-
-                loginReponseCall.enqueue(new retrofit2.Callback<LoginResponse>() {
-                    @Override
-                    public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-                        if (response.code() == 201) {
-                            // éxito
-                            UtilToken.setToken(view.getContext(), response.body().getToken());
-                            startActivity(new Intent(view.getContext(), DashboardActivity.class));
-                        } else {
-                            // error
-                            Toast.makeText(view.getContext(), "Error while signing up.", Toast.LENGTH_LONG).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<LoginResponse> call, Throwable t) {
-                        Log.e("NetworkFailure", t.getMessage());
-                        Toast.makeText(view.getContext(), "Network Connection Failure", Toast.LENGTH_SHORT).show();
-
-                    }
-                });
-            }
-        });
-    }
 }

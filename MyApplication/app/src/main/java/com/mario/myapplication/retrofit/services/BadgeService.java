@@ -13,7 +13,7 @@ import retrofit2.http.Query;
 
 public interface BadgeService {
 
-    String BASE_URL = "/badges";
+    String BASE_URL = "badges";
 
     @GET(BASE_URL)
     Call<ResponseContainer<BadgeResponse>> listBadges();
