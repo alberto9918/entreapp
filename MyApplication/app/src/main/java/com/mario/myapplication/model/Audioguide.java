@@ -4,12 +4,12 @@ public class Audioguide {
 
     private Language language;
     private String originalFile;
-    private Translation[] translations;
+    private TranslationAudioGuide[] translations;
 
     public Audioguide() {
     }
 
-    public Audioguide(Language language, String originalFile, Translation[] translations) {
+    public Audioguide(Language language, String originalFile, TranslationAudioGuide[] translations) {
         this.language = language;
         this.originalFile = originalFile;
         this.translations = translations;
@@ -31,11 +31,11 @@ public class Audioguide {
         this.originalFile = originalFile;
     }
 
-    public Translation[] getTranslations() {
+    public TranslationAudioGuide[] getTranslations() {
         return translations;
     }
 
-    public void setTranslations(Translation[] translations) {
+    public void setTranslations(TranslationAudioGuide[] translations) {
         this.translations = translations;
     }
 }

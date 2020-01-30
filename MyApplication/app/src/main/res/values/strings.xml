@@ -1,12 +1,12 @@
 <resources>
     <string name="app_name">Visiton</string>
 
-    <string name="sign_up_label">Sign Up</string>
-    <string name="log_in_label">Log In</string>
-    <string name="forgot_password">Forgot Password?</string>
-    <string name="password_hint">Password</string>
-    <string name="email_hint">Email</string>
-    <string name="confirm_hint">Confirm Password</string>
+    <string name="sign_up_label">Registrarme</string>
+    <string name="log_in_label">Entrar</string>
+    <string name="forgot_password">¿Olvidaste la contraseña?</string>
+    <string name="password_hint">Contraseña</string>
+    <string name="email_hint">Correo electrónico</string>
+    <string name="confirm_hint">Confirmar Contraseña</string>
 
     <!-- Facebook -->
     <string name="facebook_app_id">313908059266962</string>
@@ -19,55 +19,55 @@
     <string name="title_activity_dashboard">VisitOn</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
-    <string name="title_activity_maps">Map</string>
+    <string name="title_notifications">Notificaciones</string>
+    <string name="title_activity_maps">Mapa</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="edit_profile">Edit profile</string>
+    <string name="edit_profile">Editar perfil</string>
 
     <string name="email_example">email@gmail.com</string>
     <string name="Email">Email</string>
     <string name="Email_example">example@gmail.com</string>
-    <string name="Language">Language</string>
+    <string name="Language">Idioma</string>
     <string name="pois_visited">Pois visited</string>
-    <string name="badges">Badges</string>
+    <string name="badges">Insignia</string>
     <string name="userId">userId</string>
 
-    <string name="need_gps_title">GPS is disabled.</string>
-    <string name="need_gps_message">Do you want to active it to know your location?</string>
+    <string name="need_gps_title">GPS está deshabilitado.</string>
+    <string name="need_gps_message">¿Quieres activar el GPS para obtener tu localización?</string>
 
-    <string name="accept">Accept</string>
-    <string name="cancel">Cancel</string>
+    <string name="accept">Aceptar</string>
+    <string name="cancel">Cancelar</string>
     <string name="textview">TextView</string>
-    <string name="defaultLanguage">English</string>
+    <string name="defaultLanguage">Inglés</string>
     <string name="points">Points </string>
-    <string name="edit">Edit</string>
-    <string name="country">Country</string>
-    <string name="name">Name</string>
-    <string name="no_country">No country</string>
-    <string name="save">Save</string>
-    <string name="categories">Categories</string>
+    <string name="edit">Editar</string>
+    <string name="country">País</string>
+    <string name="name">Nombre</string>
+    <string name="no_country">Sin país</string>
+    <string name="save">Guardar</string>
+    <string name="categories">Categorías</string>
 
-    <string name="action_settings">Settings</string>
-    <string name="no_language">No language</string>
-    <string name="friends">Friends</string>
-    <string name="city">City</string>
+    <string name="action_settings">Ajustes</string>
+    <string name="no_language">Sin idioma</string>
+    <string name="friends">Amigos</string>
+    <string name="city">Ciudad</string>
     <string name="action_logout">Visitoff</string>
-    <string name="no_city">No city</string>
-    <string name="upload">Upload</string>
-    <string name="search_view_hint">Search by name</string>
-    <string name="badges_toolbar_title">Badges</string>
-    <string name="badges_filter_checkbox">Earned</string>
-    <string name="filter">Filter</string>
-    <string name="favorites">Favorites</string>
-    <string name="visited">Visited</string>
-    <string name="noFilter">No filter</string>
-    <string name="badge_detail_point_title">Points:</string>
-    <string name="incorrect_name">Incorrect name</string>
-    <string name="incorrect_city">Incorrect city</string>
-    <string name="from_gallery">From gallery</string>
-    <string name="from_camera">From camera</string>
-    <string name="choose_option">Choose one option.</string>
-    <string name="badge_detail_pois_title">Points of Interests needed to earn this badge:</string>
+    <string name="no_city">Sin ciudad</string>
+    <string name="upload">Subir</string>
+    <string name="search_view_hint">Buscar por nombre</string>
+    <string name="badges_toolbar_title">Insignias</string>
+    <string name="badges_filter_checkbox">Conseguidas</string>
+    <string name="filter">Filtro</string>
+    <string name="favorites">Favoritos</string>
+    <string name="visited">Visitado</string>
+    <string name="noFilter">Sin filtrar</string>
+    <string name="badge_detail_point_title">Puntos</string>
+    <string name="incorrect_name">Nombre incorrecto</string>
+    <string name="incorrect_city">Ciudad incorrecta</string>
+    <string name="from_gallery">Desde la Galería</string>
+    <string name="from_camera">Desde la cámara</string>
+    <string name="choose_option">Selecciona una opción.</string>
+    <string name="badge_detail_pois_title">Puntos de interés necesarios para conseguir esta insignia</string>
 
 </resources>

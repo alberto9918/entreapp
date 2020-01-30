@@ -10,7 +10,7 @@ import retrofit2.http.Path;
 
 public interface RouteService {
 
-    String BASE_URL = "/routes";
+    String BASE_URL = "routes";
 
     @GET(BASE_URL)
     Call<ResponseContainer<RouteResponse>> listRoutes();

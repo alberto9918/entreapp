@@ -4,12 +4,12 @@ public class Description {
 
     private Language language;
     private String originalDescription;
-    private Translation[] translations;
+    private TranslationDescription[] translations;
 
     public Description() {
     }
 
-    public Description(Language language, String originalDescription, Translation[] translations) {
+    public Description(Language language, String originalDescription, TranslationDescription[] translations) {
         this.language = language;
         this.originalDescription = originalDescription;
         this.translations = translations;
@@ -31,11 +31,11 @@ public class Description {
         this.originalDescription = originalDescription;
     }
 
-    public Translation[] getTranslations() {
+    public TranslationDescription[] getTranslations() {
         return translations;
     }
 
-    public void setTranslations(Translation[] translations) {
+    public void setTranslations(TranslationDescription[] translations) {
         this.translations = translations;
     }
 }

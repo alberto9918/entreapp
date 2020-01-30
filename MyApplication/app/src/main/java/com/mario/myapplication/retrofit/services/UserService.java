@@ -23,7 +23,7 @@ import retrofit2.http.Path;
 
 public interface UserService {
 
-    String BASE_URL = "/users";
+    String BASE_URL = "users";
 
     @GET(BASE_URL)
     Call<ResponseContainer<UserResponse>> listUsers();

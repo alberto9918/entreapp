@@ -1,15 +1,16 @@
 package com.mario.myapplication.model;
 
-public class Translation {
+
+public class TranslationAudioGuide {
 
     private String id;
     private String translatedFile;
 
-    public Translation() {
+    public TranslationAudioGuide() {
 
     }
 
-    public Translation(String id, String translatedFile) {
+    public TranslationAudioGuide(String id, String translatedFile) {
         this.id = id;
         this.translatedFile = translatedFile;
     }

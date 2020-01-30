@@ -10,11 +10,11 @@ import retrofit2.http.POST;
 
 public interface LoginService {
 
-    @POST("/auth")
+    @POST("auth")
     Call<LoginResponse> doLogin(@Header("Authorization") String authorization);
 
 
-    @POST("/users")
+    @POST("users")
     Call<LoginResponse> doSignUp(@Body Register register);
 
 
