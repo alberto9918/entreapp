@@ -26,9 +26,13 @@
     color: white;
   }
 }
+#divAudio{
+width: 100%;
 
+}
 audio {
-  width: 100%;
+  width: 90%;
+  float: left;
 }
 
 #uploadContent {
@@ -90,6 +94,11 @@ label {
 .radio-item:checked + label {
   outline: 2px orange solid;
   opacity: 1;
+}
+
+#deleteAudio{
+  width: 9%;
+  float: right;
 }
 
 
