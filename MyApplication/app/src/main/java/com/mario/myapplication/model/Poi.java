@@ -1,8 +1,12 @@
 package com.mario.myapplication.model;
 
+import com.mario.myapplication.retrofit.generator.ServiceGenerator;
+
 import java.util.Arrays;
 
 public class Poi {
+
+    private String FILES_BASE_URL = ServiceGenerator.BASE_URL + "files/";
 
     private String name;
     private Category categories[];
@@ -101,7 +105,7 @@ public class Poi {
     }
 
     public String getCoverImage() {
-        return coverImage;
+        return FILES_BASE_URL + coverImage;
     }
 
     public void setCoverImage(String coverImage) {

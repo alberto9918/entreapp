@@ -8,6 +8,7 @@ import category from './category'
 import route from './route'
 import upload from './upload'
 import language from './language'
+import { token } from '../services/passport'
 require('dotenv').config()
 const router = new Router()
 
@@ -43,5 +44,9 @@ router.use('/categories', category)
 router.use('/routes', route)
 router.use('/files', upload)
 router.use('/languages', language)
+
+router.use('/auth/check/token/', token({required: true}), (req, res, next) => {
+  res.status(200).end()
+})
 
 export default router
