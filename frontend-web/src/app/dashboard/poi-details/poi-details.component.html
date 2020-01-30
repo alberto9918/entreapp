@@ -40,13 +40,13 @@
 <div id="container" fxLayout.gt-sm="row" fxLayout="column" fxLayoutGap="5%" *ngIf="poi" class="margin-top">
     <mat-card fxLayout.gt-md="row" fxLayout="column" fxFlex.gt-sm="100" fxFlex="100" fxLayoutGap="2%">
 
-      <div fxLayout="column" fxFlex="50" fxLayoutGap="2%">
+      <div fxLayout="column" fxFlex="40" fxLayoutGap="2%">
         <agm-map [latitude]="poi.loc.coordinates[0]" [longitude]="poi.loc.coordinates[1]" [zoom]="16">
           <agm-marker [latitude]="poi.loc.coordinates[0]" [longitude]="poi.loc.coordinates[1]"></agm-marker>
         </agm-map>
       </div>
   
-      <mat-tab-group fxFlex="50" mat-align-tabs="center" mat-stretch-tabs id="translations">
+      <mat-tab-group mat-align-tabs="center" mat-stretch-tabs id="translations">
         <mat-tab *ngFor="let translation of arrayLanguages">
           <ng-template mat-tab-label>
             <img *ngIf="arrayDescriptions[arrayLanguages.indexOf(translation)] != '' || arrayAudios[arrayLanguages.indexOf(translation)] != ''" id="imgTranslations" src="../../../assets/images/{{[translation]}}.png"><!--arrayLanguages[arrayLanguages.indexOf(translation)-->
