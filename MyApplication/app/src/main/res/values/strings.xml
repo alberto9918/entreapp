@@ -2,7 +2,7 @@
     <string name="app_name">Visiton</string>
 
     <string name="sign_up_label">Registrarme</string>
-    <string name="log_in_label">Entrar</string>
+    <string name="log_in_label">E N T R A R</string>
     <string name="forgot_password">¿Olvidaste la contraseña?</string>
     <string name="password_hint">Contraseña</string>
     <string name="email_hint">Correo electrónico</string>
@@ -69,5 +69,11 @@
     <string name="from_camera">Desde la cámara</string>
     <string name="choose_option">Selecciona una opción.</string>
     <string name="badge_detail_pois_title">Puntos de interés necesarios para conseguir esta insignia</string>
+    <string name="close">Cerrar</string>
+    <string name="app_version">v1.0</string>
+    <string name="version_unknown">Versión desconocida</string>
+    <string name="sign_up_account">REGISTRARME EN LA APLICACIÓN</string>
+    <string name="welcome_login_title">Bienvenido a VisitOn</string>
+    <string name="welcome_login_subtitle">Inicia sesión para continuar</string>
 
 </resources>

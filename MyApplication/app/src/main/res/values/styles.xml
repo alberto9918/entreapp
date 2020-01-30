@@ -1,14 +1,27 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
-        <item name="android:windowFullscreen">true</item>
+    <style name="AppTheme" parent="BaseTheme" />
+
+    <style name="BaseTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="colorControlActivated">@color/color_input_hint</item>
-        <item name="colorControlHighlight">@color/color_input_hint</item>
-        <item name="android:buttonTint">@color/colorAccent</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="android:actionModeBackground">@color/blue_grey_600</item>
+        <item name="android:dialogTheme">@style/Dialog.Theme</item>
+    </style>
+
+    <style name="Dialog.Theme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="EditText.Green" parent="@style/AppTheme">
+        <item name="colorControlActivated">@color/green_500</item>
+        <item name="colorControlHighlight">@color/green_500</item>
+        <item name="colorControlNormal">@color/green_400</item>
     </style>
 
     <style name="Widget" />
@@ -47,5 +60,10 @@
 
     <style name="ChipTextApperance" parent="TextAppearance.MaterialComponents.Chip">
         <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="Toolbar.Light" parent="@style/AppTheme">
+        <item name="colorControlNormal">@color/grey_60</item>
+        <item name="android:textColorPrimary">@color/grey_60</item>
     </style>
 </resources>
