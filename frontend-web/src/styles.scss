@@ -22,11 +22,16 @@ html, body {
 }
 
 #translations {
-  max-width: 70%;
+  width: 50%;
+  margin-left: 4%;
 }
 /**.mat-tab-label-container {
   max-width: 70%;
 }**/
 #imgTranslations {
  width: 60%;
+}
+
+#container {
+  padding: 16px;
 }

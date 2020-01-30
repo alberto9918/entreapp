@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ɵConsole } from '@angular/core';
 import { AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask } from '@angular/fire/storage';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
@@ -573,6 +573,35 @@ export class PoiEditComponent implements OnInit {
     }, error => {
       console.log(error)
     })
+
+  }
+
+
+  deleteAudio(key: String, language: String) {
+    //Hay que borrar la imagen del array, y hay que borrar la imagen de amazon
+    console.log(key)
+    for (var i = 0; i < this.poi.audioguides.translations.length; i++) {
+      console.log('entra en el for')
+      if (this.poi.audioguides.translations[i].translatedFile == key) {
+        console.log('entra en el if')
+        console.log(this.poi.audioguides.translations.splice(i, 1));
+        this.poiService.removeImage(key).subscribe(resp => {
+          console.log(resp)
+          console.log(this.poi.audioguides.translations)
+       
+          this.audioguidesForm = this.fb.group({
+            languageSelected: [language],
+            translatedFile: ['']
+          });
+
+        }, error => {
+          console.log(error)
+        })
+       
+      }
+    }
+
+   
 
   }
 

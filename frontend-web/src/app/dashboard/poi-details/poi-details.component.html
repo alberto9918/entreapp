@@ -1,52 +1,66 @@
 <div id="container" fxLayout.gt-sm="row" fxLayout="column" fxLayoutGap="5%" *ngIf="poi">
-  <mat-card fxLayout.gt-md="row" fxLayout="column" fxFlex.gt-sm="80" fxFlex="100" fxLayoutGap="2%">
-    <div fxFlex.gt-md="50" fxFlex="100" fxLayout="column" fxLayoutGap="5%">
-      <div fxLayout="row" fxLayoutGap="5px">
-        <drag-scroll fxFlex="20" [style.height.px]="myCoverImage.offsetHeight">
-            <div drag-scroll-item *ngFor="let i of poi.images" [style.background-image]="'url('+loadImages(i)+')'" class="scrollableImage" (mouseover)="setAsCover(i)"></div>
-        </drag-scroll>
-        <div fxFlex="80">
-          <div #myCoverImage id="coverImage" [style.background-image]="'url(' + loadCoverImage(coverImage) + ')'"> </div>
+    <mat-card fxLayout.gt-md="row" fxLayout="column" fxFlex.gt-sm="100" fxFlex="100" fxLayoutGap="2%">
+
+      <div fxFlex.gt-md="50" fxFlex="100" fxLayout="column" fxLayoutGap="5%">
+        <div fxLayout="row" fxLayoutGap="5px">
+          <drag-scroll fxFlex="20" [style.height.px]="myCoverImage.offsetHeight">
+              <div drag-scroll-item *ngFor="let i of poi.images" [style.background-image]="'url('+loadImages(i)+')'" class="scrollableImage" (mouseover)="setAsCover(i)"></div>
+          </drag-scroll>
+          <div fxFlex="80">
+            <div #myCoverImage id="coverImage" [style.background-image]="'url(' + loadCoverImage(coverImage) + ')'"> </div>
+          </div>
         </div>
       </div>
-      <agm-map [latitude]="poi.loc.coordinates[0]" [longitude]="poi.loc.coordinates[1]" [zoom]="16">
-        <agm-marker [latitude]="poi.loc.coordinates[0]" [longitude]="poi.loc.coordinates[1]"></agm-marker>
-      </agm-map>
-    </div>
-    <div fxFlex.gt-md="50" fxFlex="100">
-      <h1>{{ poi.name }}</h1>
-      <hr>
-      <mat-chip-list>
-        <mat-chip *ngFor="let c of poi.categories">{{c.name}}</mat-chip>
-      </mat-chip-list>
-      <p>{{poi.creator}} - {{poi.year}}</p>
+
+      <div fxFlex.gt-md="50" fxFlex="100">
+        <div fxLayout="column" fxFlex="100">
+          <h1>{{ poi.name }}</h1>
+          
+          <mat-chip-list>
+            <mat-chip *ngFor="let c of poi.categories">{{c.name}}</mat-chip>
+          </mat-chip-list>
+
+          <p>{{poi.creator}} - {{poi.year}}</p>
+
+        </div>    
+        <!--<div [innerHtml]="poi.description.translations[0].translatedDescription"></div>-->
+      </div>
+    </mat-card>
+    
+      <mat-card fxLayout="column" fxLayoutGap="5%" fxFlex.gt-sm="20" fxFlex="100">
+        <h3>Detalles</h3>
+        <p><strong>Price:</strong> {{poi.price}} €</p>
+        <p *ngIf="poi.status == 'Open'"><strong>Status:</strong> <span class="verde"> {{poi.status}}</span></p>
+        <p *ngIf="poi.status == 'Close'"><strong>Status:</strong> <span class="rojo"> {{poi.status}}</span></p>
+        <p><strong>Schedule: </strong>{{poi.schedule}}</p>
+      </mat-card>
+    
+</div>
+
+<div id="container" fxLayout.gt-sm="row" fxLayout="column" fxLayoutGap="5%" *ngIf="poi" class="margin-top">
+    <mat-card fxLayout.gt-md="row" fxLayout="column" fxFlex.gt-sm="100" fxFlex="100" fxLayoutGap="2%">
+
+      <div fxLayout="column" fxFlex="40" fxLayoutGap="2%">
+        <agm-map [latitude]="poi.loc.coordinates[0]" [longitude]="poi.loc.coordinates[1]" [zoom]="16">
+          <agm-marker [latitude]="poi.loc.coordinates[0]" [longitude]="poi.loc.coordinates[1]"></agm-marker>
+        </agm-map>
+      </div>
+  
       <mat-tab-group mat-align-tabs="center" mat-stretch-tabs id="translations">
-        <mat-tab *ngFor="let translation of poi.description.translations">
+        <mat-tab *ngFor="let translation of arrayLanguages">
           <ng-template mat-tab-label>
-            <img id="imgTranslations" src="../../../assets/images/{{arrayLanguages[poi.description.translations.indexOf(translation)]}}.png">
+            <img *ngIf="arrayDescriptions[arrayLanguages.indexOf(translation)] != '' || arrayAudios[arrayLanguages.indexOf(translation)] != ''" id="imgTranslations" src="../../../assets/images/{{[translation]}}.png"><!--arrayLanguages[arrayLanguages.indexOf(translation)-->
+            <img *ngIf="arrayDescriptions[arrayLanguages.indexOf(translation)] == '' && arrayAudios[arrayLanguages.indexOf(translation)] == ''" id="imgTranslations" src="../../../assets/images/{{[translation]}}Disabled.png">
           </ng-template>
           <div *ngIf="arrayAudios != undefined">
-            <audio class="audio-margin" *ngIf="arrayAudios[poi.description.translations.indexOf(translation)] != ''" controls [src]="loadImages(arrayAudios[poi.description.translations.indexOf(translation)])"></audio>
+            <audio class="audio-margin" *ngIf="arrayAudios[arrayLanguages.indexOf(translation)] != ''" controls [src]="loadImages(arrayAudios[arrayLanguages.indexOf(translation)])"></audio>
           </div>
           <!--<mat-icon><img src="../../../assets/images/Spanish.png"></mat-icon>-->
-          <div [innerHtml]="translation.translatedDescription"></div>
+          <div [innerHtml]="arrayDescriptions[arrayLanguages.indexOf(translation)]"></div>
         </mat-tab>
         <!--<div [innerHtml]="poi.description.translations[0].translatedDescription"></div>-->
       </mat-tab-group>
-      <!--<div [innerHtml]="poi.description.translations[0].translatedDescription"></div>-->
-    </div>
-  </mat-card>
-  <div fxLayout="column" fxLayoutGap="5%" fxFlex.gt-sm="20" fxFlex="100">
-    <mat-card>
-      <p>Price: {{poi.price}}</p>
-      <p>Status: {{poi.status}}</p>
-      <p>Schedule: {{poi.schedule}}</p>
     </mat-card>
-    <!--<mat-card>
-      <h3>Audioguides</h3>
-      <audio controls [src]="poi.audioguides.originalFile"></audio>
-    </mat-card>-->
-  </div>
 </div>
 
 <a mat-fab id="addFloatingButton" [matMenuTriggerFor]="menu">

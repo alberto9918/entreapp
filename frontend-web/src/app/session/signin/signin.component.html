@@ -2,7 +2,7 @@
   <div id="fondo" fxFlex="77" fxFlex.xs="0" fxFlex.lt-md="50"></div>
   <div id="container" fxFlex="33" fxFlex.xs="100" fxFlex.lt-md="50" fxLayout="column" fxLayoutAlign="center center"
     fxLayoutGap="5px">
-    <img src="../../../assets/images/logo_salesians.png" alt="logo salesians" class="w-50">
+    <img src="../../../assets/images/logo_visiton.png" alt="logo salesianos" class="w-50" id="logo">
     <form [formGroup]="form" (ngSubmit)="onSubmit()" fxLayout="column" class="w-100" fxLayoutAlign="center center">
       <mat-form-field class="w-50">
         <input matInput placeholder="Username" [formControl]="form.controls['email']">
@@ -15,9 +15,9 @@
       <button mat-raised-button class="btn btn-social btn-email w-50" [disabled]="!form.valid"><i
           class="fas fa-envelope"></i>Login</button>
     </form>
-    <button mat-raised-button class="btn btn-social btn-google w-50" (click)="doGoogleLogin()"><i
+    <button mat-raised-button class="btn btn-social btn-google w-50" (click)="doGoogleLogin()"  [style.display]="'none'" ><i
         class="fab fa-google"></i>Google</button>
-    <button mat-raised-button class="btn btn-social btn-facebook w-50" (click)="doFacebookLogin()" [disabled]="true"><i
+    <button mat-raised-button class="btn btn-social btn-facebook w-50" (click)="doFacebookLogin()" [style.display]="'none'"><i
         class="fab fa-facebook"></i>Facebook</button>
   </div>
 </div>
