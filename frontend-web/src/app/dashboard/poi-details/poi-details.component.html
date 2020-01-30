@@ -20,33 +20,20 @@
             <mat-chip *ngFor="let c of poi.categories">{{c.name}}</mat-chip>
           </mat-chip-list>
 
-          <div fxLayout="row" fxFlex="100">
-            <div fxFlex="49"  >
-              <p>{{poi.creator}} - {{poi.year}}</p>
-              <p><strong>Price:</strong> {{poi.price}} €</p>
-            </div>
-
-            <div fxFlex="49" style="float: right;">
-              <p><strong>Status:</strong> {{poi.status}}</p>
-              <p><strong>Schedule: </strong>{{poi.schedule}}</p>
-            </div>
-          </div>
+          <p>{{poi.creator}} - {{poi.year}}</p>
 
         </div>    
         <!--<div [innerHtml]="poi.description.translations[0].translatedDescription"></div>-->
       </div>
     </mat-card>
-    <!--<div fxLayout="column" fxLayoutGap="5%" fxFlex.gt-sm="20" fxFlex="100">
-      <mat-card>
-        <p>Price: {{poi.price}}</p>
-        <p>Status: {{poi.status}}</p>
-        <p>Schedule: {{poi.schedule}}</p>
+    
+      <mat-card fxLayout="column" fxLayoutGap="5%" fxFlex.gt-sm="20" fxFlex="100">
+        <h3>Detalles</h3>
+        <p><strong>Price:</strong> {{poi.price}} €</p>
+        <p><strong>Status:</strong> {{poi.status}}</p>
+        <p><strong>Schedule: </strong>{{poi.schedule}}</p>
       </mat-card>
-      <mat-card>
-        <h3>Audioguides</h3>
-        <audio controls [src]="poi.audioguides.originalFile"></audio>
-      </mat-card>
-    </div>-->
+    
 </div>
 
 <div id="container" fxLayout.gt-sm="row" fxLayout="column" fxLayoutGap="5%" *ngIf="poi" class="margin-top">
