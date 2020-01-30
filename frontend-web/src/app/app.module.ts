@@ -25,7 +25,6 @@ import { DialogEditCategoryComponent } from './dialogs/dialog-edit-category/dial
 import { DialogEditUserComponent } from './dialogs/dialog-edit-user/dialog-edit-user.component';
 import { DialogPoiDeleteComponent } from './dialogs/dialog-poi-delete/dialog-poi-delete.component';
 import { DialogRouteComponent } from './dialogs/dialog-route/dialog-route.component';
-import { DialogTranslatePoiComponent } from './dialogs/dialog-translate-poi/dialog-translate-poi.component';
 import { DialogUpdateProfileComponent } from './dialogs/dialog-update-profile/dialog-update-profile.component';
 import { MaterialModule } from './material-module';
 
@@ -43,8 +42,7 @@ import { MaterialModule } from './material-module';
     DialogBadgeComponent,
     DialogDeleteBadgeComponent,
     DialogRouteComponent,
-    DialogDeleteRouteComponent,
-    DialogTranslatePoiComponent
+    DialogDeleteRouteComponent
   ],
   imports: [
     BrowserModule,
@@ -81,7 +79,7 @@ import { MaterialModule } from './material-module';
     DialogRouteComponent,
     DialogDeleteRouteComponent,
     DialogUpdateProfileComponent,
-    DialogTranslatePoiComponent
+    
   ],
   providers: [],
   bootstrap: [AppComponent]

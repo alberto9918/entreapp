@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { FileSelectDirective } from 'ng2-file-upload';
+import { FileSelectDirective, FileUploadModule } from 'ng2-file-upload';
 import { DragScrollModule } from 'ngx-drag-scroll/lib';
 import { GooglePlaceModule } from 'ngx-google-places-autocomplete';
 import { QuillModule } from 'ngx-quill';
@@ -50,7 +50,6 @@ import { UserComponent } from './user/user.component';
     MyProfileComponent,
     PoiEditComponent,
     PoiCreateComponent,
-    FileSelectDirective,
     RouteDetailsComponent
   ],
 })

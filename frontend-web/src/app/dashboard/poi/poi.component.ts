@@ -3,7 +3,6 @@ import { MatDialog, MatSnackBar } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { DialogPoiDeleteComponent } from 'src/app/dialogs/dialog-poi-delete/dialog-poi-delete.component';
-import { DialogTranslatePoiComponent } from 'src/app/dialogs/dialog-translate-poi/dialog-translate-poi.component';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { PoiService } from 'src/app/services/poi.service';
 
@@ -55,8 +54,8 @@ export class PoiComponent implements OnInit {
 
   /** Open a modal to insert a new translation */
   openDialogTranslatePoi(p) {
-    const dialogTranslatePoi = this.dialog.open(DialogTranslatePoiComponent, { data: { poi: p } });
-    dialogTranslatePoi.afterClosed().subscribe(res => this.getAll());
+    //const dialogTranslatePoi = this.dialog.open(DialogTranslatePoiComponent, { data: { poi: p } });
+    //dialogTranslatePoi.afterClosed().subscribe(res => this.getAll());
   }
 
   /** Go to POIDetails view */
