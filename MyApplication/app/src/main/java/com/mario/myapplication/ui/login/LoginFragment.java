@@ -36,7 +36,7 @@ public class LoginFragment extends Fragment {
     @BindView(R.id.button_login)
     Button button_login;
 
-    Context ctx = this.getContext();
+    Context ctx;
 
     public static LoginFragment newInstance() {
 
@@ -52,12 +52,16 @@ public class LoginFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_log_in, container, false);
         ButterKnife.bind(this, root);
+        ctx = getActivity();
         button_login.setOnClickListener(v -> { doLogin(); });
+
+        if(UtilToken.getToken(ctx) != null) {
+            startActivity(new Intent(ctx, DashboardActivity.class));
+        }
         return root;
     }
 
     public void doLogin() {
-        // Recoger datos del formulario
         String username_txt = email_input.getText().toString();
         String password_txt = password_input.getText().toString();
         final Pattern EMAIL_REGEX = Pattern.compile("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", Pattern.CASE_INSENSITIVE);

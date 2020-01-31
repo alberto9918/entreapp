@@ -49,5 +49,17 @@ public class UtilToken {
         return jwt;
     }
 
+    public static void removeToken(Context mContext) {
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences(
+                mContext.getString(R.string.sharedpreferences_filename),
+                Context.MODE_PRIVATE
+        );
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove(mContext.getString(R.string.userId));
+        editor.clear();
+        editor.commit();
+
+    }
 
 }

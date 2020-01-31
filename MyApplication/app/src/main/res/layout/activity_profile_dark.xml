@@ -40,7 +40,7 @@
                 android:padding="@dimen/spacing_mxlarge">
 
                 <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/image"
+                    android:id="@+id/imageViewProfile"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:src="@drawable/ic_smile"
@@ -57,6 +57,7 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/textViewName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Kevin John"
@@ -65,6 +66,7 @@
                         app:fontFamily="sans-serif-medium" />
 
                     <TextView
+                        android:id="@+id/texViewCityWritten"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_medium"
@@ -84,6 +86,7 @@
                 android:orientation="vertical"
                 android:padding="@dimen/spacing_middle">
 
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/spacing_xxxlarge"
@@ -102,6 +105,7 @@
                         app:srcCompat="@drawable/ic_email" />
 
                     <TextView
+                        android:id="@+id/textViewEmailWritten"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/spacing_large"
@@ -115,26 +119,6 @@
                         android:layout_width="0dp"
                         android:layout_height="0dp"
                         android:layout_weight="1" />
-
-                    <RelativeLayout
-                        android:layout_width="35dp"
-                        android:layout_height="20dp">
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:tint="@color/green_500"
-                            app:srcCompat="@drawable/shape_round_corner" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                            android:text="16"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                            android:textColor="@android:color/white" />
-
-                    </RelativeLayout>
 
                 </LinearLayout>
 
@@ -156,6 +140,7 @@
                         app:srcCompat="@drawable/ic_subject" />
 
                     <TextView
+                        android:id="@+id/textViewLanguageWritten"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/spacing_large"
@@ -189,7 +174,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/spacing_large"
                         android:layout_marginRight="@dimen/spacing_large"
-                        android:text="Friends"
+                        android:text="Amigos"
                         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                         android:textColor="@color/grey_20"
                         app:fontFamily="sans-serif-medium" />
@@ -210,10 +195,11 @@
                             app:srcCompat="@drawable/shape_round_corner" />
 
                         <TextView
+                            android:id="@+id/textViewFriendsWritten"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
-                            android:text="25"
+                            android:text="0"
                             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                             android:textColor="@android:color/white" />
 
@@ -243,10 +229,37 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/spacing_large"
                         android:layout_marginRight="@dimen/spacing_large"
-                        android:text="Statistic"
+                        android:text="POIs publicados"
                         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                         android:textColor="@color/grey_20"
                         app:fontFamily="sans-serif-medium" />
+
+                    <View
+                        android:id="@+id/view"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <RelativeLayout
+                        android:layout_width="35dp"
+                        android:layout_height="20dp">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:tint="@color/green_500"
+                            app:srcCompat="@drawable/shape_round_corner" />
+
+                        <TextView
+                            android:id="@+id/textViewPoisWritten"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:text="0"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                            android:textColor="@android:color/white" />
+
+                    </RelativeLayout>
 
                 </LinearLayout>
 
@@ -272,14 +285,99 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/spacing_large"
                         android:layout_marginRight="@dimen/spacing_large"
-                        android:text="Language"
+                        android:text="Insignias conseguidas"
                         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                         android:textColor="@color/grey_20"
                         app:fontFamily="sans-serif-medium" />
 
+                    <View
+                        android:id="@+id/view3"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <RelativeLayout
+                        android:layout_width="35dp"
+                        android:layout_height="20dp">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:tint="@color/green_500"
+                            app:srcCompat="@drawable/shape_round_corner" />
+
+                        <TextView
+                            android:id="@+id/textViewBadgesWritten"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:text="0"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                            android:textColor="@android:color/white" />
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:layout_height="@dimen/spacing_xxxlarge"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingLeft="@dimen/spacing_large"
+                    android:paddingRight="@dimen/spacing_large">
+
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:background="@color/transparent"
+                        android:tint="@color/green_500"
+                        app:srcCompat="@drawable/ic_settings" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/spacing_large"
+                        android:layout_marginRight="@dimen/spacing_large"
+                        android:text="Puntos"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_20"
+                        app:fontFamily="sans-serif-medium" />
+
+                    <View
+                        android:id="@+id/view4"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <RelativeLayout
+                        android:layout_width="35dp"
+                        android:layout_height="20dp">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:tint="@color/green_500"
+                            app:srcCompat="@drawable/shape_round_corner" />
+
+                        <TextView
+                            android:id="@+id/textViewPointsWritten"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:text="0"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                            android:textColor="@android:color/white" />
+
+                    </RelativeLayout>
+
                 </LinearLayout>
 
             </LinearLayout>
+
+
 
             <View
                 android:layout_width="match_parent"

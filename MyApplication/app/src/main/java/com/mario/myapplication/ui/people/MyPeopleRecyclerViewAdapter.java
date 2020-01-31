@@ -56,14 +56,16 @@ public class MyPeopleRecyclerViewAdapter extends RecyclerView.Adapter<MyPeopleRe
             }
         });
 
-        holder.action.setOnClickListener(v -> {
+        /* holder.action.setOnClickListener(v -> {
             if(holder.action.getDrawable().equals(R.drawable.ic_person_add))
                 holder.action.setImageResource(R.drawable.ic_delete);
             else
                 holder.action.setImageResource(R.drawable.ic_person_add);
-        });
 
-        holder.picture.setOnClickListener(v -> {
+        });
+        */
+
+        holder.mView.setOnClickListener(v -> {
             PeopleDetailsFragment f = new PeopleDetailsFragment(holder.mItem.get_id());
             fragmentManager.beginTransaction().replace(R.id.contenedor, f).commit();
         });
@@ -78,20 +80,15 @@ public class MyPeopleRecyclerViewAdapter extends RecyclerView.Adapter<MyPeopleRe
         public final View mView;
         public final TextView name;
         public final TextView country;
-    //    public final TextView idUser;
         public final ImageView picture;
-        public final ImageButton action;
         public PeopleResponse mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
             name = view.findViewById(R.id.user_name);
-       //     idUser = view.findViewById(R.id.idUser);
             country = view.findViewById(R.id.country);
             picture = view.findViewById(R.id.profilePic);
-            action = view.findViewById(R.id.actionButton);
-
         }
 
     }

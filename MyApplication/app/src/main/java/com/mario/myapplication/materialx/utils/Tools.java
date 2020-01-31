@@ -44,7 +44,7 @@ import com.bumptech.glide.request.transition.DrawableCrossFadeFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.mario.myapplication.R;
 import com.mario.myapplication.materialx.model.DeviceInfo;
-import com.mario.myapplication.ui.ActivityWebView;
+import com.mario.myapplication.ui.common.ActivityWebView;
 
 import java.net.URI;
 import java.net.URISyntaxException;

@@ -57,10 +57,6 @@ public class PeopleDetailsFragment extends Fragment {
     TextView textViewEmailWritten;
     TextView textViewPoisWritten;
     TextView texViewCountryWritten;
-    private PeopleViewModel mViewModel;
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     private OnFragmentInteractionListener mListener;
 

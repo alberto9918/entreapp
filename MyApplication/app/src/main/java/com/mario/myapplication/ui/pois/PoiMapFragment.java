@@ -2,6 +2,7 @@ package com.mario.myapplication.ui.pois;
 
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -40,9 +41,7 @@ import com.mario.myapplication.responses.ResponseContainer;
 import com.mario.myapplication.retrofit.generator.AuthType;
 import com.mario.myapplication.retrofit.generator.ServiceGenerator;
 import com.mario.myapplication.retrofit.services.PoiService;
-import com.mario.myapplication.ui.pois.details.PoiDetailsFragment;
-import com.mario.myapplication.ui.pois.list.PoiListFragment;
-import com.mario.myapplication.ui.pois.qrScanner.QrScannerFragment;
+import com.mario.myapplication.ui.pois.list.PoiListListener;
 import com.mario.myapplication.util.UtilToken;
 
 import java.util.Objects;
@@ -64,13 +63,11 @@ public class PoiMapFragment extends Fragment implements OnMapReadyCallback {
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private boolean mLocationPermissionGranted;
     private Location mLastKnownLocation;
+    private PoiListListener mListener;
 
     // Retrofit
     private String jwt;
 
-    // QR Button
-    private static final int PERMISSIONS_REQUEST_ACCESS_CAMERA = 1;
-    private boolean mCameraPermissionGranted;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -87,7 +84,7 @@ public class PoiMapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.menu_poi_map_goList) {
-            Objects.requireNonNull(getFragmentManager()).beginTransaction().replace(R.id.contenedor, new PoiListFragment()).commit();
+            mListener.showPoiList();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -113,10 +110,9 @@ public class PoiMapFragment extends Fragment implements OnMapReadyCallback {
         });
 
         v.findViewById(R.id.btn_scan_qr).setOnClickListener(view -> {
-            Objects.requireNonNull(getFragmentManager()).beginTransaction()
-                    .replace(R.id.contenedor, new QrScannerFragment())
-                    .commit();
+            mListener.showQrScanner();
         });
+
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(Objects.requireNonNull(getContext()));
         ((SupportMapFragment) Objects.requireNonNull(getChildFragmentManager().findFragmentById(R.id.map))).getMapAsync(this);
 //        btnGetLocation();
@@ -258,36 +254,26 @@ public class PoiMapFragment extends Fragment implements OnMapReadyCallback {
         mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(Objects.requireNonNull(getContext()), R.raw.poi_map_style));
 
         mMap.setOnMarkerClickListener(marker -> {
-            Objects.requireNonNull(getFragmentManager()).beginTransaction()
-                    .replace(R.id.contenedor, new PoiDetailsFragment(Objects.requireNonNull(marker.getTag()).toString()))
-                    .commit();
+            mListener.goPoiDetails(marker.getTag().toString());
             return false;
         });
     }
 
-    /** Check if camera permissions are granted. If not, ask for it. **/
-    private void getCameraPermissions() {
-        if (ContextCompat.checkSelfPermission(Objects.requireNonNull(getContext()),
-                Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-            mCameraPermissionGranted = true;
-        } else {
-            ActivityCompat.requestPermissions(Objects.requireNonNull(this.getActivity()),
-                    new String[]{Manifest.permission.CAMERA},
-                    PERMISSIONS_REQUEST_ACCESS_CAMERA);
-        }
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof PoiListListener) {
+            mListener = (PoiListListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement PoiListListener");
+        }
     }
 
-    /** Action done when QR Button is clicked **/
-    private void btnQRClick() {
-        Objects.requireNonNull(getView()).findViewById(R.id.btn_scan_qr).setOnClickListener(view -> {
-            if (mCameraPermissionGranted) {
-                Objects.requireNonNull(getFragmentManager()).beginTransaction()
-                        .replace(R.id.contenedor, new QrScannerFragment())
-                        .commit();
-            } else {
-                getCameraPermissions();
-            }
-        });
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
     }
 }

@@ -73,7 +73,7 @@ public class PoiListAdapter extends RecyclerView.Adapter<PoiListAdapter.ViewHold
         viewHolder.distance.setText(viewHolder.mItem.getStatus());
 
         Glide.with(context).load(viewHolder.mItem.getCoverImage()).into(viewHolder.bgImage);
-        viewHolder.bgImage.setOnClickListener(v -> mListener.goPoiDetails(v, viewHolder.mItem.getId()));
+        viewHolder.bgImage.setOnClickListener(v -> mListener.goPoiDetails(viewHolder.mItem.getId()));
     }
 
     @Override

@@ -1,6 +1,6 @@
 <resources>
 
-    <style name="AppTheme" parent="BaseTheme" />
+    <style name="AppTheme" parent="@style/BaseTheme" />
 
     <style name="BaseTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
@@ -10,6 +10,19 @@
         <item name="windowActionModeOverlay">true</item>
         <item name="android:actionModeBackground">@color/blue_grey_600</item>
         <item name="android:dialogTheme">@style/Dialog.Theme</item>
+
+    </style>
+
+    <style name="RippleStyleGreen" parent="RippleStyleWhite">
+        <item name="mrl_rippleColor">#8043A047</item>
+    </style>
+
+    <!--style for ripple library-->
+    <style name="RippleStyleWhite">
+        <item name="mrl_rippleOverlay">true</item>
+        <item name="mrl_rippleColor">#80FFFFFF</item>
+        <item name="mrl_rippleHover">true</item>
+        <item name="mrl_rippleAlpha">0.2</item>
     </style>
 
     <style name="Dialog.Theme" parent="Theme.AppCompat.Light.Dialog">

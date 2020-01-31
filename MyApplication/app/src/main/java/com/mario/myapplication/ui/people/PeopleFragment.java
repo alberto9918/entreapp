@@ -13,6 +13,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -104,18 +105,12 @@ public class PeopleFragment extends Fragment {
         }*/
     }
 
-    public void loadItemsFragment (View view) {
-        name = view.findViewById(R.id.user_name);
-        action = view.findViewById(R.id.actionButton);
-      //  id = view.findViewById(R.id.idUser);
-        picture = view.findViewById(R.id.profilePic);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_people_list, container, false);
-        loadItemsFragment(view);
+
         // Set the adapter
         if (view instanceof RecyclerView) {
             ctx = view.getContext();

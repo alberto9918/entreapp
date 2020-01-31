@@ -1,4 +1,4 @@
-package com.mario.myapplication.ui;
+package com.mario.myapplication.ui.common;
 
 import android.app.Activity;
 import android.content.Context;
@@ -21,7 +21,6 @@ import android.widget.ProgressBar;
 
 import com.mario.myapplication.R;
 import com.mario.myapplication.materialx.utils.Tools;
-import com.mario.myapplication.ui.common.DashboardActivity;
 
 public class ActivityWebView extends AppCompatActivity {
 
