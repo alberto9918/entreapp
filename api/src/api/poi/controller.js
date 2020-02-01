@@ -36,7 +36,24 @@ export const create = ({ bodymen: { body } }, res, next) => {
   // body.coverImage = body.images[0];
   const base = _.endsWith(apiBaseUrl, '/') ? apiBaseUrl.substring(0, apiBaseUrl.length - 2) : apiBaseUrl
   body.qrCode = base + '/pois/qr/' + body.uniqueName
-  Poi.create(body)
+  let newPoi = {
+    name: body.name,
+    categories: body.categories,
+    loc: body.loc,
+    uniqueName: body.uniqueName,
+    qrCode: base + '/pois/qr/' + body.uniqueName,
+    audioguides: body.audioguides,
+    description: body.description,
+    coverImage: body.coverImage,
+    images: body.images,
+    year: body.year,
+    creator: body.creator,
+    status: body.status,
+    schedule: body.schedule,
+    price: body.price
+  }
+  console.log('Nuevo poi ' + JSON.stringify(newPoi))
+  Poi.create(newPoi)
     .then(success(res, 201))
     .catch(next)
 }
@@ -139,7 +156,7 @@ export const VisitPoi = ({ params, user }, res, next) =>
     .then(success(res))
     .catch(next)
 
-/* 
+/*
  *  Genera el código Qr a partir del nombre único del POI
  */
 export const serveQrAsImg = ({ params, user, query }, res, next) => {

@@ -36,11 +36,11 @@ const { name, categories, loc, uniqueName, qrCode, audioguides, description, cov
 router.post('/',
   token({ required: true, roles: ['admin'] }),
   // body({ name, categories, loc, qrCode, audioguides, description, coverImage, images, year, creator, status, schedule, price }),
-  body({ name, categories, loc, uniqueName, audioguides, description, coverImage, images, year, creator, status, schedule, price }),
+  body({ name, categories, loc, uniqueName, qrCode, audioguides, description, coverImage, images, year, creator, status, schedule, price }),
   create)
 
 router.get('/qr/:uniqueName',
-  token({ required: true }),
+  // token({ required: true }),
   serveQrAsImg
 )
 

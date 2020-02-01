@@ -129,6 +129,7 @@ poiSchema.methods = {
       // simple view
       id: this.id,
       name: this.name,
+      qrCode: this.qrCode,
       uniqueName: this.uniqueName,
       description: this.description,
       audioguides: this.audioguides
