@@ -8,7 +8,7 @@
     "test": "jest",
     "coverage": "npm test -- --coverage",
     "postcoverage": "opn coverage/lcov-report/index.html",
-    "dev": "nodemon -i \"*.test.js\" .",
+    "dev": "nodemon .",
     "debug": "node --inspect-brk .",
     "prod": "cross-env NODE_ENV=production nodemon -i \"*.test.js\" -r dotenv-safe/config .",
     "lint": "eslint src",

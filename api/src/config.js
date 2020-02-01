@@ -20,6 +20,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 const config = {
   all: {
+    apiBaseUrl: requireProcessEnv('API_BASE_URL'),
     env: process.env.NODE_ENV || 'development',
     root: path.join(__dirname, '..'),
     port: process.env.PORT || 9000,

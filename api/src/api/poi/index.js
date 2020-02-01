@@ -2,12 +2,12 @@ import { Router } from 'express'
 import { middleware as query } from 'querymen'
 import { middleware as body } from 'bodymen'
 import { token } from '../../services/passport'
-import { create, index, show, update, destroy, showTranslated, VisitPoi } from './controller'
+import { create, index, show, update, destroy, showTranslated, VisitPoi, serveQrAsImg } from './controller'
 import { schema } from './model'
 export Poi, { schema } from './model'
 
 const router = new Router()
-const { name, categories, loc, qrCode, audioguides, description, coverImage, images, year, creator, status, schedule, price } = schema.tree
+const { name, categories, loc, uniqueName, qrCode, audioguides, description, coverImage, images, year, creator, status, schedule, price } = schema.tree
 
 /**
  * @api {post} /pois Create poi
@@ -35,8 +35,14 @@ const { name, categories, loc, qrCode, audioguides, description, coverImage, ima
  */
 router.post('/',
   token({ required: true, roles: ['admin'] }),
-  body({ name, categories, loc, qrCode, audioguides, description, coverImage, images, year, creator, status, schedule, price }),
+  // body({ name, categories, loc, qrCode, audioguides, description, coverImage, images, year, creator, status, schedule, price }),
+  body({ name, categories, loc, uniqueName, audioguides, description, coverImage, images, year, creator, status, schedule, price }),
   create)
+
+router.get('/qr/:uniqueName',
+  token({ required: true }),
+  serveQrAsImg
+)
 
 /**
  * @api {get} /pois Retrieve pois
@@ -133,7 +139,7 @@ router.delete('/:id',
   destroy)
 
 /**
- * @api {put} /pois/visit/:id Update userVisited, userBadges and retrieve Poi
+ * @api {put} /pois/visit/:uniqueName Update userVisited, userBadges and retrieve Poi
  * @apiName RetrievePoi
  * @apiGroup Poi
  * @apiPermission user
@@ -143,9 +149,8 @@ router.delete('/:id',
  * @apiError 404 Poi not found.
  * @apiError 401 user access only.
  */
-router.put('/visit/:id',
+router.put('/visit/:uniqueName',
   token({ required: true }),
   VisitPoi)
 
 export default router
-

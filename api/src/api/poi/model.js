@@ -10,16 +10,6 @@ const poiSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Category'
   }],
-  // coordinates: {
-  //   lat: {
-  //     type: Number,
-  //     required: true
-  //   },
-  //   lng: {
-  //     type: Number,
-  //     required: true
-  //   }
-  // },
   loc: {
     type: {
       type: String,
@@ -29,6 +19,10 @@ const poiSchema = new Schema({
       type: [Number],
       index: '2dsphere'
     }
+  },
+  uniqueName: {
+    type: String,
+    unique: true
   },
   qrCode: {
     type: String
@@ -117,12 +111,13 @@ const poiSchema = new Schema({
 })
 
 poiSchema.methods = {
-  view(full) {
+  view (full) {
     const view = {
       // simple view
       id: this.id,
       name: this.name,
       categories: this.categories,
+      uniqueName: this.uniqueName,
       qrCode: this.qrCode,
       description: this.description,
       coverImage: this.coverImage,
@@ -134,14 +129,16 @@ poiSchema.methods = {
       // simple view
       id: this.id,
       name: this.name,
+      uniqueName: this.uniqueName,
       description: this.description,
-      audioguides: this.audioguides,
+      audioguides: this.audioguides
     }
     const fullView = {
       // simple view
       id: this.id,
       name: this.name,
       categories: this.categories,
+      uniqueName: this.uniqueName,
       qrCode: this.qrCode,
       description: this.description,
       coverImage: this.coverImage,
@@ -152,19 +149,18 @@ poiSchema.methods = {
       images: this.images,
       status: this.status,
       schedule: this.schedule,
-      price: this.price,
+      price: this.price
     }
     switch (full) {
       case 0:
-        return view;
+        return view
       case 1:
-        return fullView;
+        return fullView
       case 2:
-        return translationView;
+        return translationView
       default:
-        return view;
+        return view
     }
-
   }
 }
 
