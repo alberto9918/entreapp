@@ -190,6 +190,78 @@ export const existsUniqueName = ({ params }, res, next) => {
     .catch(next)
 }
 
+/*
+  Permite añadir un POI como favorito para el usuario logueado
+*/
+export const savePoiAsFav = ({ params, user }, res, next) => {
+  if (user.favs.indexOf(params.id) === -1) {
+    user.favs.push(params.id)
+    user.save()
+  }
+  res.status(200).json(user.view(true))
+}
+
+/*
+  Permite añadir un POI como favorito para el usuario logueado
+*/
+export const deletePoiAsFav = ({ params, user }, res, next) => {
+  const index = user.favs.indexOf(params.id)
+  if (index !== -1) {
+    user.favs.splice(index, 1)
+    user.save()
+  }
+  res.status(200).json(user.view(true))
+}
+
+/*
+  Permite obtener los POIs favoritos de un usuario
+*/
+export const getFavorites = ({ user }, res, next) => {
+  const userLogged = res.req.user
+  Poi.count({_id: { $in: userLogged.favs }})
+    .then(count => Poi.find({_id: { $in: userLogged.favs }}).populate('categories', 'id name')
+      .then((pois) => ({
+        count,
+        rows: pois.map((poi) => {
+          poi.set('fav', true)
+          if (userLogged.visited.length != 0) {
+            userLogged.visited.forEach(userVisited => {
+              if (_.isEqual(userVisited.toString(), poi.id)) { poi.set('visited', true) } else { poi.set('visited', false) }
+            })
+          } else { poi.set('visited', false) }
+          return poi
+        })
+      }))
+    )
+    .then(success(res))
+    .catch(next)
+}
+
+/*
+  Permite obtener los POIs visitados por un usuario
+*/
+export const getVisited = ({ user }, res, next) => {
+  const userLogged = res.req.user
+  Poi.count({_id: { $in: userLogged.visited }})
+    .then(count => Poi.find({_id: { $in: userLogged.visited }}).populate('categories', 'id name')
+      .then((pois) => ({
+        count,
+        rows: pois.map((poi) => {
+          if (userLogged.favs.length != 0) {
+            userLogged.favs.forEach(userFav => {
+              if (_.isEqual(userFav.toString(), poi.id)) { poi.set('fav', true) } else { poi.set('fav', false) }
+            })
+          } else { poi.set('fav', false) }
+          poi.set('visited', true)
+          return poi
+        })
+      }))
+    )
+    .then(success(res))
+    .catch(next)
+}
+
+
 /** Function used to calculate the distance between 2 POIs */
 function distance (lat1, lon1, lat2, lon2) {
   var p = Math.PI / 180

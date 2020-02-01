@@ -2,7 +2,7 @@ import { Router } from 'express'
 import { middleware as query } from 'querymen'
 import { middleware as body } from 'bodymen'
 import { token } from '../../services/passport'
-import { create, index, show, update, destroy, showTranslated, VisitPoi, serveQrAsImg, existsUniqueName } from './controller'
+import { create, index, show, update, destroy, showTranslated, VisitPoi, serveQrAsImg, existsUniqueName, savePoiAsFav, deletePoiAsFav, getFavorites, getVisited } from './controller'
 import { schema } from './model'
 export Poi, { schema } from './model'
 
@@ -40,13 +40,33 @@ router.post('/',
   create)
 
 router.get('/qr/:uniqueName',
-  // token({ required: true }),
+  token({ required: true }),
   serveQrAsImg
 )
 
 router.get('/exists/:uniqueName',
   token({ required: true }),
   existsUniqueName
+)
+
+router.put('/fav/add/:id',
+  token({ required: true }),
+  savePoiAsFav
+)
+
+router.put('/fav/del/:id',
+  token({ required: true }),
+  deletePoiAsFav
+)
+
+router.get('/favs',
+  token({ required: true }),
+  getFavorites
+)
+
+router.get('/visited',
+  token({ required: true }),
+  getVisited
 )
 
 /**
