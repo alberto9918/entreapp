@@ -2,7 +2,7 @@ import { Router } from 'express'
 import { middleware as query } from 'querymen'
 import { middleware as body } from 'bodymen'
 import { token } from '../../services/passport'
-import { create, index, show, update, destroy, showTranslated, VisitPoi, serveQrAsImg } from './controller'
+import { create, index, show, update, destroy, showTranslated, VisitPoi, serveQrAsImg, existsUniqueName } from './controller'
 import { schema } from './model'
 export Poi, { schema } from './model'
 
@@ -42,6 +42,11 @@ router.post('/',
 router.get('/qr/:uniqueName',
   token({ required: true }),
   serveQrAsImg
+)
+
+router.get('/exists/:uniqueName',
+  token({ required: true }),
+  existsUniqueName
 )
 
 /**

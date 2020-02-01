@@ -161,6 +161,18 @@ export const serveQrAsImg = ({ params, user, query }, res, next) => {
     })
     .catch(next)
 }
+/*
+  Comprueba si el uniqueName ya existe, para no insertarlo duplicado
+  Devuelve 200 si existe; en este caso no se debería usar
+  Devuelve 404 si no existe; en este caso sí se puede usar como uniqueName
+*/
+export const existsUniqueName = ({ params }, res, next) => {
+  Poi.findOne({ uniqueName: params.uniqueName }, 'name uniqueName')
+    .then(notFound(res))
+    .then(success(res))
+    .catch(next)
+}
+
 /** Function used to calculate the distance between 2 POIs */
 function distance (lat1, lon1, lat2, lon2) {
   var p = Math.PI / 180
