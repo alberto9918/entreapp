@@ -115,6 +115,7 @@ export class PoiEditComponent implements OnInit {
       status: [this.poi.status, Validators.compose([Validators.required])],
       schedule: [this.poi.schedule, Validators.compose([Validators.required])],
       price: [this.poi.price],
+      uniqueName: [this.poi.uniqueName]
     });
   }
 

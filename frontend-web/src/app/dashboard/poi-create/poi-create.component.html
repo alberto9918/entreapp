@@ -69,8 +69,12 @@
         </mat-form-field>
 
         <!--Autor-->
-        <mat-form-field class="w-50">
+        <mat-form-field width="30%">
           <input matInput placeholder="Autor" type="text" [formControl]="form.controls['creator']" readonly>
+        </mat-form-field>
+
+        <mat-form-field width="30%">
+          <input matInput placeholder="UniqueName" type="text" [formControl]="form.controls['uniqueName']" required>
         </mat-form-field>
 
         <div>
