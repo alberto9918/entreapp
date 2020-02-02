@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.mario.myapplication.R;
 import com.mario.myapplication.responses.PoiResponse;
 import com.mario.myapplication.responses.UserResponse;
@@ -72,7 +73,10 @@ public class PoiListAdapter extends RecyclerView.Adapter<PoiListAdapter.ViewHold
         viewHolder.title.setText(viewHolder.mItem.getName());
         viewHolder.distance.setText(viewHolder.mItem.getStatus());
 
-        Glide.with(context).load(viewHolder.mItem.getCoverImage()).into(viewHolder.bgImage);
+        Glide.with(context)
+                .load(viewHolder.mItem.getCoverImage())
+                .apply(new RequestOptions().centerCrop())
+                .into(viewHolder.bgImage);
         viewHolder.bgImage.setOnClickListener(v -> mListener.goPoiDetails(viewHolder.mItem.getId()));
     }
 

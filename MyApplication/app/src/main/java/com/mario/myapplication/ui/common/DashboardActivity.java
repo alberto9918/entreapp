@@ -35,6 +35,7 @@ import com.mario.myapplication.ui.categories.CategoryFragment;
 import com.mario.myapplication.ui.people.PeopleFragment;
 import com.mario.myapplication.ui.people.details.PeopleDetailsFragment;
 import com.mario.myapplication.ui.pois.PoiMapFragment;
+import com.mario.myapplication.ui.pois.details.DetallePoiActivity;
 import com.mario.myapplication.ui.pois.details.PoiDetailsFragment;
 import com.mario.myapplication.ui.pois.list.PoiListFragment;
 import com.mario.myapplication.ui.pois.list.PoiListListener;
@@ -195,8 +196,11 @@ public class DashboardActivity extends AppCompatActivity implements CategoryFrag
     @Override
     public void goPoiDetails(String id) {
         showMap = false;
-        fragmentChanger = getSupportFragmentManager().beginTransaction().replace(R.id.contenedor, new PoiDetailsFragment(id));
-        fragmentChanger.commit();
+        //fragmentChanger = getSupportFragmentManager().beginTransaction().replace(R.id.contenedor, new PoiDetailsFragment(id));
+        //fragmentChanger.commit();
+        Intent i = new Intent(this, DetallePoiActivity.class);
+        i.putExtra("id", id);
+        startActivity(i);
     }
 
     @Override

@@ -19,7 +19,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ui.pois.qrScanner.QrCodeActivity"></activity>
+        <activity android:name=".ui.pois.details.DetallePoiActivity"></activity>
+        <activity android:name=".ui.pois.qrScanner.QrCodeActivity" />
         <activity
             android:name=".ui.profile.ProfileDarkActivity"
             android:screenOrientation="portrait" />

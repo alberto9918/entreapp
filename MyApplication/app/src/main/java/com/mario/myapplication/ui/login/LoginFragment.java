@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -33,10 +34,12 @@ import retrofit2.Response;
 public class LoginFragment extends Fragment {
     @BindView(R.id.email) TextInputEditText email_input;
     @BindView(R.id.password) TextInputEditText password_input;
-    @BindView(R.id.button_login)
-    Button button_login;
+    @BindView(R.id.button_login) Button button_login;
+    @BindView(R.id.textViewSignUp) TextView tv_signup;
 
     Context ctx;
+    private IAuthListener mListener;
+
 
     public static LoginFragment newInstance() {
 
@@ -58,6 +61,13 @@ public class LoginFragment extends Fragment {
         if(UtilToken.getToken(ctx) != null) {
             startActivity(new Intent(ctx, DashboardActivity.class));
         }
+
+        tv_signup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onGoToSignUp();
+            }
+        });
         return root;
     }
 
@@ -101,4 +111,20 @@ public class LoginFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof IAuthListener) {
+            mListener = (IAuthListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement IAuthListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
 }

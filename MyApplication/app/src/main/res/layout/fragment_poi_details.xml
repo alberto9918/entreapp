@@ -61,7 +61,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/rb_poi_rating">
 
-                <com.google.android.material.chip.ChipGroup
+                <LinearLayout
+                    android:orientation="horizontal"
                     android:id="@+id/cg_categories"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

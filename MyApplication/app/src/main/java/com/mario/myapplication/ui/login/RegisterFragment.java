@@ -1,87 +1,97 @@
 package com.mario.myapplication.ui.login;
 
+
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
-import android.text.Editable;
+
+import androidx.fragment.app.Fragment;
+
+import android.os.Handler;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import com.mario.myapplication.R;
 import com.mario.myapplication.responses.LanguageResponse;
 import com.mario.myapplication.responses.LoginResponse;
 import com.mario.myapplication.responses.Register;
 import com.mario.myapplication.responses.ResponseContainer;
-import com.mario.myapplication.retrofit.generator.AuthType;
 import com.mario.myapplication.retrofit.generator.ServiceGenerator;
 import com.mario.myapplication.retrofit.services.LanguageService;
 import com.mario.myapplication.retrofit.services.LoginService;
 import com.mario.myapplication.ui.common.DashboardActivity;
-import com.mario.myapplication.util.UserStringList;
 import com.mario.myapplication.util.UtilToken;
-import com.transitionseverywhere.ChangeBounds;
-import com.transitionseverywhere.Transition;
-import com.transitionseverywhere.TransitionManager;
-import com.transitionseverywhere.TransitionSet;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import butterknife.BindViews;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class SignUpFragment extends Fragment {
-    @BindViews(value = {R.id.email_input_edit_sign,
-            R.id.password_input_edit_sign,
-            R.id.confirm_password_edit})
-    protected List<TextInputEditText> views;
-    EditText email_input, password_input, confirm_password;
-    Spinner language;
+public class RegisterFragment extends Fragment {
+    @BindView(R.id.progress_bar) ProgressBar progress_bar;
+    @BindView(R.id.fab) FloatingActionButton fab;
+    @BindView(R.id.content) View parent_view;
+    @BindView(R.id.textViewLogin) TextView tv_login;
+    @BindView(R.id.email_input_edit_sign) TextView email_input;
+    @BindView(R.id.password_input_edit_sign) TextView password_input;
+    @BindView(R.id.confirm_password_edit) TextView confirm_password;
+    @BindView(R.id.language) Spinner language;
+
     Context ctx = this.getContext();
     List<LanguageResponse> languageList = new ArrayList<>();
+    private IAuthListener mListener;
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_signup, container, false);
-        ButterKnife.bind(this, root);
-        return root;
+    public static RegisterFragment newInstance() {
+        Bundle args = new Bundle();
+        RegisterFragment fragment = new RegisterFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
-    // Acciones al crear el fragmento
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        ctx = view.getContext();
-        email_input = getActivity().findViewById(R.id.email_input_edit_sign);
-        password_input = getActivity().findViewById(R.id.password_input_edit_sign);
-        confirm_password = getActivity().findViewById(R.id.confirm_password_edit);
-        language = getActivity().findViewById(R.id.language);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View v = inflater.inflate(R.layout.fragment_register, container, false);
+
+        ButterKnife.bind(this, v);
+        ctx = getActivity();
+
+        tv_login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mListener.onGoToLogin();
+            }
+        });
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                doSignUp();
+            }
+        });
 
         loadAllLanguages();
-    }
 
+
+        return v;
+    }
 
     public void loadAllLanguages(){
         LanguageService service = ServiceGenerator.createService(LanguageService.class);
@@ -115,8 +125,19 @@ public class SignUpFragment extends Fragment {
         });
     }
 
-
     public void doSignUp() {
+        progress_bar.setVisibility(View.VISIBLE);
+        fab.setAlpha(0f);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                progress_bar.setVisibility(View.GONE);
+                fab.setAlpha(1f);
+                Snackbar.make(parent_view, "Login data submitted", Snackbar.LENGTH_SHORT).show();
+            }
+        }, 1000);
+
         // Recoger los datos del formulario
         String email = email_input.getText().toString();
         String password = password_input.getText().toString();
@@ -145,6 +166,7 @@ public class SignUpFragment extends Fragment {
                     if (response.code() == 201) {
                         // éxito
                         UtilToken.setToken(ctx, response.body().getToken());
+                        UtilToken.setId(ctx, response.body().getUser().get_Id());
                         startActivity(new Intent(ctx, DashboardActivity.class));
                     } else {
                         // error
@@ -160,5 +182,24 @@ public class SignUpFragment extends Fragment {
                 }
             });
         }
+
     }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof IAuthListener) {
+            mListener = (IAuthListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement IAuthListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
 }

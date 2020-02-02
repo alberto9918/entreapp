@@ -102,18 +102,18 @@
             android:id="@+id/button_login"
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="32dp"
             android:background="@drawable/btn_rounded_green_300"
             android:text="@string/log_in_label"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/textView2"
+            app:layout_constraintBottom_toTopOf="@+id/textViewSignUp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/textViewSignUp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
