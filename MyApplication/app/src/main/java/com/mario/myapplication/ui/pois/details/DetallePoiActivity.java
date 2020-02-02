@@ -3,6 +3,7 @@ package com.mario.myapplication.ui.pois.details;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatRatingBar;
+import androidx.appcompat.widget.AppCompatSeekBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.PagerAdapter;
@@ -10,8 +11,12 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.AssetFileDescriptor;
 import android.graphics.PorterDuff;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,14 +24,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.balysv.materialripple.MaterialRippleLayout;
 import com.google.android.gms.common.util.ArrayUtils;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.mario.myapplication.R;
 import com.mario.myapplication.materialx.utils.Tools;
 import com.mario.myapplication.model.Image;
@@ -35,6 +44,7 @@ import com.mario.myapplication.retrofit.generator.AuthType;
 import com.mario.myapplication.retrofit.generator.ServiceGenerator;
 import com.mario.myapplication.retrofit.services.PoiService;
 import com.mario.myapplication.util.Constantes;
+import com.mario.myapplication.util.MusicUtils;
 import com.mario.myapplication.util.UtilToken;
 
 import java.lang.reflect.Array;
@@ -60,6 +70,22 @@ public class DetallePoiActivity extends AppCompatActivity {
     AppCompatRatingBar ratingBarPoi;
 
     private static List<String> array_image_poi = new ArrayList<>();
+
+
+    // MEDIA PLAYER
+    private AppCompatSeekBar seek_song_progressbar;
+    private FloatingActionButton bt_play;
+    private TextView tv_song_current_duration, tv_song_total_duration;
+
+    private MediaPlayer mp;
+    // Handler to update UI timer, progress bar etc,.
+    private Handler mHandler = new Handler();
+
+    //private SongsManager songManager;
+    private MusicUtils utils;
+
+    boolean repetir = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +122,12 @@ public class DetallePoiActivity extends AppCompatActivity {
         tvReviews.setText(poi.getStars() + "/5.0");
         tvTitulo.setText(Html.fromHtml(poi.getName()));
         tvInfo.setText(poi.getSchedule() + " ["+poi.getStatus()+"]");
-        tvPrecio.setText("€ "+poi.getPrice());
+        if(poi.getPrice() == 0.0f) {
+            tvPrecio.setText("Gratis");
+        } else {
+            tvPrecio.setText("€ "+poi.getPrice());
+        }
+
         tvDescripcion.setText(Html.fromHtml(poi.getDescription().getTranslations()[0].getTranslatedFile()));
 
         adapterImageSlider = new AdapterImageSlider(this, new ArrayList<Image>());
@@ -129,6 +160,155 @@ public class DetallePoiActivity extends AppCompatActivity {
             public void onPageScrollStateChanged(int state) {
             }
         });
+    }
+
+    private void initPlayer() {
+        parent_view = findViewById(R.id.parent_view);
+        seek_song_progressbar = (AppCompatSeekBar) findViewById(R.id.seek_song_progressbar);
+        bt_play = (FloatingActionButton) findViewById(R.id.bt_play);
+
+        // set Progress bar values
+        seek_song_progressbar.setProgress(0);
+        seek_song_progressbar.setMax(MusicUtils.MAX_PROGRESS);
+
+        tv_song_current_duration = (TextView) findViewById(R.id.tv_song_current_duration);
+        tv_song_total_duration = (TextView) findViewById(R.id.tv_song_total_duration);
+
+        // Media Player
+        mp = new MediaPlayer();
+        mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                // Changing button image to play button
+                bt_play.setImageResource(R.drawable.ic_play_arrow);
+            }
+        });
+
+        try {
+            mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            mp.setDataSource(Constantes.FILES_BASE_URL + poi.getAudioguides().getTranslations()[0].getTranslatedFile());
+            mp.prepare();
+        } catch (Exception e) {
+            Snackbar.make(parent_view, "Cannot load audio file", Snackbar.LENGTH_SHORT).show();
+        }
+
+        utils = new MusicUtils();
+        // Listeners
+        seek_song_progressbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                // remove message Handler from updating progress bar
+                mHandler.removeCallbacks(mUpdateTimeTask);
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                mHandler.removeCallbacks(mUpdateTimeTask);
+                int totalDuration = mp.getDuration();
+                int currentPosition = utils.progressToTimer(seekBar.getProgress(), totalDuration);
+
+                // forward or backward to certain seconds
+                mp.seekTo(currentPosition);
+
+                // update timer progress again
+                mHandler.post(mUpdateTimeTask);
+            }
+        });
+        buttonPlayerAction();
+        updateTimerAndSeekbar();
+    }
+
+    /**
+     * Play button click event plays a song and changes button to pause image
+     * pauses a song and changes button to play image
+     */
+    private void buttonPlayerAction() {
+        bt_play.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                // check for already playing
+                if (mp.isPlaying()) {
+                    mp.pause();
+                    // Changing button image to play button
+                    bt_play.setImageResource(R.drawable.ic_play_arrow);
+                } else {
+                    // Resume song
+                    mp.start();
+                    // Changing button image to pause button
+                    bt_play.setImageResource(R.drawable.ic_pause);
+                    // Updating progress bar
+                    mHandler.post(mUpdateTimeTask);
+                }
+
+            }
+        });
+    }
+
+    public void controlClick(View v) {
+        int id = v.getId();
+        switch (id) {
+            case R.id.bt_repeat: {
+                toggleButtonColor((ImageButton) v);
+                break;
+            }
+        }
+    }
+
+    private boolean toggleButtonColor(ImageButton bt) {
+        String selected = (String) bt.getTag(bt.getId());
+        if (repetir) { // selected
+            mp.setLooping(false);
+            repetir = false;
+            bt.setColorFilter(getResources().getColor(R.color.grey_90), PorterDuff.Mode.SRC_ATOP);
+            return false;
+        } else {
+            mp.setLooping(true);
+            repetir = true;
+            bt.setColorFilter(getResources().getColor(R.color.green_500), PorterDuff.Mode.SRC_ATOP);
+            Snackbar.make(parent_view, "Repetir audioguía", Snackbar.LENGTH_SHORT).show();
+
+            return true;
+        }
+    }
+
+    /**
+     * Background Runnable thread
+     */
+    private Runnable mUpdateTimeTask = new Runnable() {
+        public void run() {
+            updateTimerAndSeekbar();
+            // Running this thread after 10 milliseconds
+            if (mp.isPlaying()) {
+                mHandler.postDelayed(this, 100);
+            }
+        }
+    };
+
+    private void updateTimerAndSeekbar() {
+        long totalDuration = mp.getDuration();
+        long currentDuration = mp.getCurrentPosition();
+
+        // Displaying Total Duration time
+        tv_song_total_duration.setText(utils.milliSecondsToTimer(totalDuration));
+        // Displaying time completed playing
+        tv_song_current_duration.setText(utils.milliSecondsToTimer(currentDuration));
+
+        // Updating progress bar
+        int progress = (int) (utils.getProgressSeekBar(currentDuration, totalDuration));
+        seek_song_progressbar.setProgress(progress);
+    }
+
+    // stop player when destroy
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mHandler.removeCallbacks(mUpdateTimeTask);
+        mp.release();
     }
 
     private void addBottomDots(LinearLayout layout_dots, int size, int current) {
@@ -183,6 +363,7 @@ public class DetallePoiActivity extends AppCompatActivity {
                     array_image_poi = new ArrayList<>();
                     array_image_poi.addAll(ArrayUtils.toArrayList(poi.getImages()));
                     initComponent();
+                    initPlayer();
                 }
             }
 

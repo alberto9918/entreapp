@@ -51,7 +51,7 @@ import java.util.Objects;
 
 public class DashboardActivity extends AppCompatActivity implements CategoryFragment.OnListFragmentCategoryInteractionListener, BadgeListener, BadgeDetailListener, RouteListener, PeopleFragment.OnListFragmentUserInteractionListener, PoiListListener, PeopleDetailsFragment.OnFragmentInteractionListener {
     FragmentTransaction fragmentChanger;
-    private boolean showMap = true;
+    private boolean showMap = false;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     // QR Button
     private static final int PERMISSIONS_REQUEST_ACCESS_CAMERA = 2;

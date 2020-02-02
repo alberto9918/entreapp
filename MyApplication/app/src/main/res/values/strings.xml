@@ -77,5 +77,6 @@
     <string name="welcome_login_subtitle">Inicia sesión para continuar</string>
     <string name="action_show_map">Mostrar Mapa</string>
     <string name="action_menu_profile">Mi perfil</string>
+    <string name="free">Gratis</string>
 
 </resources>

@@ -233,7 +233,7 @@ public class PoiMapFragment extends Fragment implements OnMapReadyCallback {
                         mMap.addMarker(new MarkerOptions()
                                 .position(new LatLng(i.getLoc().getCoordinates()[0], i.getLoc().getCoordinates()[1]))
                                 .title(i.getName())
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_restaurant_icon))
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker))
                         ).setTag(i.getId());
                     }
                 }

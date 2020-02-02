@@ -16,9 +16,10 @@
         android:title="@string/filter"
         app:showAsAction="always">
         <menu>
-            <item android:title="@string/visited" />
-            <item android:title="@string/favorites" />
-            <item android:title="@string/noFilter" />
+            <item android:title="@string/free" android:id="@+id/action_filter_free" />
+            <item android:title="@string/visited" android:id="@+id/action_filter_visited" />
+            <item android:title="@string/favorites" android:id="@+id/action_filter_favs" />
+            <item android:title="@string/noFilter" android:id="@+id/action_filter_nofilter" />
         </menu>
     </item>
 
