@@ -63,7 +63,7 @@
     </mat-card>
 </div>
 
-<a mat-fab id="addFloatingButton" [matMenuTriggerFor]="menu">
+<a mat-fab id="addFloatingButton" [matMenuTriggerFor]="menu" *ngIf="authService.isAdmin()">
   <mat-icon>more_horiz</mat-icon>
 </a>
 <mat-menu #menu="matMenu">
