@@ -177,19 +177,21 @@ export const VisitPoi = ({ params, user }, res, next) =>
         Badge.find()
           .then(badges => {
             badges.map(badge => { // Para saber qué badges son los nuevos, se podría añadir un segundo array que contenga los conseguidos en esta petición
-              if (arrayContainsArray(user.visited, badge.pois)) { user.badges.push(badge.id) } 
+              if (arrayContainsArray(user.visited, badge.pois)) { user.badges.push(badge.id) }
             })
             user.save()
             return badges
           })
         poi.firstVisited = true
       }
-      return {
+      let result = {
         poi: poi,
-        newBadges : {
+        newBadges: {
           count: newBadges.length,
           badges: newBadges
         }
+      }
+      return result
     })
     .then(success(res))
     .catch(next)
