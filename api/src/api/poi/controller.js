@@ -103,23 +103,29 @@ export const showTranslated = ({ params }, res, next) => {
   // Poi.findOne({ id: query.id, 'description.translations.language': query.idUserLanguage })
   Poi.findOne({ _id: query.id })
     .then(notFound(res))
-    .then((poi) => poi ? poi.view(2) : null)
+    /* .then((poi) => {
+      console.log(JSON.stringify(poi))
+      return poi
+    }) */
+    // .then((poi) => poi ? poi.view(0) : null)
     .then((poi) => {
-      console.log(JSON.stringify(poi.description.translations))
+      // console.log(JSON.stringify(poi))
+      let spanishTranslation = _.find(poi.description.translations, (element) => {
+        return element.language.language == '5c5429bf77bca32e879271d6'
+      })
       poi.description.translations = _.filter(poi.description.translations, (element) => {
+        // console.log(JSON.stringify(element))
         return element.language.language == params.idUserLanguage
       })
-      if (poi.description.translations.length === 0) {
-        poi.description.translations.push({
-          language: poi.description.language,
-          tranlatedDescription: poi.description.spanishDescription
-        })
+      if (poi.description.translations.length == 0) {
+        console.log('No hay ninguno, se añade en castellano')
+        poi.description.translations.push(spanishTranslation)
       }
 
       poi.audioguides.translations = _.filter(poi.audioguides.translations, (element) => {
         return element.language.language == params.idUserLanguage
       })
-      console.log('Filtrada la audioguia')
+      // console.log('Filtrada la audioguia')
 
       return poi
     })
@@ -156,25 +162,34 @@ export const destroy = ({ params }, res, next) =>
  *    If user didn't visit the POI, add to UserVisited
  *    If user visited all POIs of a Medal, add to him.
  *    Devuelve el ID del poi, para poder hacer una petición de traducción **/
+
+// TODO: ¿Qué tal devolver un modelo en el que se sepa si el usuario ha conseguido un Badge?
+// Se puede pintar de alguna manera (diálogo) o similar.
 export const VisitPoi = ({ params, user }, res, next) =>
   // Poi.findById(params.id).populate('categories', 'id name')
   Poi.findOne({ uniqueName: params.uniqueName }).populate('categories', 'id name')
     .then(notFound(res))
-    .then((poi) => poi ? poi.view(1) : null)
+    .then((poi) => poi ? poi.view(1) : null) // Este objeto POI no se usa en la APP, ya que se consume del servicio de obtención de un POI traducido
     .then((poi) => {
+      let newBadges = []
       if (user.visited.indexOf(poi.id) == -1) {
         user.visited.push(poi.id)
         Badge.find()
           .then(badges => {
-            badges.map(badge => {
-              if (arrayContainsArray(user.visited, badge.pois)) { user.badges.push(badge.id) }
+            badges.map(badge => { // Para saber qué badges son los nuevos, se podría añadir un segundo array que contenga los conseguidos en esta petición
+              if (arrayContainsArray(user.visited, badge.pois)) { user.badges.push(badge.id) } 
             })
             user.save()
             return badges
           })
         poi.firstVisited = true
       }
-      return poi
+      return {
+        poi: poi,
+        newBadges : {
+          count: newBadges.length,
+          badges: newBadges
+        }
     })
     .then(success(res))
     .catch(next)
