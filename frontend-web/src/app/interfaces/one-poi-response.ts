@@ -9,6 +9,7 @@ export interface OnePoiResponse {
     }
     stars: number;
     qrCode: string;
+    uniqueName: string;
     audioguides: {
         language: {
             language: string;

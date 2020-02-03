@@ -1,3 +1,4 @@
+<h1>Points of Interest</h1>
 <div fxLayout="row wrap">
   <mat-card *ngFor="let p of POIs?.rows" class="poi-card">
     <a mat-mini-fab class="card-floating-button" [matMenuTriggerFor]="menu" *ngIf="authService.isAdmin()">
