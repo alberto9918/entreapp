@@ -101,7 +101,7 @@ export const showTranslated = ({ params, user }, res, next) => {
     // idUserLanguage: (mongoose.Types.ObjectId(params.idUserLanguage))
   }
   // Poi.findOne({ id: query.id, 'description.translations.language': query.idUserLanguage })
-  Poi.findOne({ _id: query.id })
+  Poi.findOne({ _id: query.id }).populate('categories', 'id name')
     .then(notFound(res))
     /* .then((poi) => {
       console.log(JSON.stringify(poi))
