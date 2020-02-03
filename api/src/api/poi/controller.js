@@ -92,7 +92,7 @@ export const index = ({ querymen: { query, select, cursor } }, res, next) => {
 }
 
 /** Show one poi translated to user language */
-export const showTranslated = ({ params }, res, next) => {
+export const showTranslated = ({ params, user }, res, next) => {
   console.log('Entramos en showTranslated')
   // console.log('ID: ' + params.id)
   let query = {
@@ -126,6 +126,9 @@ export const showTranslated = ({ params }, res, next) => {
         return element.language.language == params.idUserLanguage
       })
       // console.log('Filtrada la audioguia')
+
+      poi.set('fav', _.includes(user.favs, poi.id))
+      poi.set('visited', _.includes(user.visited, poi.id))
 
       return poi
     })
