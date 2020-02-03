@@ -9,15 +9,21 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/security_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:ignore="GoogleAppIndexingWarning"
-        android:networkSecurityConfig="@xml/security_config" >
+        tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".ui.pois.details.DetallePoiActivity"></activity>
+        <activity android:name=".ui.pois.qrScanner.QrCodeActivity" />
+        <activity
+            android:name=".ui.profile.ProfileDarkActivity"
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

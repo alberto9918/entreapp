@@ -234,10 +234,10 @@ public class MyProfileEditFragment extends Fragment {
                     Log.d("success editing user", "userUpdated");
 
                     //move to my profile fragment
-                    getFragmentManager()
+                    /*getFragmentManager()
                             .beginTransaction()
                             .replace(R.id.contenedor, new MyProfileFragment())
-                            .commit();
+                            .commit();*/
 
                 } else {
                     Toast.makeText(ctx, "You have to log in!", Toast.LENGTH_LONG).show();

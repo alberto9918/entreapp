@@ -61,6 +61,9 @@ public class PoiListFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_show_map: mListener.showPoiMap();
+        }
         return super.onOptionsItemSelected(item);
     }
 
