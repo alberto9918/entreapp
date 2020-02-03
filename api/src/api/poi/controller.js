@@ -160,8 +160,10 @@ export const VisitPoi = ({ params, user }, res, next) =>
  *  Genera el código Qr a partir del nombre único del POI
  */
 export const serveQrAsImg = ({ params, user, query }, res, next) => {
+  const base = _.endsWith(apiBaseUrl, '/') ? apiBaseUrl.substring(0, apiBaseUrl.length - 2) : apiBaseUrl
+  const requestBaseUrl = base + '/pois/visit/'
   Poi.findOne({ uniqueName: params.uniqueName })
-    .then((poi) => QRCode.toDataURL(poi.qrCode, {
+    .then((poi) => QRCode.toDataURL(requestBaseUrl + poi.uniqueName, {
       color: {
         dark: '#000', // Black dots
         light: '#0000' // Transparent background
