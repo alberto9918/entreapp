@@ -191,7 +191,7 @@ export const VisitPoi = ({ params, user }, res, next) =>
         poi: poi,
         newBadges: {
           count: newBadges.length,
-          badges: newBadges
+          rows: newBadges
         }
       }
       return result
