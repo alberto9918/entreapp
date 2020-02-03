@@ -12,6 +12,8 @@ export class PoiCreateDto {
             }
         ]
     };
+    uniqueName:string;
+    qrCode: string;
     categories?: string[];
     loc: {
         coordinates: number[];

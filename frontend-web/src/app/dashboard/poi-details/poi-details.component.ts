@@ -129,8 +129,12 @@ export class PoiDetailsComponent implements OnInit {
   loadCoverImage(key: String) {
     return `${environment.apiUrl}/files/` + key;
   }
+  loadQR(key: String) {
+    return  key +  '?access_token='+localStorage.getItem('token');
+  }
   
   loadImages(key: String) {
+    
     return `${environment.apiUrl}/files/` + key;
   }
   

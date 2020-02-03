@@ -22,7 +22,11 @@
 
           <p>{{poi.creator}} - {{poi.year}}</p>
 
-        </div>    
+        </div>
+        
+        <div fxLayout="column" fxFlex="100">
+          <img [src]="loadQR(poi.qrCode)" id="qrCode">
+        </div> 
         <!--<div [innerHtml]="poi.description.translations[0].translatedDescription"></div>-->
       </div>
     </mat-card>
@@ -33,6 +37,7 @@
         <p *ngIf="poi.status == 'Open'"><strong>Status:</strong> <span class="verde"> {{poi.status}}</span></p>
         <p *ngIf="poi.status == 'Close'"><strong>Status:</strong> <span class="rojo"> {{poi.status}}</span></p>
         <p><strong>Schedule: </strong>{{poi.schedule}}</p>
+        <p><strong>Unique Name: </strong>{{poi.uniqueName}}</p>
       </mat-card>
     
 </div>

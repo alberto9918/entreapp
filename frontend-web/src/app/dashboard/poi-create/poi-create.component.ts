@@ -78,6 +78,7 @@ export class PoiCreateComponent implements OnInit {
       status: [null, Validators.compose([Validators.required])],
       schedule: [null, Validators.compose([Validators.required])],
       price: [null],
+      uniqueName: [null]
     });
   }
 
@@ -97,6 +98,8 @@ export class PoiCreateComponent implements OnInit {
     }];
     newPoi.description.language = { language: this.spanishLanguage};
 
+    newPoi.uniqueName = this.form.controls['uniqueName'].value
+
     console.log(newPoi);
 
 
@@ -105,6 +108,7 @@ export class PoiCreateComponent implements OnInit {
     }, error => {
       this.snackBar.open('Error creating the POI.', 'Close', { duration: 3000 });
     });
+
   }
 
   /** Function to upload multiple images to Firebase-Firestorage */
