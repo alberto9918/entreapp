@@ -61,6 +61,9 @@ export const create = ({ bodymen: { body } }, res, next) => {
 /** Show list of all pois */
 export const index = ({ querymen: { query, select, cursor } }, res, next) => {
   const userLogged = res.req.user
+  // Se transforma para que funcione bien la comparación
+  let favoritos = userLogged.favs.map((fav) => fav.toString())
+  let visitados = userLogged.visited.map((visited) => visited.toString())
   let lat
   let lng
   if (query['loc.coordinates']) {
@@ -74,14 +77,10 @@ export const index = ({ querymen: { query, select, cursor } }, res, next) => {
         rows: pois.map((poi) => {
           if (query['loc.coordinates']) { poi.set('distance', distance(lat, lng, poi.loc.coordinates[0], poi.loc.coordinates[1])) } else { poi.set('distance', -1) }
           if (userLogged.favs.length != 0) {
-            userLogged.favs.forEach(userFav => {
-              if (_.isEqual(userFav.toString(), poi.id)) { poi.set('fav', true) } else { poi.set('fav', false) }
-            })
+            poi.set('fav', _.includes(favoritos, poi.id))
           } else { poi.set('fav', false) }
           if (userLogged.visited.length != 0) {
-            userLogged.visited.forEach(userVisited => {
-              if (_.isEqual(userVisited.toString(), poi.id)) { poi.set('visited', true) } else { poi.set('visited', false) }
-            })
+            poi.set('visited', _.includes(visitados, poi.id))
           } else { poi.set('visited', false) }
           return poi
         })
@@ -166,8 +165,6 @@ export const destroy = ({ params }, res, next) =>
  *    If user visited all POIs of a Medal, add to him.
  *    Devuelve el ID del poi, para poder hacer una petición de traducción **/
 
-// TODO: ¿Qué tal devolver un modelo en el que se sepa si el usuario ha conseguido un Badge?
-// Se puede pintar de alguna manera (diálogo) o similar.
 export const VisitPoi = ({ params, user }, res, next) =>
   // Poi.findById(params.id).populate('categories', 'id name')
   Poi.findOne({ uniqueName: params.uniqueName }).populate('categories', 'id name')
@@ -179,7 +176,7 @@ export const VisitPoi = ({ params, user }, res, next) =>
         user.visited.push(poi.id)
         Badge.find()
           .then(badges => {
-            badges.map(badge => { // Para saber qué badges son los nuevos, se podría añadir un segundo array que contenga los conseguidos en esta petición
+            badges.map(badge => {
               if (arrayContainsArray(user.visited, badge.pois)) { user.badges.push(badge.id) }
             })
             user.save()
@@ -240,8 +237,14 @@ export const existsUniqueName = ({ params }, res, next) => {
 */
 export const savePoiAsFav = ({ params, user }, res, next) => {
   if (user.favs.indexOf(params.id) === -1) {
-    user.favs.push(params.id)
-    user.save()
+    Poi.findById(params.id, 'name')
+      .then(notFound(res))
+      .then(poi => {
+        user.favs.push(params.id)
+        user.save()
+        return poi
+      })
+      .catch(next)
   }
   res.status(200).json(user.view(true))
 }
