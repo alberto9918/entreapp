@@ -18,9 +18,13 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.textfield.TextInputEditText;
 import com.mario.myapplication.R;
 import com.mario.myapplication.responses.LoginResponse;
+import com.mario.myapplication.responses.MyProfileResponse;
+import com.mario.myapplication.retrofit.generator.AuthType;
 import com.mario.myapplication.retrofit.generator.ServiceGenerator;
 import com.mario.myapplication.retrofit.services.LoginService;
+import com.mario.myapplication.retrofit.services.UserService;
 import com.mario.myapplication.ui.common.DashboardActivity;
+import com.mario.myapplication.ui.profile.ProfileDarkActivity;
 import com.mario.myapplication.util.UtilToken;
 
 import java.util.regex.Pattern;
@@ -28,7 +32,9 @@ import java.util.regex.Pattern;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import okhttp3.Credentials;
+import okhttp3.internal.Util;
 import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
 
 public class LoginFragment extends Fragment {
@@ -39,6 +45,7 @@ public class LoginFragment extends Fragment {
 
     Context ctx;
     private IAuthListener mListener;
+    String jwt, userId;
 
 
     public static LoginFragment newInstance() {
@@ -98,7 +105,7 @@ public class LoginFragment extends Fragment {
                         // exito
                         UtilToken.setToken(ctx, response.body().getToken());
                         UtilToken.setId(ctx, response.body().getUser().get_Id());
-                        startActivity(new Intent(ctx, DashboardActivity.class));
+                        getUser();
                     }
                 }
 
@@ -109,6 +116,31 @@ public class LoginFragment extends Fragment {
                 }
             });
         }
+    }
+
+    public void getUser(){//obtain from the api the user logged
+        jwt = UtilToken.getToken(getActivity());
+        userId = UtilToken.getId(getActivity()).toString();
+
+        UserService service = ServiceGenerator.createService(UserService.class,
+                jwt, AuthType.JWT);
+        Call<MyProfileResponse> getOneUser = service.getUser(userId);
+        getOneUser.enqueue(new Callback<MyProfileResponse>() {
+            @Override
+            public void onResponse(Call<MyProfileResponse> call, Response<MyProfileResponse> response) {
+                if (response.isSuccessful()) {
+                    UtilToken.setLanguage(getActivity(), response.body().getLanguage().getIsoCode());
+                    startActivity(new Intent(ctx, DashboardActivity.class));
+                } else {
+                    Toast.makeText(getActivity(), "Fail get user", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MyProfileResponse> call, Throwable t) {
+                Toast.makeText(getActivity(), "Fail get user", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     @Override

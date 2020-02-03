@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,9 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.mario.myapplication.R;
 import com.mario.myapplication.responses.PeopleResponse;
-import com.mario.myapplication.responses.UserResponse;
-import com.mario.myapplication.ui.people.PeopleFragment.OnListFragmentUserInteractionListener;
-import com.mario.myapplication.ui.people.details.PeopleDetailsFragment;
 
 import java.util.List;
 
@@ -24,11 +20,11 @@ import java.util.List;
 public class MyPeopleRecyclerViewAdapter extends RecyclerView.Adapter<MyPeopleRecyclerViewAdapter.ViewHolder> {
 
     private final List<PeopleResponse> mValues;
-    private final PeopleFragment.OnListFragmentUserInteractionListener mListener;
+    private final IPeopleListener mListener;
     Context ctx;
     FragmentManager fragmentManager;
 
-    public MyPeopleRecyclerViewAdapter(FragmentManager f, Context ctx, List<PeopleResponse> items, OnListFragmentUserInteractionListener listener) {
+    public MyPeopleRecyclerViewAdapter(FragmentManager f, Context ctx, List<PeopleResponse> items, IPeopleListener listener) {
         mValues = items;
         mListener = listener;
         this.ctx = ctx;
@@ -52,7 +48,7 @@ public class MyPeopleRecyclerViewAdapter extends RecyclerView.Adapter<MyPeopleRe
         Glide.with(holder.mView).load(mValues.get(position).getPicture()).into(holder.picture);
         holder.mView.setOnClickListener(v -> {
             if (null != mListener) {
-                mListener.onListFragmentUserInteraction(holder.mItem);
+                mListener.onPeopleClick(holder.mItem);
             }
         });
 
@@ -65,10 +61,6 @@ public class MyPeopleRecyclerViewAdapter extends RecyclerView.Adapter<MyPeopleRe
         });
         */
 
-        holder.mView.setOnClickListener(v -> {
-            PeopleDetailsFragment f = new PeopleDetailsFragment(holder.mItem.get_id());
-            fragmentManager.beginTransaction().replace(R.id.contenedor, f).commit();
-        });
     }
 
     @Override

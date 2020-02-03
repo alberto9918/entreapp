@@ -5,12 +5,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatRatingBar;
 import androidx.appcompat.widget.AppCompatSeekBar;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.PorterDuff;
 import android.media.AudioManager;
@@ -43,6 +47,8 @@ import com.mario.myapplication.responses.PoiResponse;
 import com.mario.myapplication.retrofit.generator.AuthType;
 import com.mario.myapplication.retrofit.generator.ServiceGenerator;
 import com.mario.myapplication.retrofit.services.PoiService;
+import com.mario.myapplication.ui.common.DashboardActivity;
+import com.mario.myapplication.ui.pois.qrScanner.QrCodeActivity;
 import com.mario.myapplication.util.Constantes;
 import com.mario.myapplication.util.MusicUtils;
 import com.mario.myapplication.util.UtilToken;
@@ -68,6 +74,8 @@ public class DetallePoiActivity extends AppCompatActivity {
     private ImageView[] dots;
     private TextView tvPrecio, tvDescripcion, tvTitulo, tvInfo, tvReviews;
     AppCompatRatingBar ratingBarPoi;
+    private static final int PERMISSIONS_REQUEST_ACCESS_CAMERA = 2;
+
 
     private static List<String> array_image_poi = new ArrayList<>();
 
@@ -341,11 +349,14 @@ public class DetallePoiActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             finish();
+        } else if(item.getItemId() == R.id.action_qr_scan) {
+            showQrScanner();
         } else {
             Toast.makeText(getApplicationContext(), item.getTitle(), Toast.LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);
     }
+
 
     /** Api call to get details of one POI **/
     private void getPoiDetails() {
@@ -446,5 +457,49 @@ public class DetallePoiActivity extends AppCompatActivity {
 
         }
 
+    }
+
+
+
+    // Qr Code
+    public void showQrScanner() {
+        checkCameraPermissions();
+    }
+
+    /** Check if camera permissions are granted. If not, ask for it. **/
+    private void checkCameraPermissions() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            Intent i = new Intent(this, QrCodeActivity.class);
+            startActivity(i);
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA},
+                    PERMISSIONS_REQUEST_ACCESS_CAMERA);
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_ACCESS_CAMERA:
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // El usuario concede el permiso
+                    Intent i = new Intent(this, QrCodeActivity.class);
+                    startActivity(i);
+                } else {
+                    // El usuario ha denegado el permiso de Cámara
+                    Toast.makeText(DetallePoiActivity.this, "Sin el permiso de cámara no podrá escanear códigos Qr", Toast.LENGTH_SHORT).show();
+
+                }
+                return;
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
+        }
     }
 }

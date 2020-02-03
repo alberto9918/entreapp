@@ -3,6 +3,7 @@ package com.mario.myapplication.ui.profile;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.annotation.SuppressLint;
 import android.content.res.Resources;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -16,12 +17,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mario.myapplication.R;
 import com.mario.myapplication.materialx.utils.Tools;
 import com.mario.myapplication.responses.MyProfileResponse;
 import com.mario.myapplication.retrofit.generator.AuthType;
 import com.mario.myapplication.retrofit.generator.ServiceGenerator;
 import com.mario.myapplication.retrofit.services.UserService;
+import com.mario.myapplication.util.Constantes;
 import com.mario.myapplication.util.MusicUtils;
 import com.mario.myapplication.util.UtilToken;
 
@@ -41,11 +44,14 @@ public class ProfileDarkActivity extends AppCompatActivity {
     @BindView(R.id.textViewBadgesWritten) TextView textViewBadgesWritten;
     @BindView(R.id.textViewPointsWritten) TextView textViewPointsWritten;
     @BindView(R.id.imageViewProfile) ImageView imageViewProfile;
+    @BindView(R.id.fab) FloatingActionButton fab;
+    @BindView(R.id.imageViewFlag) ImageView ivFlag;
 
     private String userId;
     private UserService service;
     private String jwt;
     private MyProfileResponse myProfileResponse;
+    private boolean isProfile = false;
 
 
     @Override
@@ -57,7 +63,15 @@ public class ProfileDarkActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         jwt = UtilToken.getToken(this);
-        userId = UtilToken.getId(this).toString();
+
+        Bundle extras = getIntent().getExtras();
+        try {
+            userId = extras.getString(Constantes.EXTRAS_USER_ID);
+        } catch (Exception e) {
+            userId = UtilToken.getId(this).toString();
+            isProfile = true;
+        }
+
         if (jwt == null) {
             //redirect to login
         }
@@ -116,6 +130,7 @@ public class ProfileDarkActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressLint("RestrictedApi")
     private void setItemsInfo(Response<MyProfileResponse> response) {
         String points="";
         Resources res = getResources();
@@ -139,13 +154,17 @@ public class ProfileDarkActivity extends AppCompatActivity {
         //points = String.valueOf(countPoints(myProfileResponse));
         textViewPointsWritten.setText(points);
 
-        // mViewModel.selectUser(myProfileResponse);
-
         //image
         Glide.with(this)
                 .load(myProfileResponse.getPicture())
                 .into(imageViewProfile);
-        Log.d("LOL2", myProfileResponse.toString());
+
+        int idFlag = this.getResources().getIdentifier("ic_flag_"+myProfileResponse.getLanguage().getIsoCode().toLowerCase(), "drawable", this.getPackageName());
+        ivFlag.setImageResource(idFlag);
+
+        if(!isProfile) {
+            fab.setVisibility(View.GONE);
+        }
     }
 
     //it counts badges points of our users

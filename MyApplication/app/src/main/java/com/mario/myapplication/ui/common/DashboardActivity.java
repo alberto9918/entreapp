@@ -3,7 +3,6 @@ package com.mario.myapplication.ui.common;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,7 +18,6 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.gms.maps.model.Dash;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.mario.myapplication.R;
 import com.mario.myapplication.materialx.utils.Tools;
@@ -32,24 +30,22 @@ import com.mario.myapplication.ui.badges.BadgesFragment;
 import com.mario.myapplication.ui.badges.detail.BadgeDetailFragment;
 import com.mario.myapplication.ui.badges.detail.BadgeDetailListener;
 import com.mario.myapplication.ui.categories.CategoryFragment;
+import com.mario.myapplication.ui.people.IPeopleListener;
 import com.mario.myapplication.ui.people.PeopleFragment;
-import com.mario.myapplication.ui.people.details.PeopleDetailsFragment;
 import com.mario.myapplication.ui.pois.PoiMapFragment;
 import com.mario.myapplication.ui.pois.details.DetallePoiActivity;
-import com.mario.myapplication.ui.pois.details.PoiDetailsFragment;
 import com.mario.myapplication.ui.pois.list.PoiListFragment;
 import com.mario.myapplication.ui.pois.list.PoiListListener;
 import com.mario.myapplication.ui.pois.qrScanner.QrCodeActivity;
 import com.mario.myapplication.ui.profile.ProfileDarkActivity;
 import com.mario.myapplication.ui.routes.RouteListener;
 import com.mario.myapplication.ui.routes.RoutesFragment;
+import com.mario.myapplication.util.Constantes;
 import com.mario.myapplication.util.UtilToken;
-
-import java.util.Objects;
 
 //import com.mario.myapplication.PoiFragment;
 
-public class DashboardActivity extends AppCompatActivity implements CategoryFragment.OnListFragmentCategoryInteractionListener, BadgeListener, BadgeDetailListener, RouteListener, PeopleFragment.OnListFragmentUserInteractionListener, PoiListListener, PeopleDetailsFragment.OnFragmentInteractionListener {
+public class DashboardActivity extends AppCompatActivity implements CategoryFragment.OnListFragmentCategoryInteractionListener, BadgeListener, BadgeDetailListener, RouteListener, PoiListListener, IPeopleListener {
     FragmentTransaction fragmentChanger;
     private boolean showMap = false;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
@@ -71,7 +67,7 @@ public class DashboardActivity extends AppCompatActivity implements CategoryFrag
                 }
                 break;
             case R.id.navigation_routes:
-                f = new RoutesFragment();
+                f = new UnderConstructionFragment();
                 break;
             case R.id.navigation_people:
                 f = new PeopleFragment();
@@ -183,15 +179,6 @@ public class DashboardActivity extends AppCompatActivity implements CategoryFrag
 
     }*/
 
-    @Override
-    public void onListFragmentUserInteraction(PeopleResponse item) {
-
-    }
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
-    }
 
     @Override
     public void goPoiDetails(String id) {
@@ -262,5 +249,12 @@ public class DashboardActivity extends AppCompatActivity implements CategoryFrag
     @Override
     public void onBackPressed() {
         Toast.makeText(this, "Si deseas salir de la aplicación, deberás cerrar sesión", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onPeopleClick(PeopleResponse p) {
+        Intent i = new Intent(DashboardActivity.this, ProfileDarkActivity.class);
+        i.putExtra(Constantes.EXTRAS_USER_ID, p.get_id());
+        startActivity(i);
     }
 }

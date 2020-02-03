@@ -36,6 +36,27 @@ public class UtilToken {
         return id;
     }
 
+    public static void setLanguage(Context mContext, String language) {
+        SharedPreferences sharedPreferences =
+                mContext.getSharedPreferences(
+                        mContext.getString(R.string.sharedpreferences_filename),
+                        Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(mContext.getString(R.string.language), language);
+        editor.commit();
+    }
+    public static String getLanguage(Context mContext) {
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences(
+                mContext.getString(R.string.sharedpreferences_filename),
+                Context.MODE_PRIVATE
+        );
+
+        String id = sharedPreferences
+                .getString(mContext.getString(R.string.language), null);
+
+        return id;
+    }
+
 
     public static String getToken(Context mContext) {
         SharedPreferences sharedPreferences = mContext.getSharedPreferences(

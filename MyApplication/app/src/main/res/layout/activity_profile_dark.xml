@@ -132,11 +132,10 @@
                     android:paddingLeft="@dimen/spacing_large"
                     android:paddingRight="@dimen/spacing_large">
 
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:background="@color/transparent"
-                        android:tint="@color/green_500"
+                    <ImageView
+                        android:id="@+id/imageViewFlag"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         app:srcCompat="@drawable/ic_subject" />
 
                     <TextView

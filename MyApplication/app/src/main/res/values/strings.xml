@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">VisitOn</string>
+    <string name="device_language">ES</string>
 
     <string name="sign_up_label">Registrarme</string>
     <string name="log_in_label">E N T R A R</string>
@@ -32,6 +33,7 @@
     <string name="pois_visited">Pois visited</string>
     <string name="badges">Insignia</string>
     <string name="userId">userId</string>
+    <string name="language">language</string>
 
     <string name="need_gps_title">GPS está deshabilitado.</string>
     <string name="need_gps_message">¿Quieres activar el GPS para obtener tu localización?</string>
@@ -78,5 +80,6 @@
     <string name="action_show_map">Mostrar Mapa</string>
     <string name="action_menu_profile">Mi perfil</string>
     <string name="free">Gratis</string>
+    <string name="under_construction">We\'re coding this UI</string>
 
 </resources>
