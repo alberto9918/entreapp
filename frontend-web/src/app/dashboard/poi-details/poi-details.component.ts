@@ -26,7 +26,7 @@ export class PoiDetailsComponent implements OnInit {
   
   showSettings = false;
   constructor(private poiService: PoiService, public languageService: LanguageService, public router: Router,
-    public dialog: MatDialog, public snackBar: MatSnackBar, private titleService: Title, private authService: AuthenticationService) { }
+    public dialog: MatDialog, public snackBar: MatSnackBar, private titleService: Title, public authService: AuthenticationService) { }
 
   ngOnInit() {
     if (this.poiService.selectedPoi == null) {
