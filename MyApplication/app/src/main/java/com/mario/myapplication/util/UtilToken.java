@@ -9,78 +9,103 @@ public class UtilToken {
     public static void setToken(Context mContext, String token) {
         SharedPreferences sharedPreferences =
                 mContext.getSharedPreferences(
-                        mContext.getString(R.string.sharedpreferences_filename),
+                        Constantes.PREF_FILE_LOGIN,
                         Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(mContext.getString(R.string.jwt_key), token);
+        editor.putString(Constantes.PREF_JWT_KEY, token);
         editor.commit();
     }
-    public static void setId(Context mContext, String id) {
-        SharedPreferences sharedPreferences =
-                mContext.getSharedPreferences(
-                        mContext.getString(R.string.sharedpreferences_filename),
-                        Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(mContext.getString(R.string.userId), id);
-        editor.commit();
-    }
-    public static String getId(Context mContext) {
-        SharedPreferences sharedPreferences = mContext.getSharedPreferences(
-                mContext.getString(R.string.sharedpreferences_filename),
-                Context.MODE_PRIVATE
-        );
-
-        String id = sharedPreferences
-                .getString(mContext.getString(R.string.userId), null);
-
-        return id;
-    }
-
-    public static void setLanguage(Context mContext, String language) {
-        SharedPreferences sharedPreferences =
-                mContext.getSharedPreferences(
-                        mContext.getString(R.string.sharedpreferences_filename),
-                        Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(mContext.getString(R.string.language), language);
-        editor.commit();
-    }
-    public static String getLanguage(Context mContext) {
-        SharedPreferences sharedPreferences = mContext.getSharedPreferences(
-                mContext.getString(R.string.sharedpreferences_filename),
-                Context.MODE_PRIVATE
-        );
-
-        String id = sharedPreferences
-                .getString(mContext.getString(R.string.language), null);
-
-        return id;
-    }
-
 
     public static String getToken(Context mContext) {
         SharedPreferences sharedPreferences = mContext.getSharedPreferences(
-                mContext.getString(R.string.sharedpreferences_filename),
+                Constantes.PREF_FILE_LOGIN,
                 Context.MODE_PRIVATE
         );
 
         String jwt = sharedPreferences
-                .getString(mContext.getString(R.string.jwt_key), null);
+                .getString(Constantes.PREF_JWT_KEY, null);
 
         return jwt;
     }
 
-    public static void removeToken(Context mContext) {
+    public static void setId(Context mContext, String id) {
+        SharedPreferences sharedPreferences =
+                mContext.getSharedPreferences(
+                        Constantes.PREF_FILE_LOGIN,
+                        Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(Constantes.PREF_USERID, id);
+        editor.commit();
+    }
+    public static String getId(Context mContext) {
         SharedPreferences sharedPreferences = mContext.getSharedPreferences(
-                mContext.getString(R.string.sharedpreferences_filename),
+                Constantes.PREF_FILE_LOGIN,
+                Context.MODE_PRIVATE
+        );
+
+        String id = sharedPreferences
+                .getString(Constantes.PREF_USERID, null);
+
+        return id;
+    }
+
+    public static void setLanguageIsoCode(Context mContext, String language) {
+        SharedPreferences sharedPreferences =
+                mContext.getSharedPreferences(
+                        Constantes.PREF_FILE_LOGIN,
+                        Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(Constantes.PREF_LANGUAGE_ISO_CODE, language);
+        editor.commit();
+    }
+    public static String getLanguageIsoCode(Context mContext) {
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences(
+                Constantes.PREF_FILE_LOGIN,
+                Context.MODE_PRIVATE
+        );
+
+        String id = sharedPreferences
+                .getString(Constantes.PREF_LANGUAGE_ISO_CODE, null);
+
+        return id;
+    }
+
+    public static void setLanguageId(Context mContext, String language) {
+        SharedPreferences sharedPreferences =
+                mContext.getSharedPreferences(
+                        Constantes.PREF_FILE_LOGIN,
+                        Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(Constantes.PREF_LANGUAGE_ID, language);
+        editor.commit();
+    }
+    public static String getLanguageId(Context mContext) {
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences(
+                Constantes.PREF_FILE_LOGIN,
+                Context.MODE_PRIVATE
+        );
+
+        String id = sharedPreferences
+                .getString(Constantes.PREF_LANGUAGE_ID, null);
+
+        return id;
+    }
+
+    public static void removePreferences(Context mContext) {
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences(
+                Constantes.PREF_FILE_LOGIN,
                 Context.MODE_PRIVATE
         );
 
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.remove(mContext.getString(R.string.userId));
+        editor.remove(Constantes.PREF_TOKEN);
+        editor.remove(Constantes.PREF_USERID);
+        editor.remove(Constantes.PREF_LANGUAGE_ISO_CODE);
+        editor.remove(Constantes.PREF_LANGUAGE_ID);
         editor.clear();
         editor.commit();
 
     }
+
 
 }

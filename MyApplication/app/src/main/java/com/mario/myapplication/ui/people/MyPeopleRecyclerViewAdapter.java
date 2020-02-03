@@ -42,7 +42,7 @@ public class MyPeopleRecyclerViewAdapter extends RecyclerView.Adapter<MyPeopleRe
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
         String id =mValues.get(position).get_id();
-  //      holder.idUser.setText(mValues.get(position).get_id());
+  //      holder.idUser.setText(mValues.get(position).getId());
         holder.name.setText(mValues.get(position).getName());
         holder.country.setText(mValues.get(position).getCity());
         Glide.with(holder.mView).load(mValues.get(position).getPicture()).into(holder.picture);

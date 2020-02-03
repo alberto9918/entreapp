@@ -28,6 +28,7 @@ import com.mario.myapplication.responses.LoginResponse;
 import com.mario.myapplication.responses.MyProfileResponse;
 import com.mario.myapplication.responses.Register;
 import com.mario.myapplication.responses.ResponseContainer;
+import com.mario.myapplication.responses.SignUpResponse;
 import com.mario.myapplication.retrofit.generator.AuthType;
 import com.mario.myapplication.retrofit.generator.ServiceGenerator;
 import com.mario.myapplication.retrofit.services.LanguageService;
@@ -163,15 +164,15 @@ public class RegisterFragment extends Fragment {
             LanguageResponse chosen = (LanguageResponse) language.getSelectedItem();
             Register register = new Register(email, password, chosen.getId() );
             LoginService service = ServiceGenerator.createService(LoginService.class);
-            Call<LoginResponse> loginReponseCall = service.doSignUp(register);
+            Call<SignUpResponse> loginReponseCall = service.doSignUp(register);
 
-            loginReponseCall.enqueue(new retrofit2.Callback<LoginResponse>() {
+            loginReponseCall.enqueue(new retrofit2.Callback<SignUpResponse>() {
                 @Override
-                public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                public void onResponse(Call<SignUpResponse> call, Response<SignUpResponse> response) {
                     if (response.code() == 201) {
                         // éxito
                         UtilToken.setToken(ctx, response.body().getToken());
-                        UtilToken.setId(ctx, response.body().getUser().get_Id());
+                        UtilToken.setId(ctx, response.body().getUser().getId());
                         getUser();
                         startActivity(new Intent(ctx, DashboardActivity.class));
                     } else {
@@ -181,7 +182,7 @@ public class RegisterFragment extends Fragment {
                 }
 
                 @Override
-                public void onFailure(Call<LoginResponse> call, Throwable t) {
+                public void onFailure(Call<SignUpResponse> call, Throwable t) {
                     Log.e("NetworkFailure", t.getMessage());
                     Toast.makeText(ctx, "Network Connection Failure", Toast.LENGTH_SHORT).show();
 
@@ -202,7 +203,8 @@ public class RegisterFragment extends Fragment {
             @Override
             public void onResponse(Call<MyProfileResponse> call, Response<MyProfileResponse> response) {
                 if (response.isSuccessful()) {
-                    UtilToken.setLanguage(getActivity(), response.body().getLanguage().getIsoCode());
+                    UtilToken.setLanguageIsoCode(getActivity(), response.body().getLanguage().getIsoCode());
+                    UtilToken.setLanguageId(getActivity(), response.body().getLanguage().getId());
                     startActivity(new Intent(ctx, DashboardActivity.class));
                 } else {
                     Toast.makeText(getActivity(), "Fail get user", Toast.LENGTH_LONG).show();

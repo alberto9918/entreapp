@@ -5,6 +5,7 @@ public class TranslationAudioGuide {
 
     private String id;
     private String translatedFile;
+    private String language;
 
     public TranslationAudioGuide() {
 

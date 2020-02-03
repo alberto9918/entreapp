@@ -22,14 +22,12 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.mario.myapplication.R;
 import com.mario.myapplication.materialx.utils.Tools;
 import com.mario.myapplication.responses.BadgeResponse;
-import com.mario.myapplication.responses.CategoryResponse;
 import com.mario.myapplication.responses.PeopleResponse;
 import com.mario.myapplication.responses.RouteResponse;
 import com.mario.myapplication.ui.badges.BadgeListener;
 import com.mario.myapplication.ui.badges.BadgesFragment;
 import com.mario.myapplication.ui.badges.detail.BadgeDetailFragment;
 import com.mario.myapplication.ui.badges.detail.BadgeDetailListener;
-import com.mario.myapplication.ui.categories.CategoryFragment;
 import com.mario.myapplication.ui.people.IPeopleListener;
 import com.mario.myapplication.ui.people.PeopleFragment;
 import com.mario.myapplication.ui.pois.map.PoiMapFragment;
@@ -44,7 +42,7 @@ import com.mario.myapplication.util.UtilToken;
 
 //import com.mario.myapplication.PoiFragment;
 
-public class DashboardActivity extends AppCompatActivity implements CategoryFragment.OnListFragmentCategoryInteractionListener, BadgeListener, BadgeDetailListener, RouteListener, PoiListListener, IPeopleListener {
+public class DashboardActivity extends AppCompatActivity implements BadgeListener, BadgeDetailListener, RouteListener, PoiListListener, IPeopleListener {
     FragmentTransaction fragmentChanger;
     private boolean showMap = false;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
@@ -130,7 +128,7 @@ public class DashboardActivity extends AppCompatActivity implements CategoryFrag
     }
 
     private void logout() {
-        UtilToken.removeToken(this);
+        UtilToken.removePreferences(this);
         finish();
     }
 
@@ -143,10 +141,6 @@ public class DashboardActivity extends AppCompatActivity implements CategoryFrag
         Tools.setSystemBarColor(this, R.color.colorPrimary);
     }
 
-    @Override
-    public void onListFragmentCategoryInteraction(CategoryResponse item) {
-
-    }
 
     @Override
     public void onBadgeClick(View v, BadgeResponse b) {

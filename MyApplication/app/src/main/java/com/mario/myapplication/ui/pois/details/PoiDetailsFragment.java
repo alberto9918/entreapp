@@ -2,35 +2,22 @@ package com.mario.myapplication.ui.pois.details;
 
 import android.os.Bundle;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
-import com.google.android.material.chip.Chip;
-import com.google.android.material.chip.ChipDrawable;
-import com.google.android.material.chip.ChipGroup;
 import com.mario.myapplication.R;
-import com.mario.myapplication.model.Category;
+import com.mario.myapplication.responses.CategoryResponse;
 import com.mario.myapplication.responses.PoiResponse;
-import com.mario.myapplication.retrofit.generator.AuthType;
-import com.mario.myapplication.retrofit.generator.ServiceGenerator;
-import com.mario.myapplication.retrofit.services.PoiService;
-import com.mario.myapplication.util.UtilToken;
 
 import java.util.Objects;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 
 public class PoiDetailsFragment extends Fragment {
@@ -62,7 +49,7 @@ public class PoiDetailsFragment extends Fragment {
 
     /** Api call to get details of one POI **/
     private void getPoiDetails() {
-        String jwt = UtilToken.getToken(Objects.requireNonNull(getContext()));
+        /*String jwt = UtilToken.getToken(Objects.requireNonNull(getContext()));
         PoiService service = ServiceGenerator.createService(PoiService.class, jwt, AuthType.JWT);
         Call<PoiResponse> call = service.getPoi(id);
 
@@ -82,7 +69,7 @@ public class PoiDetailsFragment extends Fragment {
                 Log.e("Network Failure", t.getMessage());
                 Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_SHORT).show();
             }
-        });
+        });*/
     }
 
     /** Set received data of POI on Layout **/
@@ -90,11 +77,11 @@ public class PoiDetailsFragment extends Fragment {
         View v = getView();
         ((TextView) Objects.requireNonNull(v).findViewById(R.id.tv_poi_name)).setText(Html.fromHtml(poi.getName()));
         //((TextView) Objects.requireNonNull(v).findViewById(R.id.tv_poi_description)).setText(Html.fromHtml(poi.getDescription().getOriginalDescription()));
-        ((TextView) Objects.requireNonNull(v).findViewById(R.id.tv_poi_description)).setText(Html.fromHtml(poi.getDescription().getTranslations()[0].getTranslatedFile()));
+        // ((TextView) Objects.requireNonNull(v).findViewById(R.id.tv_poi_description)).setText(Html.fromHtml(poi.getDescription().getTranslations()[0.getTranslatedFile()));
         Glide.with(this).load(poi.getCoverImage()).into((ImageView) v.findViewById(R.id.iv_poi_image));
 
         LinearLayout cg = Objects.requireNonNull(v).findViewById(R.id.cg_categories);
-        for (Category c: poi.getCategories()) {
+        for (CategoryResponse c: poi.getCategories()) {
             TextView cc = new TextView(Objects.requireNonNull(getContext()));
             //cc.setChipDrawable(ChipDrawable.createFromResource(Objects.requireNonNull(getContext()), R.xml.chip_categories));
             cc.setText(c.getName());

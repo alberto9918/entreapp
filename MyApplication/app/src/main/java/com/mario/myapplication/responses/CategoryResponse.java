@@ -1,29 +1,33 @@
+
 package com.mario.myapplication.responses;
 
-import com.mario.myapplication.model.Category;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 public class CategoryResponse {
 
-    private String id;
+    @SerializedName("name")
+    @Expose
     private String name;
-    private ParentCategoryResponse parent;
-    private boolean fav;
+    @SerializedName("id")
+    @Expose
+    private String id;
 
+    /**
+     * No args constructor for use in serialization
+     * 
+     */
     public CategoryResponse() {
-
     }
 
-    public CategoryResponse(String id, String name, ParentCategoryResponse parent) {
-        this.id = id;
+    /**
+     * 
+     * @param name
+     * @param id
+     */
+    public CategoryResponse(String name, String id) {
+        super();
         this.name = name;
-        this.parent = parent;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
         this.id = id;
     }
 
@@ -35,22 +39,12 @@ public class CategoryResponse {
         this.name = name;
     }
 
-    public ParentCategoryResponse getParent() {
-        return parent;
+    public String getId() {
+        return id;
     }
 
-    public void setParent(ParentCategoryResponse parent) {
-        this.parent = parent;
+    public void setId(String id) {
+        this.id = id;
     }
-
-    public boolean isFav() {
-        return fav;
-    }
-
-    public void setFav(boolean fav) {
-        this.fav = fav;
-    }
-
-
 
 }

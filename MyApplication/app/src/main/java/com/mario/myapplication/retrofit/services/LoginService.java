@@ -2,6 +2,7 @@ package com.mario.myapplication.retrofit.services;
 
 import com.mario.myapplication.responses.LoginResponse;
 import com.mario.myapplication.responses.Register;
+import com.mario.myapplication.responses.SignUpResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -15,7 +16,7 @@ public interface LoginService {
 
 
     @POST("users")
-    Call<LoginResponse> doSignUp(@Body Register register);
+    Call<SignUpResponse> doSignUp(@Body Register register);
 
 
 }

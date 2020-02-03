@@ -1,7 +1,6 @@
 package com.mario.myapplication.ui.pois.map;
 
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -30,10 +29,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
 import com.google.maps.android.clustering.ClusterManager;
 import com.mario.myapplication.R;
@@ -243,8 +240,8 @@ public class PoiMapFragment extends Fragment implements OnMapReadyCallback {
 
                         PoiClusterItem clusterItem = new PoiClusterItem(
                                 i.getId(),
-                                i.getLoc().getCoordinates()[0],
-                                i.getLoc().getCoordinates()[1],
+                                i.getLoc().getCoordinates().get(0),
+                                i.getLoc().getCoordinates().get(1),
                                 i.getName(),
                                 snippet);
                         mClusterManager.addItem(clusterItem);

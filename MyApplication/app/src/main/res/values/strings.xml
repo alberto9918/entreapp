@@ -14,8 +14,6 @@
     <string name="fb_login_protocol_scheme">fb313908059266962</string>
 
     <!-- Preferencias -->
-    <string name="sharedpreferences_filename">login</string>
-    <string name="jwt_key">JWT_KEY</string>
     <string name="title_activity_home">HomeActivity</string>
     <string name="title_activity_dashboard">VisitOn</string>
     <string name="title_home">Home</string>

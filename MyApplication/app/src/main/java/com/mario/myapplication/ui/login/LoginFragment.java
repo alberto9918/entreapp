@@ -104,7 +104,7 @@ public class LoginFragment extends Fragment {
                     } else {
                         // exito
                         UtilToken.setToken(ctx, response.body().getToken());
-                        UtilToken.setId(ctx, response.body().getUser().get_Id());
+                        UtilToken.setId(ctx, response.body().getUser().get_id());
                         getUser();
                     }
                 }
@@ -120,7 +120,7 @@ public class LoginFragment extends Fragment {
 
     public void getUser(){//obtain from the api the user logged
         jwt = UtilToken.getToken(getActivity());
-        userId = UtilToken.getId(getActivity()).toString();
+        userId = UtilToken.getId(getActivity());
 
         UserService service = ServiceGenerator.createService(UserService.class,
                 jwt, AuthType.JWT);
@@ -129,7 +129,8 @@ public class LoginFragment extends Fragment {
             @Override
             public void onResponse(Call<MyProfileResponse> call, Response<MyProfileResponse> response) {
                 if (response.isSuccessful()) {
-                    UtilToken.setLanguage(getActivity(), response.body().getLanguage().getIsoCode());
+                    UtilToken.setLanguageIsoCode(getActivity(), response.body().getLanguage().getIsoCode());
+                    UtilToken.setLanguageId(getActivity(), response.body().getLanguage().getId());
                     startActivity(new Intent(ctx, DashboardActivity.class));
                 } else {
                     Toast.makeText(getActivity(), "Fail get user", Toast.LENGTH_LONG).show();

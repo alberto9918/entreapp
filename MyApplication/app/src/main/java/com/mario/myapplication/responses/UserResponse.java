@@ -5,7 +5,7 @@ import java.util.List;
 
 public class UserResponse {
 
-    private String _id;
+    private String id;
     private String name;
     private String role;
     private String picture;
@@ -23,7 +23,7 @@ public class UserResponse {
     public UserResponse() {
     }
 
-    public UserResponse(String _id, String name, String role, boolean friended, String picture, String password, String email, String createAt, String country, LanguageResponse language, List<String> favs, List<String> visited, List<BadgeResponse> badges, List<UserLikesResponse> likes, List<String> friends) {        this._id = _id;
+    public UserResponse(String id, String name, String role, boolean friended, String picture, String password, String email, String createAt, String country, LanguageResponse language, List<String> favs, List<String> visited, List<BadgeResponse> badges, List<UserLikesResponse> likes, List<String> friends) {        this.id = id;
         this.name = name;
         this.role = role;
         this.picture = picture;
@@ -39,12 +39,12 @@ public class UserResponse {
         this.friends = friends;
     }
 
-    public String get_id() {
-        return _id;
+    public String getId() {
+        return id;
     }
 
-    public void set_id(String _id) {
-        this._id = _id;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public List<String> getFavs() {
@@ -53,14 +53,6 @@ public class UserResponse {
 
     public void setFavs(List<String> favs) {
         this.favs = favs;
-    }
-
-    public String get_Id() {
-        return _id;
-    }
-
-    public void set_Id(String id) {
-        this._id = id;
     }
 
     public String getName() {
@@ -162,7 +154,7 @@ public class UserResponse {
     @Override
     public String toString() {
         return "UserResponse{" +
-                "id='" + _id + '\'' +
+                "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", role='" + role + '\'' +
                 ", picture='" + picture + '\'' +

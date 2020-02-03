@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatRatingBar;
 import androidx.appcompat.widget.AppCompatSeekBar;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.PagerAdapter;
@@ -74,6 +75,7 @@ public class DetallePoiActivity extends AppCompatActivity {
     private ImageView[] dots;
     private TextView tvPrecio, tvDescripcion, tvTitulo, tvInfo, tvReviews;
     AppCompatRatingBar ratingBarPoi;
+    private CardView audioPlayer;
     private static final int PERMISSIONS_REQUEST_ACCESS_CAMERA = 2;
 
 
@@ -125,9 +127,10 @@ public class DetallePoiActivity extends AppCompatActivity {
         tvInfo = findViewById(R.id.info_poi);
         tvPrecio = findViewById(R.id.precio_poi);
         tvDescripcion = findViewById(R.id.descripcion_poi);
+        audioPlayer = findViewById(R.id.audioPlayer);
 
-        ratingBarPoi.setRating(poi.getStars());
-        tvReviews.setText(poi.getStars() + "/5.0");
+        // ratingBarPoi.setRating(poi.getStars());
+        // tvReviews.setText(poi.getStars() + "/5.0");
         tvTitulo.setText(Html.fromHtml(poi.getName()));
         tvInfo.setText(poi.getSchedule() + " ["+poi.getStatus()+"]");
         if(poi.getPrice() == 0.0f) {
@@ -136,7 +139,7 @@ public class DetallePoiActivity extends AppCompatActivity {
             tvPrecio.setText("€ "+poi.getPrice());
         }
 
-        tvDescripcion.setText(Html.fromHtml(poi.getDescription().getTranslations()[0].getTranslatedFile()));
+        tvDescripcion.setText(Html.fromHtml(poi.getDescription().getTranslations().get(0).getTranslatedDescription()));
 
         adapterImageSlider = new AdapterImageSlider(this, new ArrayList<Image>());
 
@@ -171,64 +174,70 @@ public class DetallePoiActivity extends AppCompatActivity {
     }
 
     private void initPlayer() {
-        parent_view = findViewById(R.id.parent_view);
-        seek_song_progressbar = (AppCompatSeekBar) findViewById(R.id.seek_song_progressbar);
-        bt_play = (FloatingActionButton) findViewById(R.id.bt_play);
+        if(poi.getAudioguides().getTranslations().size() == 0) {
+            audioPlayer.setVisibility(View.GONE);
+        } else {
 
-        // set Progress bar values
-        seek_song_progressbar.setProgress(0);
-        seek_song_progressbar.setMax(MusicUtils.MAX_PROGRESS);
+            parent_view = findViewById(R.id.parent_view);
+            seek_song_progressbar = (AppCompatSeekBar) findViewById(R.id.seek_song_progressbar);
+            bt_play = (FloatingActionButton) findViewById(R.id.bt_play);
 
-        tv_song_current_duration = (TextView) findViewById(R.id.tv_song_current_duration);
-        tv_song_total_duration = (TextView) findViewById(R.id.tv_song_total_duration);
+            // set Progress bar values
+            seek_song_progressbar.setProgress(0);
+            seek_song_progressbar.setMax(MusicUtils.MAX_PROGRESS);
 
-        // Media Player
-        mp = new MediaPlayer();
-        mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                // Changing button image to play button
-                bt_play.setImageResource(R.drawable.ic_play_arrow);
+            tv_song_current_duration = (TextView) findViewById(R.id.tv_song_current_duration);
+            tv_song_total_duration = (TextView) findViewById(R.id.tv_song_total_duration);
+
+            // Media Player
+            mp = new MediaPlayer();
+            mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    // Changing button image to play button
+                    bt_play.setImageResource(R.drawable.ic_play_arrow);
+                }
+            });
+
+            try {
+                mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                mp.setDataSource(Constantes.FILES_BASE_URL + poi.getAudioguides().getTranslations().get(0).getTranslatedFile());
+                mp.prepare();
+            } catch (Exception e) {
+                Snackbar.make(parent_view, "Cannot load audio file", Snackbar.LENGTH_SHORT).show();
             }
-        });
 
-        try {
-            mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            mp.setDataSource(Constantes.FILES_BASE_URL + poi.getAudioguides().getTranslations()[0].getTranslatedFile());
-            mp.prepare();
-        } catch (Exception e) {
-            Snackbar.make(parent_view, "Cannot load audio file", Snackbar.LENGTH_SHORT).show();
+            utils = new MusicUtils();
+            // Listeners
+            seek_song_progressbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+                    // remove message Handler from updating progress bar
+                    mHandler.removeCallbacks(mUpdateTimeTask);
+                }
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+                    mHandler.removeCallbacks(mUpdateTimeTask);
+                    int totalDuration = mp.getDuration();
+                    int currentPosition = utils.progressToTimer(seekBar.getProgress(), totalDuration);
+
+                    // forward or backward to certain seconds
+                    mp.seekTo(currentPosition);
+
+                    // update timer progress again
+                    mHandler.post(mUpdateTimeTask);
+                }
+            });
+            buttonPlayerAction();
+            updateTimerAndSeekbar();
+
         }
-
-        utils = new MusicUtils();
-        // Listeners
-        seek_song_progressbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                // remove message Handler from updating progress bar
-                mHandler.removeCallbacks(mUpdateTimeTask);
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                mHandler.removeCallbacks(mUpdateTimeTask);
-                int totalDuration = mp.getDuration();
-                int currentPosition = utils.progressToTimer(seekBar.getProgress(), totalDuration);
-
-                // forward or backward to certain seconds
-                mp.seekTo(currentPosition);
-
-                // update timer progress again
-                mHandler.post(mUpdateTimeTask);
-            }
-        });
-        buttonPlayerAction();
-        updateTimerAndSeekbar();
     }
 
     /**
@@ -316,7 +325,9 @@ public class DetallePoiActivity extends AppCompatActivity {
     public void onDestroy() {
         super.onDestroy();
         mHandler.removeCallbacks(mUpdateTimeTask);
-        mp.release();
+        if(mp != null) {
+            mp.release();
+        }
     }
 
     private void addBottomDots(LinearLayout layout_dots, int size, int current) {
@@ -362,7 +373,8 @@ public class DetallePoiActivity extends AppCompatActivity {
     private void getPoiDetails() {
         String jwt = UtilToken.getToken(Objects.requireNonNull(DetallePoiActivity.this));
         PoiService service = ServiceGenerator.createService(PoiService.class, jwt, AuthType.JWT);
-        Call<PoiResponse> call = service.getPoi(id);
+        String idLang = UtilToken.getLanguageId(this);
+        Call<PoiResponse> call = service.getPoiLang(id, idLang);
 
         call.enqueue(new Callback<PoiResponse>() {
             @Override
@@ -372,7 +384,9 @@ public class DetallePoiActivity extends AppCompatActivity {
                 } else {
                     poi = response.body();
                     array_image_poi = new ArrayList<>();
-                    array_image_poi.addAll(ArrayUtils.toArrayList(poi.getImages()));
+                    if(poi.getImages().size() > 0) {
+                        array_image_poi.addAll(poi.getImages());
+                    }
                     initComponent();
                     initPlayer();
                 }

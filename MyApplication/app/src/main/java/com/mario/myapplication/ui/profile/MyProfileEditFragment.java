@@ -393,6 +393,7 @@ public class MyProfileEditFragment extends Fragment {
             if (resultData != null) {
                 filePath =resultData.getData();
                 Log.i("Filechooser URI", "Uri: " + filePath.toString());
+
                 Glide
                         .with(this)
                         .load(filePath)

@@ -51,7 +51,7 @@ public class Category {
 
     @Override
     public String toString() {
-        return "Category{" +
+        return "CategoryResponse{" +
                 "name='" + name + '\'' +
                 ", parent=" + parent +
                 '}';

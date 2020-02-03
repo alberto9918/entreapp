@@ -25,6 +25,12 @@ public interface PoiService {
     @GET(BASE_URL + "/{id}")
     Call<PoiResponse> getPoi(@Path("id") String id);
 
+    @GET(BASE_URL + "/{id}/{idLang}")
+    Call<PoiResponse> getPoiLang(@Path("id") String id, @Path("idLang") String idLang);
+
     @PUT(BASE_URL + "visited/{id}")
     Call<PoiResponse> visitPoi(@Path("id") String id);
+
+    @PUT(BASE_URL + "/visit/{uniqueName}")
+    Call<PoiResponse> qrScan(@Path("uniqueName") String uniqueName);
 }

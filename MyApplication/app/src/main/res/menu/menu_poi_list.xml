@@ -10,6 +10,7 @@
         app:showAsAction="always" />
 
     <item
+        android:visible="false"
         android:id="@+id/menu_poi_list_filter"
         android:icon="@drawable/ic_filter_white_24dp"
         android:orderInCategory="100"

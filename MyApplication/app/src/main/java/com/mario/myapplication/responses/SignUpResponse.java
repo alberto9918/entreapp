@@ -2,27 +2,26 @@ package com.mario.myapplication.responses;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.mario.myapplication.model.User;
 
 
-public class LoginResponse {
+public class SignUpResponse {
 
     @SerializedName("token")
     @Expose
     private String token;
     @SerializedName("user")
     @Expose
-    private LoginUserResponse user;
+    private SignUpUserResponse user;
 
 
-    public LoginResponse() {
+    public SignUpResponse() {
     }
 
     /**
      * @param token
      * @param user
      */
-    public LoginResponse(String token, LoginUserResponse user) {
+    public SignUpResponse(String token, SignUpUserResponse user) {
         this.token = token;
         this.user = user;
     }
@@ -35,11 +34,11 @@ public class LoginResponse {
         this.token = token;
     }
 
-    public LoginUserResponse getUser() {
+    public SignUpUserResponse getUser() {
         return user;
     }
 
-    public void setUser(LoginUserResponse user) {
+    public void setUser(SignUpUserResponse user) {
         this.user = user;
     }
 
@@ -50,7 +49,7 @@ public class LoginResponse {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        LoginResponse that = (LoginResponse) o;
+        SignUpResponse that = (SignUpResponse) o;
 
         if (!token.equals(that.token)) return false;
         return user.equals(that.user);
@@ -65,7 +64,7 @@ public class LoginResponse {
 
     @Override
     public String toString() {
-        return "LoginResponse{" +
+        return "SignUpResponse{" +
                 "token='" + token + '\'' +
                 ", user=" + user +
                 '}';

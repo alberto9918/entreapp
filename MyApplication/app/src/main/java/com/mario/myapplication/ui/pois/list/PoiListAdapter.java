@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.mario.myapplication.R;
@@ -81,7 +82,32 @@ public class PoiListAdapter extends RecyclerView.Adapter<PoiListAdapter.ViewHold
                 .load(viewHolder.mItem.getCoverImage())
                 .apply(new RequestOptions().centerCrop())
                 .into(viewHolder.bgImage);
+
         viewHolder.bgImage.setOnClickListener(v -> mListener.goPoiDetails(viewHolder.mItem.getId()));
+
+        if(viewHolder.mItem.getFav()) {
+            viewHolder.imageViewFav.setImageResource(R.drawable.ic_like_red);
+        }
+
+        viewHolder.imageViewFav.setOnClickListener(view -> {
+            if(viewHolder.mItem.getFav()) {
+                viewHolder.imageViewFav.setImageResource(R.drawable.ic_like_empty);
+                viewHolder.mItem.setFav(false);
+            } else {
+                viewHolder.mItem.setFav(true);
+                viewHolder.imageViewFav.setVisibility(View.GONE);
+                viewHolder.lottieAnimationView.setVisibility(View.VISIBLE);
+                viewHolder.lottieAnimationView.playAnimation();
+            }
+        });
+
+        viewHolder.lottieAnimationView.setOnClickListener(view -> {
+                viewHolder.imageViewFav.setImageResource(R.drawable.ic_like_empty);
+                viewHolder.imageViewFav.setVisibility(View.VISIBLE);
+                viewHolder.lottieAnimationView.setVisibility(View.GONE);
+                viewHolder.mItem.setFav(false);
+        });
+
     }
 
     @Override
@@ -93,6 +119,8 @@ public class PoiListAdapter extends RecyclerView.Adapter<PoiListAdapter.ViewHold
         final View mView;
         final TextView title, price;
         final ImageView bgImage;
+        final ImageView imageViewFav;
+        final LottieAnimationView lottieAnimationView;
         PoiResponse mItem;
 
         ViewHolder(@NonNull View itemView) {
@@ -101,6 +129,8 @@ public class PoiListAdapter extends RecyclerView.Adapter<PoiListAdapter.ViewHold
             title = itemView.findViewById(R.id.poi_list_title);
             price = itemView.findViewById(R.id.poi_price);
             bgImage = itemView.findViewById(R.id.poi_list_bgImage);
+            imageViewFav = itemView.findViewById(R.id.imageViewFavorito);
+            lottieAnimationView = itemView.findViewById(R.id.lottieFavorito);
         }
 
     }
