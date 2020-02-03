@@ -93,13 +93,36 @@ export const index = ({ querymen: { query, select, cursor } }, res, next) => {
 
 /** Show one poi translated to user language */
 export const showTranslated = ({ params }, res, next) => {
+  console.log('Entramos en showTranslated')
+  // console.log('ID: ' + params.id)
   let query = {
-    id: (mongoose.Types.ObjectId(params.id)),
-    idUserLanguage: (mongoose.Types.ObjectId(params.idUserLanguage))
+    id: (mongoose.Types.ObjectId(params.id))
+    // ,
+    // idUserLanguage: (mongoose.Types.ObjectId(params.idUserLanguage))
   }
-  Poi.findOne({ id: query.id, 'description.translations.language': query.idUserLanguage })
+  // Poi.findOne({ id: query.id, 'description.translations.language': query.idUserLanguage })
+  Poi.findOne({ _id: query.id })
     .then(notFound(res))
     .then((poi) => poi ? poi.view(2) : null)
+    .then((poi) => {
+      console.log(JSON.stringify(poi.description.translations))
+      poi.description.translations = _.filter(poi.description.translations, (element) => {
+        return element.language.language == params.idUserLanguage
+      })
+      if (poi.description.translations.length === 0) {
+        poi.description.translations.push({
+          language: poi.description.language,
+          tranlatedDescription: poi.description.spanishDescription
+        })
+      }
+
+      poi.audioguides.translations = _.filter(poi.audioguides.translations, (element) => {
+        return element.language.language == params.idUserLanguage
+      })
+      console.log('Filtrada la audioguia')
+
+      return poi
+    })
     .then(success(res))
     .catch(next)
 }
@@ -132,7 +155,7 @@ export const destroy = ({ params }, res, next) =>
 /** Actions when user ScanQR.
  *    If user didn't visit the POI, add to UserVisited
  *    If user visited all POIs of a Medal, add to him.
- *    Retrieve the POI. **/
+ *    Devuelve el ID del poi, para poder hacer una petición de traducción **/
 export const VisitPoi = ({ params, user }, res, next) =>
   // Poi.findById(params.id).populate('categories', 'id name')
   Poi.findOne({ uniqueName: params.uniqueName }).populate('categories', 'id name')
@@ -262,7 +285,6 @@ export const getVisited = ({ user }, res, next) => {
     .then(success(res))
     .catch(next)
 }
-
 
 /** Function used to calculate the distance between 2 POIs */
 function distance (lat1, lon1, lat2, lon2) {

@@ -91,21 +91,6 @@ router.get('/',
   index)
 
 /**
- * @api {get} /pois/:id Retrieve poi
- * @apiName RetrievePoi
- * @apiGroup Poi
- * @apiPermission user
- * @apiParam {String} access_token user access token.
- * @apiSuccess {Object} poi Poi's data.
- * @apiError {Object} 400 Some parameters may contain invalid values.
- * @apiError 404 Poi not found.
- * @apiError 401 user access only.
- */
-router.get('/:id',
-  token({ required: true }),
-  show)
-
-/**
 * @api {get} /pois/:id Retrieve translated Poi
 * @apiName RetrieveTranslatedPoi
 * @apiGroup Poi
@@ -119,6 +104,21 @@ router.get('/:id',
 router.get('/:id/:idUserLanguage',
   token({ required: true }),
   showTranslated)
+
+/**
+ * @api {get} /pois/:id Retrieve poi
+ * @apiName RetrievePoi
+ * @apiGroup Poi
+ * @apiPermission user
+ * @apiParam {String} access_token user access token.
+ * @apiSuccess {Object} poi Poi's data.
+ * @apiError {Object} 400 Some parameters may contain invalid values.
+ * @apiError 404 Poi not found.
+ * @apiError 401 user access only.
+ */
+router.get('/:id',
+  token({ required: true }),
+  show)
 
 /**
  * @api {put} /pois/:id Update poi
