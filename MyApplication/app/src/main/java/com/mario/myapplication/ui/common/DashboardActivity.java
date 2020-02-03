@@ -1,18 +1,26 @@
 package com.mario.myapplication.ui.common;
 
-import android.net.Uri;
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.mario.myapplication.R;
+import com.mario.myapplication.materialx.utils.Tools;
 import com.mario.myapplication.responses.BadgeResponse;
 import com.mario.myapplication.responses.CategoryResponse;
 import com.mario.myapplication.responses.PeopleResponse;
@@ -22,61 +30,61 @@ import com.mario.myapplication.ui.badges.BadgesFragment;
 import com.mario.myapplication.ui.badges.detail.BadgeDetailFragment;
 import com.mario.myapplication.ui.badges.detail.BadgeDetailListener;
 import com.mario.myapplication.ui.categories.CategoryFragment;
+import com.mario.myapplication.ui.people.IPeopleListener;
 import com.mario.myapplication.ui.people.PeopleFragment;
-import com.mario.myapplication.ui.people.details.PeopleDetailsFragment;
-import com.mario.myapplication.ui.pois.PoiMapFragment;
-import com.mario.myapplication.ui.pois.details.PoiDetailsFragment;
+import com.mario.myapplication.ui.pois.map.PoiMapFragment;
+import com.mario.myapplication.ui.pois.details.DetallePoiActivity;
+import com.mario.myapplication.ui.pois.list.PoiListFragment;
 import com.mario.myapplication.ui.pois.list.PoiListListener;
-import com.mario.myapplication.ui.profile.MyProfileFragment;
+import com.mario.myapplication.ui.pois.qrScanner.QrCodeActivity;
+import com.mario.myapplication.ui.profile.ProfileDarkActivity;
 import com.mario.myapplication.ui.routes.RouteListener;
-import com.mario.myapplication.ui.routes.RoutesFragment;
+import com.mario.myapplication.util.Constantes;
+import com.mario.myapplication.util.UtilToken;
 
 //import com.mario.myapplication.PoiFragment;
 
-public class DashboardActivity extends AppCompatActivity implements CategoryFragment.OnListFragmentCategoryInteractionListener, BadgeListener, BadgeDetailListener, RouteListener, PeopleFragment.OnListFragmentUserInteractionListener, PoiListListener, PeopleDetailsFragment.OnFragmentInteractionListener {
+public class DashboardActivity extends AppCompatActivity implements CategoryFragment.OnListFragmentCategoryInteractionListener, BadgeListener, BadgeDetailListener, RouteListener, PoiListListener, IPeopleListener {
     FragmentTransaction fragmentChanger;
-    //every fragment used by app
-    private Fragment badges, pois, myProfile, people, routes;
-    private TextView mTextMessage;
+    private boolean showMap = false;
+    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+    // QR Button
+    private static final int PERMISSIONS_REQUEST_ACCESS_CAMERA = 2;
+
+
+    // Bottom menu
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-        //bottom meny
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            Fragment f = null;
-            switch (item.getItemId()) {
+            = item -> {
+        Fragment f = null;
+        switch (item.getItemId()) {
 
-                case R.id.navigation_pois:
-                    fragmentChanger = getSupportFragmentManager().beginTransaction().replace(R.id.contenedor, pois);
-                    fragmentChanger.commit();
-                    return true;
-                case R.id.navigation_routes:
-                    fragmentChanger = getSupportFragmentManager().beginTransaction().replace(R.id.contenedor, routes);
-                    fragmentChanger.commit();
-                    return true;
-                case R.id.navigation_people:
-                    fragmentChanger = getSupportFragmentManager().beginTransaction().replace(R.id.contenedor, people);
-                    fragmentChanger.commit();
-                    return true;
-                case R.id.navigation_badges:
-                    fragmentChanger = getSupportFragmentManager().beginTransaction().replace(R.id.contenedor, badges);
-                    fragmentChanger.commit();
-                    return true;
-                case R.id.navigation_my_profile:
-                    fragmentChanger = getSupportFragmentManager().beginTransaction().replace(R.id.contenedor, myProfile);
-                    fragmentChanger.commit();
-                    return true;
+            case R.id.navigation_pois:
+                if(showMap) {
+                    f = new PoiMapFragment();
+                } else {
+                    f = new PoiListFragment();
+                }
+                break;
+            case R.id.navigation_routes:
+                f = new UnderConstructionFragment();
+                break;
+            case R.id.navigation_people:
+                f = new PeopleFragment();
+                break;
+            case R.id.navigation_badges:
+                f = new BadgesFragment();
+                break;
 
-            }//default fragment
-            if (f != null) {
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.contenedor, f)
-                        .commit();
-                return true;
-            }
-            return false;
+        }//default fragment
+
+        if (f != null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.contenedor, f)
+                    .commit();
+            return true;
         }
+        return false;
     };
 
     @Override
@@ -84,16 +92,55 @@ public class DashboardActivity extends AppCompatActivity implements CategoryFrag
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
         BottomNavigationView navView = findViewById(R.id.nav_view);
-        mTextMessage = findViewById(R.id.message);
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        badges = new BadgesFragment();
-        pois = new PoiMapFragment();
-        people = new PeopleFragment();
-        myProfile = new MyProfileFragment();
-        routes = new RoutesFragment();
+
         // Para que por defecto cargue el fragmento de POIs (general)
-        fragmentChanger = getSupportFragmentManager().beginTransaction().replace(R.id.contenedor, pois);
+        Fragment f = null;
+        if(showMap) {
+            f = new PoiMapFragment();
+        } else {
+            f = new PoiListFragment();
+        }
+
+        fragmentChanger = getSupportFragmentManager().beginTransaction().replace(R.id.contenedor, f);
         fragmentChanger.commit();
+
+        initToolbar();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_dashboard, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_profile:
+                Intent i = new Intent(DashboardActivity.this, ProfileDarkActivity.class);
+                startActivity(i);
+                break;
+            case R.id.action_logout:
+                logout();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void logout() {
+        UtilToken.removeToken(this);
+        finish();
+    }
+
+    private void initToolbar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        // toolbar.setNavigationIcon(R.drawable.ic_menu);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(getString(R.string.app_name));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        Tools.setSystemBarColor(this, R.color.colorPrimary);
     }
 
     @Override
@@ -131,19 +178,82 @@ public class DashboardActivity extends AppCompatActivity implements CategoryFrag
 
     }*/
 
-    @Override
-    public void onListFragmentUserInteraction(PeopleResponse item) {
 
+    @Override
+    public void goPoiDetails(String id) {
+        showMap = false;
+        //fragmentChanger = getSupportFragmentManager().beginTransaction().replace(R.id.contenedor, new PoiDetailsFragment(id));
+        //fragmentChanger.commit();
+        Intent i = new Intent(this, DetallePoiActivity.class);
+        i.putExtra("id", id);
+        startActivity(i);
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
-
-    }
-
-    @Override
-    public void goPoiDetails(View v, String id) {
-        fragmentChanger = getSupportFragmentManager().beginTransaction().replace(R.id.contenedor, new PoiDetailsFragment(id));
+    public void showPoiMap() {
+        showMap = true;
+        fragmentChanger = getSupportFragmentManager().beginTransaction().replace(R.id.contenedor, new PoiMapFragment());
         fragmentChanger.commit();
+    }
+
+    @Override
+    public void showPoiList() {
+        showMap = false;
+        fragmentChanger = getSupportFragmentManager().beginTransaction().replace(R.id.contenedor, new PoiListFragment());
+        fragmentChanger.commit();
+    }
+
+    @Override
+    public void showQrScanner() {
+        checkCameraPermissions();
+    }
+
+    /** Check if camera permissions are granted. If not, ask for it. **/
+    private void checkCameraPermissions() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            Intent i = new Intent(this, QrCodeActivity.class);
+            startActivity(i);
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA},
+                    PERMISSIONS_REQUEST_ACCESS_CAMERA);
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_ACCESS_CAMERA:
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // El usuario concede el permiso
+                    Intent i = new Intent(this, QrCodeActivity.class);
+                    startActivity(i);
+                } else {
+                    // El usuario ha denegado el permiso de Cámara
+                    Toast.makeText(DashboardActivity.this, "Sin el permiso de cámara no podrá escanear códigos Qr", Toast.LENGTH_SHORT).show();
+
+                }
+                return;
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Toast.makeText(this, "Si deseas salir de la aplicación, deberás cerrar sesión", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onPeopleClick(PeopleResponse p) {
+        Intent i = new Intent(DashboardActivity.this, ProfileDarkActivity.class);
+        i.putExtra(Constantes.EXTRAS_USER_ID, p.get_id());
+        startActivity(i);
     }
 }

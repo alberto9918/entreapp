@@ -1,14 +1,17 @@
 package com.mario.myapplication.ui.pois.qrScanner;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.google.zxing.Result;
+import com.mario.myapplication.ui.common.ActivityWebView;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
@@ -49,6 +52,8 @@ public class QrScannerFragment extends Fragment implements ZXingScannerView.Resu
         // Here goes the method to change fragment and visit the POI.
 
         mScannerView.resumeCameraPreview(this);
+
+        Toast.makeText(getActivity(), "Result: " + rawResult, Toast.LENGTH_SHORT).show();
     }
     // Finish QRCode Actions
 }

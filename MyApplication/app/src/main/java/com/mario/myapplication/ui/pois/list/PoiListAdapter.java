@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.mario.myapplication.R;
 import com.mario.myapplication.responses.PoiResponse;
 import com.mario.myapplication.responses.UserResponse;
@@ -70,10 +71,17 @@ public class PoiListAdapter extends RecyclerView.Adapter<PoiListAdapter.ViewHold
 
         viewHolder.mItem = data.get(i);
         viewHolder.title.setText(viewHolder.mItem.getName());
-        viewHolder.distance.setText(viewHolder.mItem.getStatus());
+        if(viewHolder.mItem.getPrice() == 0.0f) {
+            viewHolder.price.setText("Gratis");
+        } else {
+            viewHolder.price.setText("€ " + viewHolder.mItem.getPrice());
+        }
 
-        Glide.with(context).load(viewHolder.mItem.getCoverImage()).into(viewHolder.bgImage);
-        viewHolder.bgImage.setOnClickListener(v -> mListener.goPoiDetails(v, viewHolder.mItem.getId()));
+        Glide.with(context)
+                .load(viewHolder.mItem.getCoverImage())
+                .apply(new RequestOptions().centerCrop())
+                .into(viewHolder.bgImage);
+        viewHolder.bgImage.setOnClickListener(v -> mListener.goPoiDetails(viewHolder.mItem.getId()));
     }
 
     @Override
@@ -83,7 +91,7 @@ public class PoiListAdapter extends RecyclerView.Adapter<PoiListAdapter.ViewHold
 
     class ViewHolder extends RecyclerView.ViewHolder {
         final View mView;
-        final TextView title, distance;
+        final TextView title, price;
         final ImageView bgImage;
         PoiResponse mItem;
 
@@ -91,7 +99,7 @@ public class PoiListAdapter extends RecyclerView.Adapter<PoiListAdapter.ViewHold
             super(itemView);
             mView = itemView;
             title = itemView.findViewById(R.id.poi_list_title);
-            distance = itemView.findViewById(R.id.poi_list_distance);
+            price = itemView.findViewById(R.id.poi_price);
             bgImage = itemView.findViewById(R.id.poi_list_bgImage);
         }
 

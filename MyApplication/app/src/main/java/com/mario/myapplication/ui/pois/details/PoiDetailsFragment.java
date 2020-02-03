@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -92,10 +93,10 @@ public class PoiDetailsFragment extends Fragment {
         ((TextView) Objects.requireNonNull(v).findViewById(R.id.tv_poi_description)).setText(Html.fromHtml(poi.getDescription().getTranslations()[0].getTranslatedFile()));
         Glide.with(this).load(poi.getCoverImage()).into((ImageView) v.findViewById(R.id.iv_poi_image));
 
-        ChipGroup cg = Objects.requireNonNull(v).findViewById(R.id.cg_categories);
+        LinearLayout cg = Objects.requireNonNull(v).findViewById(R.id.cg_categories);
         for (Category c: poi.getCategories()) {
-            Chip cc = new Chip(Objects.requireNonNull(getContext()));
-            cc.setChipDrawable(ChipDrawable.createFromResource(Objects.requireNonNull(getContext()), R.xml.chip_categories));
+            TextView cc = new TextView(Objects.requireNonNull(getContext()));
+            //cc.setChipDrawable(ChipDrawable.createFromResource(Objects.requireNonNull(getContext()), R.xml.chip_categories));
             cc.setText(c.getName());
             cg.addView(cc);
 
