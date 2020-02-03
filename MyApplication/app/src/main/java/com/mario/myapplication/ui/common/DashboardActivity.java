@@ -32,14 +32,13 @@ import com.mario.myapplication.ui.badges.detail.BadgeDetailListener;
 import com.mario.myapplication.ui.categories.CategoryFragment;
 import com.mario.myapplication.ui.people.IPeopleListener;
 import com.mario.myapplication.ui.people.PeopleFragment;
-import com.mario.myapplication.ui.pois.PoiMapFragment;
+import com.mario.myapplication.ui.pois.map.PoiMapFragment;
 import com.mario.myapplication.ui.pois.details.DetallePoiActivity;
 import com.mario.myapplication.ui.pois.list.PoiListFragment;
 import com.mario.myapplication.ui.pois.list.PoiListListener;
 import com.mario.myapplication.ui.pois.qrScanner.QrCodeActivity;
 import com.mario.myapplication.ui.profile.ProfileDarkActivity;
 import com.mario.myapplication.ui.routes.RouteListener;
-import com.mario.myapplication.ui.routes.RoutesFragment;
 import com.mario.myapplication.util.Constantes;
 import com.mario.myapplication.util.UtilToken;
 

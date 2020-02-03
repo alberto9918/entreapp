@@ -1,4 +1,4 @@
-package com.mario.myapplication.ui.pois;
+package com.mario.myapplication.ui.pois.map;
 
 
 import android.Manifest;
@@ -35,6 +35,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
+import com.google.maps.android.clustering.ClusterManager;
 import com.mario.myapplication.R;
 import com.mario.myapplication.responses.PoiResponse;
 import com.mario.myapplication.responses.ResponseContainer;
@@ -64,6 +65,7 @@ public class PoiMapFragment extends Fragment implements OnMapReadyCallback {
     private boolean mLocationPermissionGranted;
     private Location mLastKnownLocation;
     private PoiListListener mListener;
+    private ClusterManager<PoiClusterItem> mClusterManager;
 
     // Retrofit
     private String jwt;
@@ -125,8 +127,9 @@ public class PoiMapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        getDeviceLocation();
+
         mapUIConfig();
+        setUpClusterer();
     }
 
     /** Check if location permissions are granted. If not, ask for it. **/
@@ -230,11 +233,27 @@ public class PoiMapFragment extends Fragment implements OnMapReadyCallback {
                 } else {
                     mMap.clear();
                     for (PoiResponse i : Objects.requireNonNull(response.body()).getRows()) {
-                        mMap.addMarker(new MarkerOptions()
+
+                        String snippet = "";
+                        if(i.getPrice() == 0.0f) {
+                            snippet = getString(R.string.free);
+                        } else {
+                            snippet = i.getPrice()+ " €";
+                        }
+
+                        PoiClusterItem clusterItem = new PoiClusterItem(
+                                i.getId(),
+                                i.getLoc().getCoordinates()[0],
+                                i.getLoc().getCoordinates()[1],
+                                i.getName(),
+                                snippet);
+                        mClusterManager.addItem(clusterItem);
+
+                        /*mMap.addMarker(new MarkerOptions()
                                 .position(new LatLng(i.getLoc().getCoordinates()[0], i.getLoc().getCoordinates()[1]))
                                 .title(i.getName())
                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker))
-                        ).setTag(i.getId());
+                        ).setTag(i.getId());*/
                     }
                 }
             }
@@ -253,10 +272,7 @@ public class PoiMapFragment extends Fragment implements OnMapReadyCallback {
         mMap.getUiSettings().setMapToolbarEnabled(false);
         mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(Objects.requireNonNull(getContext()), R.raw.poi_map_style));
 
-        mMap.setOnMarkerClickListener(marker -> {
-            mListener.goPoiDetails(marker.getTag().toString());
-            return false;
-        });
+        mMap.setOnMarkerClickListener(mClusterManager);
     }
 
 
@@ -275,5 +291,27 @@ public class PoiMapFragment extends Fragment implements OnMapReadyCallback {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    private void setUpClusterer() {
+
+        // Initialize the manager with the context and the map.
+        // (Activity extends context, so we can pass 'this' in the constructor.)
+        mClusterManager = new ClusterManager<PoiClusterItem>(getActivity(), mMap);
+
+        // Point the map's listeners at the listeners implemented by the cluster
+        // manager.
+        mMap.setOnCameraIdleListener(mClusterManager);
+        mMap.setOnMarkerClickListener(mClusterManager);
+        mMap.setOnInfoWindowClickListener(mClusterManager);
+
+        mClusterManager.setOnClusterItemInfoWindowClickListener(new ClusterManager.OnClusterItemInfoWindowClickListener<PoiClusterItem>() {
+            @Override
+            public void onClusterItemInfoWindowClick(PoiClusterItem poiClusterItem) {
+                mListener.goPoiDetails(poiClusterItem.getId());
+            }
+        });
+
+        getDeviceLocation();
     }
 }
