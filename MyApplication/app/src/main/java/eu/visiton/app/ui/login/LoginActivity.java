@@ -13,6 +13,11 @@ public class LoginActivity extends AppCompatActivity implements IAuthListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.contenedor, LoginFragment.newInstance())

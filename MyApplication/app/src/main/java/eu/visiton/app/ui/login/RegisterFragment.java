@@ -137,7 +137,6 @@ public class RegisterFragment extends Fragment {
             public void run() {
                 progress_bar.setVisibility(View.GONE);
                 fab.setAlpha(1f);
-                Snackbar.make(parent_view, "Login data submitted", Snackbar.LENGTH_SHORT).show();
             }
         }, 1000);
 
@@ -171,7 +170,6 @@ public class RegisterFragment extends Fragment {
                         UtilToken.setToken(ctx, response.body().getToken());
                         UtilToken.setId(ctx, response.body().getUser().getId());
                         getUser();
-                        startActivity(new Intent(ctx, DashboardActivity.class));
                     } else {
                         // error
                         Toast.makeText(ctx, "Error while signing up.", Toast.LENGTH_LONG).show();
