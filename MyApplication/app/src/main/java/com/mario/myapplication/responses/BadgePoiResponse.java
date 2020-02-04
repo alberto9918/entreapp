@@ -1,6 +1,7 @@
 package com.mario.myapplication.responses;
 
 import com.mario.myapplication.model.Description;
+import com.mario.myapplication.util.Constantes;
 
 public class BadgePoiResponse {
     private String id;
@@ -55,7 +56,7 @@ public class BadgePoiResponse {
     }
 
     public String getCoverImage() {
-        return coverImage;
+        return Constantes.FILES_BASE_URL + coverImage;
     }
 
     public void setCoverImage(String coverImage) {

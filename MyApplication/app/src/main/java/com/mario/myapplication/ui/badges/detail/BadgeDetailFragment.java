@@ -8,7 +8,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,13 +24,11 @@ import com.bumptech.glide.RequestBuilder;
 import com.mario.myapplication.R;
 import com.mario.myapplication.responses.BadgePoiResponse;
 import com.mario.myapplication.responses.BadgeResponse;
-import com.mario.myapplication.responses.PoiResponse;
 import com.mario.myapplication.retrofit.generator.AuthType;
 import com.mario.myapplication.retrofit.generator.ServiceGenerator;
 import com.mario.myapplication.retrofit.services.BadgeService;
-import com.mario.myapplication.ui.badges.BadgeListener;
+import com.mario.myapplication.ui.badges.list.BadgeListener;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -77,9 +74,13 @@ public class BadgeDetailFragment extends Fragment {
                     Toast.makeText(getActivity(), "Request Error", Toast.LENGTH_SHORT).show();
                 } else {
                     badge = response.body();
-                    response.headers();
-                    setData(layout);
+
                     pois = badge.getPois();
+                    adapter = new PoisAdapter(ctx, pois, mListener);
+                    recycler.setAdapter(adapter);
+
+                    // response.headers();
+                    setData(layout);
                 }
             }
 
@@ -118,11 +119,11 @@ public class BadgeDetailFragment extends Fragment {
         // Inflate the layout for this fragment
         View layout = inflater.inflate(R.layout.fragment_badge_detail, container, false);
         ctx = layout.getContext();
-        getBadgeDetails(badgeId, layout);
         recycler = layout.findViewById(R.id.badge_detail_pois_recycler);
         recycler.setLayoutManager(new LinearLayoutManager(ctx));
-        adapter = new PoisAdapter(ctx, pois, mListener);
-        recycler.setAdapter(adapter);
+
+        getBadgeDetails(badgeId, layout);
+
         return layout;
     }
 
@@ -134,7 +135,8 @@ public class BadgeDetailFragment extends Fragment {
         earned = layout.findViewById(R.id.badge_detail_earned);
         name.setText(badge.getName());
         description.setText(badge.getDescription());
-        points.setText(String.valueOf(badge.getPoints()));
+        points.setText(String.valueOf(badge.getPoints()) +" "+ ctx.getString(R.string.points));
+
         if (isEarned) {
             earned.setVisibility(View.VISIBLE);
         }
@@ -151,7 +153,7 @@ public class BadgeDetailFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof BadgeListener) {
+        if (context instanceof BadgeDetailListener) {
             mListener = (BadgeDetailListener) context;
         } else {
             throw new RuntimeException(context.toString()

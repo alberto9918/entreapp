@@ -39,9 +39,11 @@ import com.mario.myapplication.responses.ResponseContainer;
 import com.mario.myapplication.retrofit.generator.AuthType;
 import com.mario.myapplication.retrofit.generator.ServiceGenerator;
 import com.mario.myapplication.retrofit.services.PoiService;
+import com.mario.myapplication.ui.pois.list.PoiListAdapter;
 import com.mario.myapplication.ui.pois.list.PoiListListener;
 import com.mario.myapplication.util.UtilToken;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -82,8 +84,12 @@ public class PoiMapFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.menu_poi_map_goList) {
-            mListener.showPoiList();
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.menu_poi_map_goList: mListener.showPoiList(); break;
+            case R.id.action_filter_favs: getFavPois(); break;
+            case R.id.action_filter_visited: getVisitedPois(); break;
+            case R.id.action_filter_nofilter: getDeviceLocation(); break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -228,30 +234,7 @@ public class PoiMapFragment extends Fragment implements OnMapReadyCallback {
                 if (response.code() != 200) {
                     Toast.makeText(getActivity(), "Request Error", Toast.LENGTH_SHORT).show();
                 } else {
-                    mMap.clear();
-                    for (PoiResponse i : Objects.requireNonNull(response.body()).getRows()) {
-
-                        String snippet = "";
-                        if(i.getPrice() == 0.0f) {
-                            snippet = getString(R.string.free);
-                        } else {
-                            snippet = i.getPrice()+ " €";
-                        }
-
-                        PoiClusterItem clusterItem = new PoiClusterItem(
-                                i.getId(),
-                                i.getLoc().getCoordinates().get(0),
-                                i.getLoc().getCoordinates().get(1),
-                                i.getName(),
-                                snippet);
-                        mClusterManager.addItem(clusterItem);
-
-                        /*mMap.addMarker(new MarkerOptions()
-                                .position(new LatLng(i.getLoc().getCoordinates()[0], i.getLoc().getCoordinates()[1]))
-                                .title(i.getName())
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker))
-                        ).setTag(i.getId());*/
-                    }
+                    drawPoisMap(response);
                 }
             }
 
@@ -261,6 +244,35 @@ public class PoiMapFragment extends Fragment implements OnMapReadyCallback {
                 Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void drawPoisMap(Response<ResponseContainer<PoiResponse>> response) {
+        mMap.clear();
+        mClusterManager.clearItems();
+
+        for (PoiResponse i : Objects.requireNonNull(response.body()).getRows()) {
+
+            String snippet = "";
+            if(i.getPrice() == 0.0f) {
+                snippet = getString(R.string.free);
+            } else {
+                snippet = i.getPrice()+ " €";
+            }
+
+            PoiClusterItem clusterItem = new PoiClusterItem(
+                    i.getId(),
+                    i.getLoc().getCoordinates().get(0),
+                    i.getLoc().getCoordinates().get(1),
+                    i.getName(),
+                    snippet);
+            mClusterManager.addItem(clusterItem);
+
+                        /*mMap.addMarker(new MarkerOptions()
+                                .position(new LatLng(i.getLoc().getCoordinates()[0], i.getLoc().getCoordinates()[1]))
+                                .title(i.getName())
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker))
+                        ).setTag(i.getId());*/
+        }
     }
 
     /** Set the config of map Interface **/
@@ -310,5 +322,51 @@ public class PoiMapFragment extends Fragment implements OnMapReadyCallback {
         });
 
         getDeviceLocation();
+    }
+
+    /** API Call to get FAV Pois **/
+    private void getFavPois() {
+
+        PoiService service = ServiceGenerator.createService(PoiService.class, jwt, AuthType.JWT);
+        Call<ResponseContainer<PoiResponse>> call = service.listFavPois();
+        call.enqueue(new Callback<ResponseContainer<PoiResponse>>() {
+            @Override
+            public void onResponse(@NonNull Call<ResponseContainer<PoiResponse>> call, @NonNull Response<ResponseContainer<PoiResponse>> response) {
+                if (response.code() != 200) {
+                    Toast.makeText(getActivity(), "Request Error", Toast.LENGTH_SHORT).show();
+                } else {
+                    drawPoisMap(response);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ResponseContainer<PoiResponse>> call, @NonNull Throwable t) {
+                Log.e("Network Failure", t.getMessage());
+                Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /** API Call to get VISITED Pois **/
+    private void getVisitedPois() {
+
+        PoiService service = ServiceGenerator.createService(PoiService.class, jwt, AuthType.JWT);
+        Call<ResponseContainer<PoiResponse>> call = service.listVisitedPois();
+        call.enqueue(new Callback<ResponseContainer<PoiResponse>>() {
+            @Override
+            public void onResponse(@NonNull Call<ResponseContainer<PoiResponse>> call, @NonNull Response<ResponseContainer<PoiResponse>> response) {
+                if (response.code() != 200) {
+                    Toast.makeText(getActivity(), "Request Error", Toast.LENGTH_SHORT).show();
+                } else {
+                    drawPoisMap(response);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ResponseContainer<PoiResponse>> call, @NonNull Throwable t) {
+                Log.e("Network Failure", t.getMessage());
+                Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

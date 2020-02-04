@@ -2,6 +2,12 @@
     <string name="app_name">VisitOn</string>
     <string name="device_language">ES</string>
 
+    <string name="title_pois_list">Lista POIs</string>
+    <string name="title_pois_map">Mapa POIs</string>
+    <string name="title_routes">Rutas</string>
+    <string name="title_badges">Insignias</string>
+    <string name="title_users">Usuarios</string>
+
     <string name="sign_up_label">Registrarme</string>
     <string name="log_in_label">E N T R A R</string>
     <string name="forgot_password">¿Olvidaste la contraseña?</string>
@@ -14,22 +20,17 @@
     <string name="fb_login_protocol_scheme">fb313908059266962</string>
 
     <!-- Preferencias -->
-    <string name="title_activity_home">HomeActivity</string>
     <string name="title_activity_dashboard">VisitOn</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notificaciones</string>
     <string name="title_activity_maps">Mapa</string>
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="edit_profile">Editar perfil</string>
 
     <string name="email_example">email@gmail.com</string>
     <string name="Email">Email</string>
     <string name="Email_example">example@gmail.com</string>
     <string name="Language">Idioma</string>
-    <string name="pois_visited">Pois visited</string>
-    <string name="badges">Insignia</string>
+    <string name="pois_visited">POIs visitados</string>
+    <string name="badges">Insignias</string>
     <string name="userId">userId</string>
     <string name="language">language</string>
 
@@ -40,7 +41,7 @@
     <string name="cancel">Cancelar</string>
     <string name="textview">TextView</string>
     <string name="defaultLanguage">Inglés</string>
-    <string name="points">Points </string>
+    <string name="points">Puntos </string>
     <string name="edit">Editar</string>
     <string name="country">País</string>
     <string name="name">Nombre</string>
@@ -60,7 +61,7 @@
     <string name="badges_filter_checkbox">Conseguidas</string>
     <string name="filter">Filtro</string>
     <string name="favorites">Favoritos</string>
-    <string name="visited">Visitado</string>
+    <string name="visited">Visitados</string>
     <string name="noFilter">Sin filtrar</string>
     <string name="badge_detail_point_title">Puntos</string>
     <string name="incorrect_name">Nombre incorrecto</string>
@@ -79,5 +80,9 @@
     <string name="action_menu_profile">Mi perfil</string>
     <string name="free">Gratis</string>
     <string name="under_construction">We\'re coding this UI</string>
+    <string name="near">Cercanos</string>
+    <string name="meters">metros</string>
+    <string name="description">Descripción</string>
+    <string name="badge">Insignia</string>
 
 </resources>

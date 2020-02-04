@@ -2,6 +2,9 @@ package com.mario.myapplication.retrofit.services;
 
 import com.mario.myapplication.responses.PoiResponse;
 import com.mario.myapplication.responses.ResponseContainer;
+import com.mario.myapplication.responses.UserFavResponse;
+import com.mario.myapplication.responses.UserResponse;
+import com.mario.myapplication.responses.VisitPoiResponse;
 
 import java.util.ArrayList;
 
@@ -22,6 +25,12 @@ public interface PoiService {
     @GET(BASE_URL)
     Call<ResponseContainer<PoiResponse>> listPois(@Query("near") String latlng, @Query("max_distance") int maxDistance);
 
+    @GET(BASE_URL + "/visited")
+    Call<ResponseContainer<PoiResponse>> listVisitedPois();
+
+    @GET(BASE_URL + "/favs")
+    Call<ResponseContainer<PoiResponse>> listFavPois();
+
     @GET(BASE_URL + "/{id}")
     Call<PoiResponse> getPoi(@Path("id") String id);
 
@@ -32,5 +41,11 @@ public interface PoiService {
     Call<PoiResponse> visitPoi(@Path("id") String id);
 
     @PUT(BASE_URL + "/visit/{uniqueName}")
-    Call<PoiResponse> qrScan(@Path("uniqueName") String uniqueName);
+    Call<VisitPoiResponse> qrScan(@Path("uniqueName") String uniqueName);
+
+    @PUT(BASE_URL + "/fav/add/{id}")
+    Call<UserFavResponse> addPoiFav(@Path("id") String id);
+
+    @PUT(BASE_URL + "/fav/del/{id}")
+    Call<UserFavResponse> delPoiFav(@Path("id") String id);
 }

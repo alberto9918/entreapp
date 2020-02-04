@@ -1,4 +1,4 @@
-package com.mario.myapplication.ui.badges;
+package com.mario.myapplication.ui.badges.list;
 
 import android.content.Context;
 import android.graphics.drawable.PictureDrawable;
@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,18 +16,11 @@ import com.bumptech.glide.RequestBuilder;
 import com.mario.myapplication.R;
 import com.mario.myapplication.responses.BadgeResponse;
 import com.mario.myapplication.responses.UserResponse;
-import com.mario.myapplication.retrofit.generator.AuthType;
-import com.mario.myapplication.retrofit.generator.ServiceGenerator;
 import com.mario.myapplication.retrofit.services.UserService;
-import com.mario.myapplication.ui.badges.detail.BadgeDetailFragment;
 import com.mario.myapplication.util.SvgSoftwareLayerSetter;
 import com.mario.myapplication.util.UtilToken;
 
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.ViewHolder> {
     private final BadgeListener mListener;

@@ -10,6 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.mario.myapplication.R;
 import com.mario.myapplication.responses.BadgePoiResponse;
 import com.mario.myapplication.responses.PoiResponse;
@@ -36,19 +38,25 @@ public class PoisAdapter extends RecyclerView.Adapter<PoisAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-        holder.name.setText(items.get(position).getName());
+        holder.mItem = items.get(position);
+        holder.name.setText(holder.mItem.getName());
+
+        Glide.with(ctx)
+                .load(holder.mItem.getCoverImage())
+                .apply(new RequestOptions().centerCrop())
+                .into(holder.coverImage);
     }
 
     @Override
     public int getItemCount() {
-//        return items.size();
-        return 0;
+        return items.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final ImageView coverImage;
         public final TextView name;
         public final View mView;
+        public BadgePoiResponse mItem;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

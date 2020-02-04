@@ -1,6 +1,7 @@
 package com.mario.myapplication.ui.pois.details;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatRatingBar;
 import androidx.appcompat.widget.AppCompatSeekBar;
@@ -14,6 +15,7 @@ import androidx.viewpager.widget.ViewPager;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
@@ -37,6 +39,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.balysv.materialripple.MaterialRippleLayout;
 import com.google.android.gms.common.util.ArrayUtils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -65,7 +68,7 @@ import retrofit2.Response;
 
 public class DetallePoiActivity extends AppCompatActivity {
 
-    private static String id;
+    private static String id, dialogTitle, dialogMessage, dialogAnimation;
     private PoiResponse poi;
 
     private View parent_view;
@@ -105,6 +108,16 @@ public class DetallePoiActivity extends AppCompatActivity {
         initToolbar();
         Bundle extras = getIntent().getExtras();
         id = extras.getString("id");
+
+        try {
+            dialogTitle = extras.getString(Constantes.EXTRA_DIALOG_TITLE);
+            dialogMessage = extras.getString(Constantes.EXTRA_DIALOG_MESSAGE);
+            dialogAnimation = extras.getString(Constantes.EXTRA_DIALOG_ANIMATION);
+            if(dialogTitle != null && dialogMessage != null && dialogAnimation != null) {
+                showAlertPoi();
+            }
+        } catch (Exception e) {
+        }
         getPoiDetails();
     }
 
@@ -515,5 +528,29 @@ public class DetallePoiActivity extends AppCompatActivity {
             // other 'case' lines to check for other
             // permissions this app might request.
         }
+    }
+
+    private void showAlertPoi() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setMessage(dialogMessage)
+                .setTitle(dialogTitle);
+
+        View v = LayoutInflater.from(this).inflate(R.layout.dialog_visit_poi, null);
+        LottieAnimationView animationView = v.findViewById(R.id.lottieBadge);
+        animationView.setAnimation(dialogAnimation);
+        animationView.playAnimation();
+
+        builder.setCancelable(false);
+        builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builder.setView(v);
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

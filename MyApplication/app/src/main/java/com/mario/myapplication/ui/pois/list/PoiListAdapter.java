@@ -1,6 +1,9 @@
 package com.mario.myapplication.ui.pois.list;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,13 +19,17 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.mario.myapplication.R;
 import com.mario.myapplication.responses.PoiResponse;
+import com.mario.myapplication.responses.ResponseContainer;
+import com.mario.myapplication.responses.UserFavResponse;
 import com.mario.myapplication.responses.UserResponse;
 import com.mario.myapplication.retrofit.generator.AuthType;
 import com.mario.myapplication.retrofit.generator.ServiceGenerator;
+import com.mario.myapplication.retrofit.services.PoiService;
 import com.mario.myapplication.retrofit.services.UserService;
 import com.mario.myapplication.util.UtilToken;
 
 import java.util.List;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -33,6 +40,8 @@ public class PoiListAdapter extends RecyclerView.Adapter<PoiListAdapter.ViewHold
     private final PoiListListener mListener;
     private List<PoiResponse> data;
     private Context context;
+    private String jwt;
+
     // private RequestBuilder<PictureDrawable> requestBuilder;
 
 
@@ -40,6 +49,7 @@ public class PoiListAdapter extends RecyclerView.Adapter<PoiListAdapter.ViewHold
         this.data = data;
         this.context = ctx;
         this.mListener = mListener;
+        jwt = UtilToken.getToken(Objects.requireNonNull(context));
     }
 
     @NonNull
@@ -72,6 +82,9 @@ public class PoiListAdapter extends RecyclerView.Adapter<PoiListAdapter.ViewHold
 
         viewHolder.mItem = data.get(i);
         viewHolder.title.setText(viewHolder.mItem.getName());
+        if(viewHolder.mItem.getDistance() != null) {
+            viewHolder.distance.setText(Math.round(viewHolder.mItem.getDistance()) + " " + context.getString(R.string.meters));
+        }
         if(viewHolder.mItem.getPrice() == 0.0f) {
             viewHolder.price.setText("Gratis");
         } else {
@@ -93,11 +106,13 @@ public class PoiListAdapter extends RecyclerView.Adapter<PoiListAdapter.ViewHold
             if(viewHolder.mItem.getFav()) {
                 viewHolder.imageViewFav.setImageResource(R.drawable.ic_like_empty);
                 viewHolder.mItem.setFav(false);
+                deleteFav(viewHolder.mItem.getId());
             } else {
                 viewHolder.mItem.setFav(true);
                 viewHolder.imageViewFav.setVisibility(View.GONE);
                 viewHolder.lottieAnimationView.setVisibility(View.VISIBLE);
                 viewHolder.lottieAnimationView.playAnimation();
+                addFav(viewHolder.mItem.getId());
             }
         });
 
@@ -108,6 +123,48 @@ public class PoiListAdapter extends RecyclerView.Adapter<PoiListAdapter.ViewHold
                 viewHolder.mItem.setFav(false);
         });
 
+        viewHolder.distance.setOnClickListener(view -> {
+            String coords = viewHolder.mItem.getLoc().getCoordinates().get(0) + "," + viewHolder.mItem.getLoc().getCoordinates().get(1);
+            mListener.showGoogleMaps(coords);
+        });
+    }
+
+    private void addFav(String id) {
+        PoiService service = ServiceGenerator.createService(PoiService.class, jwt, AuthType.JWT);
+        Call<UserFavResponse> call = service.addPoiFav(id);
+        call.enqueue(new Callback<UserFavResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<UserFavResponse> call, @NonNull Response<UserFavResponse> response) {
+                if (response.code() != 200) {
+                    Toast.makeText(context, "Request Error", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<UserFavResponse> call, @NonNull Throwable t) {
+                Log.e("Network Failure", t.getMessage());
+                Toast.makeText(context, "Network Error", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void deleteFav(String id) {
+        PoiService service = ServiceGenerator.createService(PoiService.class, jwt, AuthType.JWT);
+        Call<UserFavResponse> call = service.delPoiFav(id);
+        call.enqueue(new Callback<UserFavResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<UserFavResponse> call, @NonNull Response<UserFavResponse> response) {
+                if (response.code() != 200) {
+                    Toast.makeText(context, "Request Error", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<UserFavResponse> call, @NonNull Throwable t) {
+                Log.e("Network Failure", t.getMessage());
+                Toast.makeText(context, "Network Error", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -117,7 +174,7 @@ public class PoiListAdapter extends RecyclerView.Adapter<PoiListAdapter.ViewHold
 
     class ViewHolder extends RecyclerView.ViewHolder {
         final View mView;
-        final TextView title, price;
+        final TextView title, price, distance;
         final ImageView bgImage;
         final ImageView imageViewFav;
         final LottieAnimationView lottieAnimationView;
@@ -128,6 +185,7 @@ public class PoiListAdapter extends RecyclerView.Adapter<PoiListAdapter.ViewHold
             mView = itemView;
             title = itemView.findViewById(R.id.poi_list_title);
             price = itemView.findViewById(R.id.poi_price);
+            distance = itemView.findViewById(R.id.textViewDistance);
             bgImage = itemView.findViewById(R.id.poi_list_bgImage);
             imageViewFav = itemView.findViewById(R.id.imageViewFavorito);
             lottieAnimationView = itemView.findViewById(R.id.lottieFavorito);

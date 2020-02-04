@@ -7,4 +7,5 @@ public interface PoiListListener {
     void showPoiMap();
     void showPoiList();
     void showQrScanner();
+    void showGoogleMaps(String coords);
 }

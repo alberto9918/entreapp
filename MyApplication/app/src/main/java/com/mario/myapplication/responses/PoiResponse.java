@@ -61,7 +61,7 @@ public class PoiResponse {
     private String coverImage;
     @SerializedName("distance")
     @Expose
-    private Integer distance;
+    private Double distance;
     @SerializedName("fav")
     @Expose
     private Boolean fav;
@@ -103,7 +103,7 @@ public class PoiResponse {
      * @param status
      * @param updatedAt
      */
-    public PoiResponse(LocResponse loc, AudioguidesResponse audioguides, DescriptionResponse description, List<CategoryResponse> categories, List<String> images, String name, String uniqueName, String qrCode, Integer year, String creator, String status, String schedule, Integer price, String createdAt, String updatedAt, Integer v, String coverImage, Integer distance, Boolean fav, Boolean visited, String id) {
+    public PoiResponse(LocResponse loc, AudioguidesResponse audioguides, DescriptionResponse description, List<CategoryResponse> categories, List<String> images, String name, String uniqueName, String qrCode, Integer year, String creator, String status, String schedule, Integer price, String createdAt, String updatedAt, Integer v, String coverImage, Double distance, Boolean fav, Boolean visited, String id) {
         super();
         this.loc = loc;
         this.audioguides = audioguides;
@@ -264,11 +264,11 @@ public class PoiResponse {
         this.coverImage = coverImage;
     }
 
-    public Integer getDistance() {
+    public Double getDistance() {
         return distance;
     }
 
-    public void setDistance(Integer distance) {
+    public void setDistance(Double distance) {
         this.distance = distance;
     }
 

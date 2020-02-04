@@ -1,8 +1,10 @@
 package com.mario.myapplication.ui.common;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,13 +21,15 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mario.myapplication.R;
 import com.mario.myapplication.materialx.utils.Tools;
 import com.mario.myapplication.responses.BadgeResponse;
 import com.mario.myapplication.responses.PeopleResponse;
 import com.mario.myapplication.responses.RouteResponse;
-import com.mario.myapplication.ui.badges.BadgeListener;
-import com.mario.myapplication.ui.badges.BadgesFragment;
+import com.mario.myapplication.ui.badges.detail.BadgeDetailActivity;
+import com.mario.myapplication.ui.badges.list.BadgeListener;
+import com.mario.myapplication.ui.badges.list.BadgesFragment;
 import com.mario.myapplication.ui.badges.detail.BadgeDetailFragment;
 import com.mario.myapplication.ui.badges.detail.BadgeDetailListener;
 import com.mario.myapplication.ui.people.IPeopleListener;
@@ -48,9 +52,12 @@ public class DashboardActivity extends AppCompatActivity implements BadgeListene
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     // QR Button
     private static final int PERMISSIONS_REQUEST_ACCESS_CAMERA = 2;
+    FloatingActionButton fab;
+    Toolbar toolbar;
 
 
     // Bottom menu
+    @SuppressLint("RestrictedApi")
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = item -> {
         Fragment f = null;
@@ -58,19 +65,29 @@ public class DashboardActivity extends AppCompatActivity implements BadgeListene
 
             case R.id.navigation_pois:
                 if(showMap) {
+                    fab.setVisibility(View.GONE);
                     f = new PoiMapFragment();
+                    toolbar.setTitle(getString(R.string.title_pois_map));
                 } else {
+                    fab.setVisibility(View.VISIBLE);
                     f = new PoiListFragment();
+                    toolbar.setTitle(getString(R.string.title_pois_list));
                 }
                 break;
             case R.id.navigation_routes:
+                fab.setVisibility(View.GONE);
                 f = new UnderConstructionFragment();
+                toolbar.setTitle(getString(R.string.title_routes));
                 break;
             case R.id.navigation_people:
+                fab.setVisibility(View.GONE);
                 f = new PeopleFragment();
+                toolbar.setTitle(getString(R.string.title_users));
                 break;
             case R.id.navigation_badges:
+                fab.setVisibility(View.GONE);
                 f = new BadgesFragment();
+                toolbar.setTitle(getString(R.string.title_badges));
                 break;
 
         }//default fragment
@@ -85,25 +102,32 @@ public class DashboardActivity extends AppCompatActivity implements BadgeListene
         return false;
     };
 
+    @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+        initToolbar();
+
         BottomNavigationView navView = findViewById(R.id.nav_view);
+        fab = findViewById(R.id.fab);
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         // Para que por defecto cargue el fragmento de POIs (general)
         Fragment f = null;
         if(showMap) {
+            fab.setVisibility(View.GONE);
             f = new PoiMapFragment();
+            toolbar.setTitle(getString(R.string.title_pois_map));
         } else {
+            fab.setVisibility(View.VISIBLE);
             f = new PoiListFragment();
+            toolbar.setTitle(getString(R.string.title_pois_list));
         }
 
         fragmentChanger = getSupportFragmentManager().beginTransaction().replace(R.id.contenedor, f);
         fragmentChanger.commit();
 
-        initToolbar();
     }
 
     @Override
@@ -133,7 +157,7 @@ public class DashboardActivity extends AppCompatActivity implements BadgeListene
     }
 
     private void initToolbar() {
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         // toolbar.setNavigationIcon(R.drawable.ic_menu);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(getString(R.string.app_name));
@@ -144,9 +168,10 @@ public class DashboardActivity extends AppCompatActivity implements BadgeListene
 
     @Override
     public void onBadgeClick(View v, BadgeResponse b) {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.contenedor, new BadgeDetailFragment(b.getId(), b.isEarned()))
-                .commit();
+        Intent i = new Intent(this, BadgeDetailActivity.class);
+        i.putExtra(Constantes.EXTRA_BADGE_ID, b.getId());
+        i.putExtra(Constantes.EXTRA_BADGE_EARNED, b.isEarned());
+        startActivity(i);
     }
 
     @Override
@@ -183,24 +208,43 @@ public class DashboardActivity extends AppCompatActivity implements BadgeListene
         startActivity(i);
     }
 
+    @SuppressLint("RestrictedApi")
     @Override
     public void showPoiMap() {
         showMap = true;
+        fab.setVisibility(View.GONE);
         fragmentChanger = getSupportFragmentManager().beginTransaction().replace(R.id.contenedor, new PoiMapFragment());
         fragmentChanger.commit();
+        toolbar.setTitle(getString(R.string.title_pois_map));
+
     }
 
+    @SuppressLint("RestrictedApi")
     @Override
     public void showPoiList() {
         showMap = false;
+        fab.setVisibility(View.VISIBLE);
         fragmentChanger = getSupportFragmentManager().beginTransaction().replace(R.id.contenedor, new PoiListFragment());
         fragmentChanger.commit();
+        toolbar.setTitle(getString(R.string.title_pois_list));
+
     }
 
     @Override
     public void showQrScanner() {
         checkCameraPermissions();
     }
+
+    @Override
+    public void showGoogleMaps(String coords) {
+        Uri gmmIntentUri = Uri.parse("geo:"+coords);
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        if (mapIntent.resolveActivity(getPackageManager()) != null) {
+            startActivity(mapIntent);
+        }
+    }
+
 
     /** Check if camera permissions are granted. If not, ask for it. **/
     private void checkCameraPermissions() {

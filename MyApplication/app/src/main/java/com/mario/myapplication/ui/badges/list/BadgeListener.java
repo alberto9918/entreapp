@@ -1,4 +1,4 @@
-package com.mario.myapplication.ui.badges;
+package com.mario.myapplication.ui.badges.list;
 
 import android.view.View;
 

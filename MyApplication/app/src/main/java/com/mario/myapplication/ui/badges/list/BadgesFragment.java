@@ -1,4 +1,4 @@
-package com.mario.myapplication.ui.badges;
+package com.mario.myapplication.ui.badges.list;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -26,13 +26,9 @@ import com.mario.myapplication.retrofit.generator.AuthType;
 import com.mario.myapplication.retrofit.generator.ServiceGenerator;
 import com.mario.myapplication.retrofit.services.BadgeService;
 import com.mario.myapplication.retrofit.services.UserService;
-import com.mario.myapplication.util.BaseFragment;
-import com.mario.myapplication.util.FragmentToolbar;
 import com.mario.myapplication.util.UtilToken;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import retrofit2.Call;

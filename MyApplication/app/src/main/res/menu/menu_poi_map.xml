@@ -9,4 +9,17 @@
         android:title="Poi List"
         app:showAsAction="always" />
 
+    <item
+        android:id="@+id/menu_poi_list_filter"
+        android:icon="@drawable/ic_filter_white_24dp"
+        android:orderInCategory="100"
+        android:title="@string/filter"
+        app:showAsAction="always">
+        <menu>
+            <item android:title="@string/visited" android:id="@+id/action_filter_visited" />
+            <item android:title="@string/favorites" android:id="@+id/action_filter_favs" />
+            <item android:title="@string/near" android:id="@+id/action_filter_near" />
+        </menu>
+    </item>
+
 </menu>

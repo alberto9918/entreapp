@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import com.google.zxing.Result;
 import com.mario.myapplication.responses.PoiResponse;
 import com.mario.myapplication.responses.ResponseContainer;
+import com.mario.myapplication.responses.VisitPoiResponse;
 import com.mario.myapplication.retrofit.generator.AuthType;
 import com.mario.myapplication.retrofit.generator.ServiceGenerator;
 import com.mario.myapplication.retrofit.services.PoiService;
@@ -36,6 +37,7 @@ public class QrScannerFragment extends Fragment implements ZXingScannerView.Resu
     private PoiResponse poi;
     private String jwt;
     private IQrScanListener mListener;
+    private boolean scan = false;
 
     public QrScannerFragment() {
         // Required empty public constructor
@@ -70,26 +72,29 @@ public class QrScannerFragment extends Fragment implements ZXingScannerView.Resu
     public void handleResult(Result rawResult) {
         // Here goes the method to change fragment and visit the POI.
 
-        mScannerView.resumeCameraPreview(this);
+        if(!scan) {
+            scan = true;
 
-        String[] resultadoSpliteado = rawResult.toString().split("/");
-        String uniqueName = resultadoSpliteado[6];
+            mScannerView.resumeCameraPreview(this);
 
-        PoiService service = ServiceGenerator.createService(PoiService.class, jwt, AuthType.JWT);
-        Call<PoiResponse> call = service.qrScan(uniqueName);
-        call.enqueue(new Callback<PoiResponse>() {
-            @Override
-            public void onResponse(Call<PoiResponse> call, Response<PoiResponse> response) {
-                Toast.makeText(getActivity(), "POI: " + response.body().getName(), Toast.LENGTH_SHORT).show();
-                mListener.onQrScan(response.body());
-            }
+            String[] resultadoSpliteado = rawResult.toString().split("/");
+            String uniqueName = resultadoSpliteado[6];
 
-            @Override
-            public void onFailure(Call<PoiResponse> call, Throwable t) {
-                Log.e("Network Failure", t.getMessage());
-                Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_SHORT).show();
-            }
-        });
+            PoiService service = ServiceGenerator.createService(PoiService.class, jwt, AuthType.JWT);
+            Call<VisitPoiResponse> call = service.qrScan(uniqueName);
+            call.enqueue(new Callback<VisitPoiResponse>() {
+                @Override
+                public void onResponse(Call<VisitPoiResponse> call, Response<VisitPoiResponse> response) {
+                    mListener.onQrScan(response.body());
+                }
+
+                @Override
+                public void onFailure(Call<VisitPoiResponse> call, Throwable t) {
+                    Log.e("Network Failure", t.getMessage());
+                    Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
     // Finish QRCode Actions
 
