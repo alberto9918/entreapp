@@ -61,6 +61,9 @@ export const create = ({ bodymen: { body } }, res, next) => {
 /** Show list of all pois */
 export const index = ({ querymen: { query, select, cursor } }, res, next) => {
   const userLogged = res.req.user
+  // Se transforma para que funcione bien la comparación
+  let favoritos = userLogged.favs.map((fav) => fav.toString())
+  let visitados = userLogged.visited.map((visited) => visited.toString())
   let lat
   let lng
   if (query['loc.coordinates']) {
@@ -74,14 +77,10 @@ export const index = ({ querymen: { query, select, cursor } }, res, next) => {
         rows: pois.map((poi) => {
           if (query['loc.coordinates']) { poi.set('distance', distance(lat, lng, poi.loc.coordinates[0], poi.loc.coordinates[1])) } else { poi.set('distance', -1) }
           if (userLogged.favs.length != 0) {
-            userLogged.favs.forEach(userFav => {
-              if (_.isEqual(userFav.toString(), poi.id)) { poi.set('fav', true) } else { poi.set('fav', false) }
-            })
+            poi.set('fav', _.includes(favoritos, poi.id))
           } else { poi.set('fav', false) }
           if (userLogged.visited.length != 0) {
-            userLogged.visited.forEach(userVisited => {
-              if (_.isEqual(userVisited.toString(), poi.id)) { poi.set('visited', true) } else { poi.set('visited', false) }
-            })
+            poi.set('visited', _.includes(visitados, poi.id))
           } else { poi.set('visited', false) }
           return poi
         })
@@ -92,14 +91,46 @@ export const index = ({ querymen: { query, select, cursor } }, res, next) => {
 }
 
 /** Show one poi translated to user language */
-export const showTranslated = ({ params }, res, next) => {
+export const showTranslated = ({ params, user }, res, next) => {
+  console.log('Entramos en showTranslated')
+  // console.log('ID: ' + params.id)
   let query = {
-    id: (mongoose.Types.ObjectId(params.id)),
-    idUserLanguage: (mongoose.Types.ObjectId(params.idUserLanguage))
+    id: (mongoose.Types.ObjectId(params.id))
+    // ,
+    // idUserLanguage: (mongoose.Types.ObjectId(params.idUserLanguage))
   }
-  Poi.findOne({ id: query.id, 'description.translations.language': query.idUserLanguage })
+  // Poi.findOne({ id: query.id, 'description.translations.language': query.idUserLanguage })
+  Poi.findOne({ _id: query.id }).populate('categories', 'id name')
     .then(notFound(res))
-    .then((poi) => poi ? poi.view(2) : null)
+    /* .then((poi) => {
+      console.log(JSON.stringify(poi))
+      return poi
+    }) */
+    // .then((poi) => poi ? poi.view(0) : null)
+    .then((poi) => {
+      // console.log(JSON.stringify(poi))
+      let spanishTranslation = _.find(poi.description.translations, (element) => {
+        return element.language.language == '5c5429bf77bca32e879271d6'
+      })
+      poi.description.translations = _.filter(poi.description.translations, (element) => {
+        // console.log(JSON.stringify(element))
+        return element.language.language == params.idUserLanguage
+      })
+      if (poi.description.translations.length == 0) {
+        console.log('No hay ninguno, se añade en castellano')
+        poi.description.translations.push(spanishTranslation)
+      }
+
+      poi.audioguides.translations = _.filter(poi.audioguides.translations, (element) => {
+        return element.language.language == params.idUserLanguage
+      })
+      // console.log('Filtrada la audioguia')
+
+      poi.set('fav', _.includes(user.favs, poi.id))
+      poi.set('visited', _.includes(user.visited, poi.id))
+
+      return poi
+    })
     .then(success(res))
     .catch(next)
 }
@@ -132,13 +163,15 @@ export const destroy = ({ params }, res, next) =>
 /** Actions when user ScanQR.
  *    If user didn't visit the POI, add to UserVisited
  *    If user visited all POIs of a Medal, add to him.
- *    Retrieve the POI. **/
+ *    Devuelve el ID del poi, para poder hacer una petición de traducción **/
+
 export const VisitPoi = ({ params, user }, res, next) =>
   // Poi.findById(params.id).populate('categories', 'id name')
   Poi.findOne({ uniqueName: params.uniqueName }).populate('categories', 'id name')
     .then(notFound(res))
-    .then((poi) => poi ? poi.view(1) : null)
+    .then((poi) => poi ? poi.view(1) : null) // Este objeto POI no se usa en la APP, ya que se consume del servicio de obtención de un POI traducido
     .then((poi) => {
+      let newBadges = []
       if (user.visited.indexOf(poi.id) == -1) {
         user.visited.push(poi.id)
         Badge.find()
@@ -151,7 +184,14 @@ export const VisitPoi = ({ params, user }, res, next) =>
           })
         poi.firstVisited = true
       }
-      return poi
+      let result = {
+        poi: poi,
+        newBadges: {
+          count: newBadges.length,
+          rows: newBadges
+        }
+      }
+      return result
     })
     .then(success(res))
     .catch(next)
@@ -160,8 +200,10 @@ export const VisitPoi = ({ params, user }, res, next) =>
  *  Genera el código Qr a partir del nombre único del POI
  */
 export const serveQrAsImg = ({ params, user, query }, res, next) => {
+  const base = _.endsWith(apiBaseUrl, '/') ? apiBaseUrl.substring(0, apiBaseUrl.length - 2) : apiBaseUrl
+  const requestBaseUrl = base + '/pois/visit/'
   Poi.findOne({ uniqueName: params.uniqueName })
-    .then((poi) => QRCode.toDataURL(poi.qrCode, {
+    .then((poi) => QRCode.toDataURL(requestBaseUrl + poi.uniqueName, {
       color: {
         dark: '#000', // Black dots
         light: '#0000' // Transparent background
@@ -195,8 +237,14 @@ export const existsUniqueName = ({ params }, res, next) => {
 */
 export const savePoiAsFav = ({ params, user }, res, next) => {
   if (user.favs.indexOf(params.id) === -1) {
-    user.favs.push(params.id)
-    user.save()
+    Poi.findById(params.id, 'name')
+      .then(notFound(res))
+      .then(poi => {
+        user.favs.push(params.id)
+        user.save()
+        return poi
+      })
+      .catch(next)
   }
   res.status(200).json(user.view(true))
 }
@@ -260,7 +308,6 @@ export const getVisited = ({ user }, res, next) => {
     .then(success(res))
     .catch(next)
 }
-
 
 /** Function used to calculate the distance between 2 POIs */
 function distance (lat1, lon1, lat2, lon2) {

@@ -66,8 +66,13 @@
                       </mat-form-field>
                       <!-- Autor/Anyo -->
                       
-                      <mat-form-field width="30%">
+                      <mat-form-field width="30%" class="margin-right">
                         <input matInput placeholder="Year" type="number" [formControl]="form.controls['year']" required>
+                      </mat-form-field>
+
+                      <!--Unique Name-->
+                      <mat-form-field>
+                        <input matInput placeholder="Unique Name" type="text" [formControl]="form.controls['uniqueName']" readonly>
                       </mat-form-field>
 
                     </div>
