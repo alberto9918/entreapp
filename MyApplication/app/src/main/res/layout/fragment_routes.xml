@@ -3,7 +3,7 @@
     app:layoutManager="LinearLayoutManager"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.mario.myapplication.ui.routes.RoutesFragment"
+    tools:context="com.mario.app.eu.mario.app.ui.routes.RoutesFragment"
     android:id="@+id/routesSwipeContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="10dp"
-        tools:context=".ui.routes.RoutesFragment"
+        tools:context="eu.visiton.app.ui.routes.RoutesFragment"
         tools:listitem="@layout/fragment_routes" />
 
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

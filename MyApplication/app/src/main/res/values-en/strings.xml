@@ -1,4 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">VisitOn</string>
+    <string name="device_language">EN</string>
+
+    <string name="title_pois_list">Lista POIs</string>
+    <string name="title_pois_map">Mapa POIs</string>
+    <string name="title_routes">Rutas</string>
+    <string name="title_badges">Insignias</string>
+    <string name="title_users">Usuarios</string>
+
+    <string name="sign_up_label">Registrarme</string>
+    <string name="log_in_label">E N T R A R</string>
+    <string name="forgot_password">¿Olvidaste la contraseña?</string>
+    <string name="password_hint">Contraseña</string>
+    <string name="email_hint">Correo electrónico</string>
+    <string name="confirm_hint">Confirmar Contraseña</string>
+
+    <!-- Facebook -->
+    <string name="facebook_app_id">313908059266962</string>
+    <string name="fb_login_protocol_scheme">fb313908059266962</string>
+
+    <!-- Preferencias -->
+    <string name="title_activity_dashboard">VisitOn</string>
+    <string name="title_activity_maps">Mapa</string>
+
+    <string name="edit_profile">Editar perfil</string>
+
+    <string name="email_example">email@gmail.com</string>
+    <string name="Email">Email</string>
+    <string name="Email_example">example@gmail.com</string>
+    <string name="Language">Idioma</string>
+    <string name="pois_visited">POIs visitados</string>
+    <string name="badges">Insignias</string>
+    <string name="userId">userId</string>
+    <string name="language">language</string>
+
+    <string name="need_gps_title">GPS está deshabilitado.</string>
+    <string name="need_gps_message">¿Quieres activar el GPS para obtener tu localización?</string>
+
+    <string name="accept">Aceptar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="textview">TextView</string>
+    <string name="defaultLanguage">Inglés</string>
+    <string name="points">Puntos </string>
+    <string name="edit">Editar</string>
+    <string name="country">País</string>
+    <string name="name">Nombre</string>
+    <string name="no_country">Sin país</string>
+    <string name="save">Guardar</string>
+    <string name="categories">Categorías</string>
+
+    <string name="action_settings">Ajustes</string>
+    <string name="no_language">Sin idioma</string>
+    <string name="friends">Amigos</string>
+    <string name="city">Ciudad</string>
+    <string name="action_logout">Visitoff</string>
+    <string name="no_city">Sin ciudad</string>
+    <string name="upload">Subir</string>
+    <string name="search_view_hint">Buscar por nombre</string>
+    <string name="badges_toolbar_title">Insignias</string>
+    <string name="badges_filter_checkbox">Conseguidas</string>
+    <string name="filter">Filtro</string>
+    <string name="favorites">Favoritos</string>
+    <string name="visited">Visitados</string>
+    <string name="noFilter">Sin filtrar</string>
+    <string name="badge_detail_point_title">Puntos</string>
+    <string name="incorrect_name">Nombre incorrecto</string>
+    <string name="incorrect_city">Ciudad incorrecta</string>
+    <string name="from_gallery">Desde la Galería</string>
+    <string name="from_camera">Desde la cámara</string>
+    <string name="choose_option">Selecciona una opción.</string>
+    <string name="badge_detail_pois_title">Puntos de interés necesarios para conseguir esta insignia</string>
+    <string name="close">Cerrar</string>
+    <string name="app_version">v1.0</string>
+    <string name="version_unknown">Versión desconocida</string>
+    <string name="sign_up_account">REGISTRARME EN LA APLICACIÓN</string>
+    <string name="welcome_login_title">Bienvenido a VisitOn</string>
+    <string name="welcome_login_subtitle">Inicia sesión para continuar</string>
+    <string name="action_show_map">Mostrar Mapa</string>
+    <string name="action_menu_profile">Mi perfil</string>
+    <string name="free">Gratis</string>
+    <string name="under_construction">We\'re coding this UI</string>
+    <string name="near">Cercanos</string>
+    <string name="meters">metros</string>
+    <string name="description">Descripción</string>
+    <string name="badge">Insignia</string>
 
 </resources>

@@ -3,7 +3,7 @@
     app:layoutManager="LinearLayoutManager"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.mario.myapplication.ui.badges.list.BadgesFragment"
+    tools:context="com.mario.app.eu.mario.app.ui.badges.list.BadgesFragment"
     android:id="@+id/swipeContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="10dp"
-        tools:context=".ui.badges.list.BadgesFragment"
+        tools:context="eu.visiton.app.ui.badges.list.BadgesFragment"
         tools:listitem="@layout/fragment_badges" />
 
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

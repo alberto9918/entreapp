@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.mario.myapplication">
+    package="eu.visiton.app">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -19,13 +19,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ui.badges.detail.BadgeDetailActivity"></activity>
+        <activity android:name="eu.visiton.app.ui.badges.detail.BadgeDetailActivity"></activity>
         <activity
-            android:name=".ui.pois.details.DetallePoiActivity"
+            android:name="eu.visiton.app.ui.pois.details.DetallePoiActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".ui.pois.qrScanner.QrCodeActivity" />
+        <activity android:name="eu.visiton.app.ui.pois.qrScanner.QrCodeActivity" />
         <activity
-            android:name=".ui.profile.ProfileDarkActivity"
+            android:name="eu.visiton.app.ui.profile.ProfileDarkActivity"
             android:screenOrientation="portrait" />
 
         <meta-data
@@ -36,11 +36,11 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".ui.common.DashboardActivity"
+            android:name="eu.visiton.app.ui.common.DashboardActivity"
             android:label="@string/title_activity_dashboard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.login.LoginActivity"
+            android:name="eu.visiton.app.ui.login.LoginActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

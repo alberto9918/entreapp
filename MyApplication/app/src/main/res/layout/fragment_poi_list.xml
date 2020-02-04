@@ -8,5 +8,5 @@
     android:layout_height="match_parent"
     android:layout_margin="0dp"
     app:layoutManager="LinearLayoutManager"
-    tools:context=".ui.pois.list.PoiListFragment"
+    tools:context="eu.visiton.app.ui.pois.list.PoiListFragment"
     tools:listitem="@layout/fragment_poi_list" />

@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.pois.qrScanner.QrCodeActivity">
+    tools:context="eu.visiton.app.ui.pois.qrScanner.QrCodeActivity">
 
     <fragment
         android:id="@+id/fragment"
-        android:name="com.mario.myapplication.ui.pois.qrScanner.QrScannerFragment"
+        android:name="eu.visiton.app.ui.pois.qrScanner.QrScannerFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
