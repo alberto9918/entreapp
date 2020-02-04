@@ -495,6 +495,7 @@ public class DetallePoiActivity extends AppCompatActivity {
                 Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
             Intent i = new Intent(this, QrCodeActivity.class);
             startActivity(i);
+            finish();
         } else {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.CAMERA},

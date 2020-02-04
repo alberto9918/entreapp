@@ -45,7 +45,7 @@ import eu.visiton.app.util.UtilToken;
 
 //import com.mario.myapplication.PoiFragment;
 
-public class DashboardActivity extends AppCompatActivity implements BadgeListener, BadgeDetailListener, RouteListener, PoiListListener, IPeopleListener {
+public class DashboardActivity extends AppCompatActivity implements BadgeListener, RouteListener, PoiListListener, IPeopleListener {
     FragmentTransaction fragmentChanger;
     private boolean showMap = false;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
@@ -98,6 +98,7 @@ public class DashboardActivity extends AppCompatActivity implements BadgeListene
                     .commit();
             return true;
         }
+
         return false;
     };
 
@@ -111,6 +112,10 @@ public class DashboardActivity extends AppCompatActivity implements BadgeListene
         BottomNavigationView navView = findViewById(R.id.nav_view);
         fab = findViewById(R.id.fab);
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        fab.setOnClickListener(view -> {
+            checkCameraPermissions();
+        });
 
         // Para que por defecto cargue el fragmento de POIs (general)
         Fragment f = null;

@@ -84,5 +84,7 @@
     <string name="meters">metros</string>
     <string name="description">Descripción</string>
     <string name="badge">Insignia</string>
+    <string name="title_activity_basic">BasicActivity</string>
+    <string name="congratulations_bagdge_get">Enhorabuena ya has conseguido esta insignia</string>
 
 </resources>

@@ -47,7 +47,7 @@ public class BadgeDetailFragment extends Fragment {
     private String badgeId, jwt;
     private BadgeResponse badge;
     private List<BadgePoiResponse> pois;
-    private TextView name, description, points;
+    private TextView name, description, points, title;
     private ImageView earned, icon;
     private BadgeDetailListener mListener;
     private Context ctx;
@@ -133,12 +133,14 @@ public class BadgeDetailFragment extends Fragment {
         points = layout.findViewById(R.id.badge_detail_points);
         icon = layout.findViewById(R.id.badge_detail_icon);
         earned = layout.findViewById(R.id.badge_detail_earned);
+        title = layout.findViewById(R.id.badge_detail_pois_title);
         name.setText(badge.getName());
         description.setText(badge.getDescription());
         points.setText(String.valueOf(badge.getPoints()) +" "+ ctx.getString(R.string.points));
 
         if (isEarned) {
             earned.setVisibility(View.VISIBLE);
+            title.setText(ctx.getString(R.string.congratulations_bagdge_get));
         }
         Glide.with(ctx).load(badge.getIcon()).into(icon);
     }

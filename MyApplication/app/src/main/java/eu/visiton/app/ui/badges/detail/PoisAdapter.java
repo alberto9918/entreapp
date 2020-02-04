@@ -45,6 +45,10 @@ public class PoisAdapter extends RecyclerView.Adapter<PoisAdapter.ViewHolder> {
                 .load(holder.mItem.getCoverImage())
                 .apply(new RequestOptions().centerCrop())
                 .into(holder.coverImage);
+
+        holder.mView.setOnClickListener(view -> {
+            mListener.onBadgePoiClick(holder.mItem.getId());
+        });
     }
 
     @Override

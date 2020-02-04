@@ -3,10 +3,12 @@ package eu.visiton.app.ui.badges.detail;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import eu.visiton.app.R;
 import eu.visiton.app.materialx.utils.Tools;
+import eu.visiton.app.ui.pois.details.DetallePoiActivity;
 import eu.visiton.app.util.Constantes;
 
 public class BadgeDetailActivity extends AppCompatActivity implements BadgeDetailListener {
@@ -36,5 +38,12 @@ public class BadgeDetailActivity extends AppCompatActivity implements BadgeDetai
         getSupportActionBar().setTitle(getString(R.string.badge));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Tools.setSystemBarColor(this);
+    }
+
+    @Override
+    public void onBadgePoiClick(String idPoi) {
+        Intent i = new Intent(this, DetallePoiActivity.class);
+        i.putExtra("id", idPoi);
+        startActivity(i);
     }
 }

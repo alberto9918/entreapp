@@ -148,7 +148,7 @@ public class ProfileDarkActivity extends AppCompatActivity {
         textViewPoisWritten.setText(String.valueOf(countPoisVisited(myProfileResponse)));
         textViewBadgesWritten.setText(String.valueOf(countBadges(myProfileResponse)));
         textViewFriendsWritten.setText(String.valueOf(myProfileResponse.getFriends().size()));
-        points = res.getString(R.string.points) + " " + countPoints(myProfileResponse);
+        points = String.valueOf(countPoints(myProfileResponse));
         //points = String.valueOf(countPoints(myProfileResponse));
         textViewPointsWritten.setText(points);
 
