@@ -3,14 +3,14 @@
     app:layoutManager="LinearLayoutManager"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.mario.app.eu.mario.app.ui.routes.RoutesFragment"
+    tools:context="eu.visiton.app.ui.routes.RoutesFragment"
     android:id="@+id/routesSwipeContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/routes_list"
-        android:name="com.mario.myapplication.ui.routes.RoutesFragment"
+        android:name="eu.visiton.app.ui.routes.RoutesFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="10dp"

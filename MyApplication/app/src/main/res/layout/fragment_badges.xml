@@ -3,14 +3,14 @@
     app:layoutManager="LinearLayoutManager"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.mario.app.eu.mario.app.ui.badges.list.BadgesFragment"
+    tools:context="eu.visiton.app.ui.badges.list.BadgesFragment"
     android:id="@+id/swipeContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/badges_list"
-        android:name="com.mario.myapplication.ui.badges.BadgesFragment"
+        android:name="eu.visiton.app.ui.badges.BadgesFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="10dp"

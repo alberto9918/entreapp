@@ -43,7 +43,7 @@ import eu.visiton.app.ui.routes.RouteListener;
 import eu.visiton.app.util.Constantes;
 import eu.visiton.app.util.UtilToken;
 
-//import com.mario.myapplication.PoiFragment;
+//import eu.visiton.app.PoiFragment;
 
 public class DashboardActivity extends AppCompatActivity implements BadgeListener, RouteListener, PoiListListener, IPeopleListener {
     FragmentTransaction fragmentChanger;

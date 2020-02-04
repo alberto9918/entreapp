@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/pois_list"
-    android:name="com.mario.myapplication.ui.pois.list.PoiListFragment"
+    android:name="eu.visiton.app.ui.pois.list.PoiListFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="0dp"

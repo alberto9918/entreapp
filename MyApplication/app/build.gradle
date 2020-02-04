@@ -4,7 +4,7 @@ apply plugin: 'com.jakewharton.butterknife'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.mario.myapplication"
+        applicationId "eu.visiton.app"
         minSdkVersion 23
         targetSdkVersion 28
         versionCode 2
