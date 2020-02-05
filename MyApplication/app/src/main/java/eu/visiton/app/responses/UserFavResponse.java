@@ -16,14 +16,14 @@ public class UserFavResponse {
     private String language;
     private List<String> favs = new ArrayList<>();
     private List<String> visited = new ArrayList<>();
-    private List<BadgeResponse> badges = new ArrayList<>();
+    private List<String> badges = new ArrayList<>();
     private List<UserLikesResponse> likes  = new ArrayList<>();
     private List<String> friends = new ArrayList<>();
 
     public UserFavResponse() {
     }
 
-    public UserFavResponse(String id, String name, String role, boolean friended, String picture, String password, String email, String createAt, String country, String language, List<String> favs, List<String> visited, List<BadgeResponse> badges, List<UserLikesResponse> likes, List<String> friends) {        this.id = id;
+    public UserFavResponse(String id, String name, String role, boolean friended, String picture, String password, String email, String createAt, String country, String language, List<String> favs, List<String> visited, List<String> badges, List<UserLikesResponse> likes, List<String> friends) {        this.id = id;
         this.name = name;
         this.role = role;
         this.picture = picture;
@@ -127,11 +127,11 @@ public class UserFavResponse {
         this.visited = visited;
     }
 
-    public List<BadgeResponse> getBadges() {
+    public List<String> getBadges() {
         return badges;
     }
 
-    public void setBadges(List<BadgeResponse> badges) {
+    public void setBadges(List<String> badges) {
         this.badges = badges;
     }
 

@@ -78,6 +78,7 @@ public class PoiListAdapter extends RecyclerView.Adapter<PoiListAdapter.ViewHold
         });
 
         viewHolder.mItem = data.get(i);
+        viewHolder.imageViewFav.setImageResource(R.drawable.ic_like_empty);
         viewHolder.title.setText(viewHolder.mItem.getName());
         if(viewHolder.mItem.getDistance() != null) {
             viewHolder.distance.setText(Math.round(viewHolder.mItem.getDistance()) + " " + context.getString(R.string.meters));

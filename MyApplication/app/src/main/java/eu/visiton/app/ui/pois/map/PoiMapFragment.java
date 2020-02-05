@@ -252,7 +252,7 @@ public class PoiMapFragment extends Fragment implements OnMapReadyCallback {
 
             String snippet = "";
             if(i.getPrice() == 0.0f) {
-                snippet = getString(R.string.free);
+                snippet = getActivity().getString(R.string.free);
             } else {
                 snippet = i.getPrice()+ " €";
             }
