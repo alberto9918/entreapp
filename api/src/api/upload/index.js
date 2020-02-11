@@ -45,8 +45,49 @@ router.post('/', upload.single('photo'), function (req, res) {
   }
 })
 */
+
+/**
+ * @api {post} /upload/image Upload an image
+ * @apiName UploadImage
+ * @apiGroup Upload
+ * @apiPermission user
+ * @apiParam {String} master() user access token.
+ * @apiParam {File} uploadS3('pois-imgs').single('photo') image to be uploaded.
+ * @apiSuccess {Object} fileKey Image's key.
+ * @apiError {Object} 400 Some parameters may contain invalid values.
+ * @apiError 404 Route not found.
+ * @apiError 401 user access only.
+ */
 router.post('/upload/image', master(), uploadS3('pois-imgs').single('photo'), postUploadS3)
+
+/**
+ * @api {post} /upload/audio Upload an audio
+ * @apiName UploadAudio
+ * @apiGroup Upload
+ * @apiPermission user
+ * @apiParam {String} master() user access token.
+ * @apiParam {File} uploadS3('pois-aud').single('audio') audio to be uploaded.
+ * @apiSuccess {Object} key Audio's key.
+ * @apiError {Object} 400 Some parameters may contain invalid values.
+ * @apiError 404 Route not found.
+ * @apiError 401 user access only.
+ */
+
 router.post('/upload/audio', master(), uploadS3('pois-aud').single('audio'), postUploadS3)
+
+/**
+ * @api {post} /upload/avatar Upload an avatar
+ * @apiName UploadAvatar
+ * @apiGroup Upload
+ * @apiPermission user
+ * @apiParam {String} master() user access token.
+ * @apiParam {File} master(), uploadS3('avatar').single('photo') avatar to be uploaded.
+ * @apiSuccess {Object} key Avatar's key.
+ * @apiError {Object} 400 Some parameters may contain invalid values.
+ * @apiError 404 Route not found.
+ * @apiError 401 user access only.
+ */
+
 router.post('/upload/avatar', master(), uploadS3('avatar').single('photo'), postUploadS3)
 
 router.get('/:key', getFile)
