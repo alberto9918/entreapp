@@ -47,12 +47,36 @@ router.get('/',
   query(),
   index)
 
+/**
+ * @api {get} /badges/earned Retrieve badges and set the value earned depending on whether the user has it
+ * @apiName RetrieveEarnedBadges
+ * @apiGroup Badge
+ * @apiPermission user
+ * @apiParam {String} access_token user access token.
+ * @apiUse listParams
+ * @apiSuccess {Number} count Total amount of badges.
+ * @apiSuccess {Object[]} rows List of badges.
+ * @apiError {Object} 400 Some parameters may contain invalid values.
+ * @apiError 401 user access only.
+ */
 router.get('/earned',
   token({required: true}),
   query(),
   allBadgesAndEarned)
 
-  router.get('/earned/filtered',
+/**
+ * @api {get} /badges/earned Retrieve the badges that the user has
+ * @apiName RetrieveEarnedFilteredBadges
+ * @apiGroup Badge
+ * @apiPermission user
+ * @apiParam {String} access_token user access token.
+ * @apiUse listParams
+ * @apiSuccess {Number} count Total amount of badges earned.
+ * @apiSuccess {Object[]} rows List of badges.
+ * @apiError {Object} 400 Some parameters may contain invalid values.
+ * @apiError 401 user access only.
+ */ 
+router.get('/earned/filtered',
   token({required: true}),
   query(),
   earnedBadgesFiltered)

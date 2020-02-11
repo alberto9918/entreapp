@@ -5,8 +5,8 @@
 export const environment = {
   production: false,
   //apiUrl: 'https://ec2-52-15-50-154.us-east-2.compute.amazonaws.com/api',
-  //apiUrl: 'http://localhost:9000',
-  apiUrl: 'http://www.visiton.eu/api',
+  apiUrl: 'http://localhost:9000',
+  //apiUrl: 'http://www.visiton.eu/api',
   masterKey: '{"access_token": "WYGSKxg0IwVvtZAWjDtVAWfWcbnugIbX"}',
   masterKeyTemporal: 'access_token=WYGSKxg0IwVvtZAWjDtVAWfWcbnugIbX'
 };
