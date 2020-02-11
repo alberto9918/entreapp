@@ -24,11 +24,30 @@ router.get('/',
   token({ required: true }),
   query(),
   index)
-
+/**
+ * @api {get} /users/friended Retrieve users and set the value friended depending on whether its a user friend
+ * @apiName RetrieveFriendedUsers
+ * @apiGroup User
+ * @apiPermission user
+ * @apiParam {String} access_token user access token.
+ * @apiSuccess {Number} count Total amount of users.
+ * @apiSuccess {Object[]} rows List of users.
+ * @apiError {Object} 400 Some parameters may contain invalid values.
+ * @apiError 401 user access only.
+ */
 router.get('/friended',
   token({required: true}),
   allUsersAndFriended)
-
+/**
+ * @api {get} /users/roles Retrieve all roles
+ * @apiName RetrieveRoles
+ * @apiGroup User
+ * @apiPermission admin
+ * @apiParam {String} access_token User access_token.
+ * @apiSuccess {Object[]} List of roles.
+ * @apiError {Object} 400 Some parameters may contain invalid values.
+ * @apiError 401 Admin access only.
+ */
 router.get('/roles',
   token({ required: true, roles: ['admin'] }),
   obtainRoles)
@@ -43,7 +62,17 @@ router.get('/roles',
 router.get('/me',
   token({ required: true }),
   showMe)
-
+/**
+ * @api {put} /users/editUserFriend/:id Update list of user friends
+ * @apiName UpdateListUserFriends
+ * @apiGroup User
+ * @apiPermission user
+ * @apiParam {String} access_token admin access token.
+ * @apiSuccess {Object} user Users's data.
+ * @apiError {Object} 400 Some parameters may contain invalid values.
+ * @apiError 404 User not found.
+ * @apiError 401 user access only.
+ */
 router.put('/editUserFriend/:id',
   token({ required: true }),
   editUserFriends)
@@ -98,7 +127,18 @@ router.put('/:id',
   token({ required: true }),
   body({email, name, city, language, picture, likes, favs, friends}),
   update)
-
+/**
+ * @api {put} /users/editRole/:id Update role
+ * @apiName UpdateRole
+ * @apiGroup User
+ * @apiPermission admin
+ * @apiParam {String} access_token admin access token.
+ * @apiParam role Role's name.
+ * @apiSuccess {Object} role Role's data.
+ * @apiError {Object} 400 Some parameters may contain invalid values.
+ * @apiError 404 role not found.
+ * @apiError 401 admin access only.
+ */
 router.put('/editRole/:id',
   token({ required: true, role: ['admin']}),
   body({role}),
@@ -135,6 +175,17 @@ router.delete('/:id',
   token({ required: true, roles: ['admin'] }),
   destroy)
 
+  /**
+ * @api {put} /users/editPoiFav/:id Update poi fav
+ * @apiName UpdatePoiFav
+ * @apiGroup User
+ * @apiPermission user
+ * @apiParam {String} access_token admin access token.
+ * @apiSuccess {Object} user Users's data.
+ * @apiError {Object} 400 Some parameters may contain invalid values.
+ * @apiError 404 User not found.
+ * @apiError 401 user access only.
+ */
 router.put('/editPoiFav/:id',
   token({ required: true }),
   editPoiFavs)
