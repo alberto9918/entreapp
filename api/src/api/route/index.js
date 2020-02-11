@@ -14,6 +14,7 @@ const { pois, name } = schema.tree
  * @apiName CreateRoute
  * @apiGroup Route
  * @apiPermission admin
+ * @apiParam {String} id route's id
  * @apiParam {String} access_token admin access token.
  * @apiParam pois Route's pois.
  * @apiParam name Route's name.
@@ -32,6 +33,7 @@ router.post('/',
  * @apiName RetrieveRoutes
  * @apiGroup Route
  * @apiPermission user
+ * @apiParam {String} id route's id
  * @apiParam {String} access_token user access token.
  * @apiUse listParams
  * @apiSuccess {Number} count Total amount of routes.
@@ -49,6 +51,7 @@ router.get('/',
  * @apiName RetrieveRoute
  * @apiGroup Route
  * @apiPermission user
+ * @apiParam {String} id route's id
  * @apiParam {String} access_token user access token.
  * @apiSuccess {Object} route Route's data.
  * @apiError {Object} 400 Some parameters may contain invalid values.
@@ -64,6 +67,7 @@ router.get('/:id',
  * @apiName UpdateRoute
  * @apiGroup Route
  * @apiPermission admin
+ * @apiParam {String} id route's id
  * @apiParam {String} access_token admin access token.
  * @apiParam pois Route's pois.
  * @apiParam name Route's name.
@@ -82,6 +86,7 @@ router.put('/:id',
  * @apiName DeleteRoute
  * @apiGroup Route
  * @apiPermission admin
+ * @apiParam {String} id route's id
  * @apiParam {String} access_token admin access token.
  * @apiSuccess (Success 204) 204 No Content.
  * @apiError 404 Route not found.
