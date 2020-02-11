@@ -17,7 +17,8 @@ const { name, categories, loc, uniqueName, qrCode, audioguides, description, cov
  * @apiParam {String} access_token admin access token.
  * @apiParam name Poi's name.
  * @apiParam categories Categories's ids.
- * @apiParam coordinates Poi's coordinates.
+ * @apiParam loc Poi's coordinates.
+ * @apiParam uniqueName Poi's Unique Name.
  * @apiParam qrCode Poi's qrCode.
  * @apiParam audioguides Poi's audioguides.
  * @apiParam description Poi's description.
@@ -39,31 +40,102 @@ router.post('/',
   body({ name, categories, loc, uniqueName, qrCode, audioguides, description, coverImage, images, year, creator, status, schedule, price }),
   create)
 
-router.get('/qr/:uniqueName',
+  /**
+ * @api {get} /qr/:uniqueName Generate Poi's QR Code
+ * @apiName GenerateQR
+ * @apiGroup Poi
+ * @apiPermission user
+ * @apiParam {String} access_token user access token.
+ * @apiParam {String} uniqueName poi's unique name.
+ * @apiSuccess {String} qrCode Poi's QR code.
+ * @apiError {Object} 400 Some parameters may contain invalid values.
+ * @apiError 404 Poi not found.
+ * @apiError 401 user access only.
+ */
+router.get('/pois/qr/:uniqueName',
   token({ required: true }),
   serveQrAsImg
 )
 
-router.get('/exists/:uniqueName',
+  /**
+ * @api {get} /qr/:uniqueName Check if  a poi exists with this Unique Name
+ * @apiName CheckUniqueName
+ * @apiGroup Poi
+ * @apiPermission user
+ * @apiParam {String} access_token user access token.
+ * @apiParam {String} uniqueName poi's unique name.
+ * @apiSuccess (Success 200) poi Poi's data.
+ * @apiError {Object} 400 Some parameters may contain invalid values.
+ * @apiError 404 Poi not found.
+ * @apiError 401 user access only.
+ */
+router.get('/pois/exists/:uniqueName',
   token({ required: true }),
   existsUniqueName
 )
-
-router.put('/fav/add/:id',
+ /**
+ * @api {put} /fav/add/:id Add a Poi to user's favourite list
+ * @apiName AddPoiFavourite
+ * @apiGroup Poi
+ * @apiPermission user
+ * @apiParam {String} access_token user access token.
+ * @apiParam {String} id poi's id.
+ * @apiSuccess (Success 200) poi Poi's data.
+ * @apiError {Object} 400 Some parameters may contain invalid values.
+ * @apiError 404 Poi not found.
+ * @apiError 401 user access only.
+ */
+router.put('/pois/fav/add/:id',
   token({ required: true }),
   savePoiAsFav
 )
 
-router.put('/fav/del/:id',
+/**
+ * @api {put} /fav/del/:id Delete a Poi to user's favourite list
+ * @apiName DeletePoiFavourite
+ * @apiGroup Poi
+ * @apiPermission user
+ * @apiParam {String} access_token user access token.
+ * @apiParam {String} id poi's id.
+ * @apiSuccess (Success 200) poi Poi's data.
+ * @apiError {Object} 400 Some parameters may contain invalid values.
+ * @apiError 404 Poi not found.
+ * @apiError 401 user access only.
+ */
+router.put('/pois/fav/del/:id',
   token({ required: true }),
   deletePoiAsFav
 )
 
+/**
+ * @api {get} /pois/favs Retrieve  user's favourite pois list
+ * @apiName RetrieveFavourites
+ * @apiGroup Poi
+ * @apiPermission user
+ * @apiParam {String} access_token user access token.
+ * @apiUse listParams
+ * @apiSuccess {Number} count Total amount of pois.
+ * @apiSuccess @apiSuccess {Object[]} rows List of pois.
+ * @apiError {Object} 400 Some parameters may contain invalid values.
+ *@apiError 401 user access only.
+ */
 router.get('/favs',
   token({ required: true }),
   getFavorites
 )
 
+/**
+ * @api {get} /pois/visited Retrieve  user's visited pois list
+ * @apiName RetrieveVisited
+ * @apiGroup Poi
+ * @apiPermission user
+ * @apiParam {String} access_token user access token.
+ * @apiUse listParams
+ * @apiSuccess {Number} count Total amount of pois.
+ * @apiSuccess @apiSuccess {Object[]} rows List of pois.
+ * @apiError {Object} 400 Some parameters may contain invalid values.
+ * @apiError 401 user access only.
+ */
 router.get('/visited',
   token({ required: true }),
   getVisited

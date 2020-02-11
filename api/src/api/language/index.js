@@ -45,6 +45,18 @@ router.get('/',
   query(),
   index)
 
+  /**
+ * @api {get} /languages/public Retrieve languages
+ * @apiName RetrieveLanguages
+ * @apiGroup Language
+ * @apiPermission user
+ * @apiParam {String} master() user master  token.
+ * @apiUse listParams
+ * @apiSuccess {Number} count Total amount of languages.
+ * @apiSuccess {Object[]} rows List of languages.
+ * @apiError {Object} 400 Some parameters may contain invalid values.
+ * @apiError 401 user access only.
+ */
 router.get('/public',
   master(),
   query(),
@@ -55,6 +67,7 @@ router.get('/public',
  * @apiName RetrieveLanguage
  * @apiGroup Language
  * @apiPermission user
+ * @apiParam {String} id language's id.
  * @apiParam {String} access_token user access token.
  * @apiSuccess {Object} language Language's data.
  * @apiError {Object} 400 Some parameters may contain invalid values.
@@ -70,6 +83,7 @@ router.get('/:id',
  * @apiName UpdateLanguage
  * @apiGroup Language
  * @apiPermission admin
+ * @apiParam {String} id language's id.
  * @apiParam {String} access_token admin access token.
  * @apiParam name Language's name.
  * @apiParam isoCode Language's isoCode.
@@ -88,6 +102,7 @@ router.put('/:id',
  * @apiName DeleteLanguage
  * @apiGroup Language
  * @apiPermission admin
+ * @apiParam {String} id language's id.
  * @apiParam {String} access_token admin access token.
  * @apiSuccess (Success 204) 204 No Content.
  * @apiError 404 Language not found.
