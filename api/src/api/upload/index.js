@@ -56,6 +56,7 @@ router.post('/', upload.single('photo'), function (req, res) {
  * @apiSuccess {Object} fileKey Image's key.
  * @apiError {Object} 400 Some parameters may contain invalid values.
  * @apiError 404 Route not found.
+ * @apiError 401 user access only.
  */
 router.post('/upload/image', master(), uploadS3('pois-imgs').single('photo'), postUploadS3)
 
@@ -69,6 +70,7 @@ router.post('/upload/image', master(), uploadS3('pois-imgs').single('photo'), po
  * @apiSuccess {Object} key Audio's key.
  * @apiError {Object} 400 Some parameters may contain invalid values.
  * @apiError 404 Route not found.
+ * @apiError 401 user access only.
  */
 
 router.post('/upload/audio', master(), uploadS3('pois-aud').single('audio'), postUploadS3)
@@ -83,6 +85,7 @@ router.post('/upload/audio', master(), uploadS3('pois-aud').single('audio'), pos
  * @apiSuccess {Object} key Avatar's key.
  * @apiError {Object} 400 Some parameters may contain invalid values.
  * @apiError 404 Route not found.
+ * @apiError 401 user access only.
  */
 
 router.post('/upload/avatar', master(), uploadS3('avatar').single('photo'), postUploadS3)
