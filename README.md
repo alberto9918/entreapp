@@ -18,7 +18,7 @@ Technologies used:
 #### ©2019
 
 #### Authors:
-- José María Ruiz Laguna(https://github.com/raykrai)
+- [José María Ruiz Laguna](https://github.com/raykrai)
 - Antonio Durán Falero
 - Alberto Santiago Rodríguez
 - José Miguel Zamorano Rodríguez
