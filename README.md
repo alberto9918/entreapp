@@ -18,7 +18,10 @@ Technologies used:
 #### ©2019
 
 #### Authors:
-
+- José María Ruiz Laguna
+- Antonio Durán Falero
+- Alberto Santiago Rodríguez
+- José Miguel Zamorano Rodríguez
 - Mario Martinez Sanz
 - Jesus Palma Lopez
 - Juan Antonio Ortiz Guerra
