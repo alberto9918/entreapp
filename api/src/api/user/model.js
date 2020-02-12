@@ -114,6 +114,7 @@ userSchema.methods = {
       id: this.id,
       name: this.name,
       picture: this.picture,
+      images: this.images,
       badges: this.badges,
       role: this.role,
       email: this.email,
