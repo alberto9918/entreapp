@@ -9,6 +9,7 @@ import route from './route'
 import upload from './upload'
 import language from './language'
 import { token } from '../services/passport'
+import rating from './rating'
 require('dotenv').config()
 const router = new Router()
 
@@ -44,6 +45,7 @@ router.use('/categories', category)
 router.use('/routes', route)
 router.use('/files', upload)
 router.use('/languages', language)
+router.use('/ratings', rating)
 
 router.use('/auth/check/token/', token({required: true}), (req, res, next) => {
   res.status(200).end()
