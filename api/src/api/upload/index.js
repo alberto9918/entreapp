@@ -90,7 +90,30 @@ router.post('/upload/audio', master(), uploadS3('pois-aud').single('audio'), pos
 
 router.post('/upload/avatar', master(), uploadS3('avatar').single('photo'), postUploadS3)
 
+/**
+ * @api {get} /:key Get a file
+ * @apiName GetFile
+ * @apiGroup Upload
+ * @apiPermission user
+ * @apiParam key Name of the file as it's stored.
+ * @apiSuccess {String} Url of the file.
+ * @apiError {Object} 400 Some parameters may contain invalid values.
+ * @apiError 404 Route not found.
+ */
+
 router.get('/:key', getFile)
+
+/**
+ * @api {delete} /:key Delete a file
+ * @apiName DeleteFile
+ * @apiGroup Upload
+ * @apiPermission user
+ * @apiParam {String} master() user access token.
+ * @apiParam key Name of the file as it's stored.
+ * @apiSuccess {String} Url of the file.
+ * @apiError {Object} 400 Some parameters may contain invalid values.
+ * @apiError 404 Route not found.
+ */
 
 router.delete('/:key', master(), deleteFile);
 
