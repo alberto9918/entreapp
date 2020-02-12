@@ -39,6 +39,18 @@ const userSchema = new Schema({
     type: String,
     trim: true
   },
+  images: [{
+    poi: {
+      type: Schema.Types.ObjectId,
+      ref: 'Poi'
+    },
+    thumbnail: {
+      type: String
+    },
+    full: {
+      type: String
+    }
+  }],
   likes: [{
     type: Schema.Types.ObjectId,
     ref: 'Category'
