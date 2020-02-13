@@ -8,7 +8,9 @@ import { PoiService } from 'src/app/services/poi.service';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { environment } from 'src/environments/environment';
 import { LanguageService } from '../../services/language.service';
+import { RatingResponse } from './../../interfaces/rating-response';
 import { LanguagesResponse } from '../../interfaces/languages-response';
+import { RatingService } from 'src/app/services/rating.service';
 
 @Component({
   selector: 'app-poi-details',
@@ -19,13 +21,16 @@ export class PoiDetailsComponent implements OnInit {
 
   poi: OnePoiResponse;
   coverImage: string;
+  averageRating: number;
   languages: LanguagesResponse;
+  ratings: RatingResponse;
+  poiRatings: RatingResponse;
   arrayLanguages: string[];
   arrayAudios: string[];
   arrayDescriptions: string[];
   
   showSettings = false;
-  constructor(private poiService: PoiService, public languageService: LanguageService, public router: Router,
+  constructor(private poiService: PoiService, public languageService: LanguageService, public router: Router,  public ratingService: RatingService,
     public dialog: MatDialog, public snackBar: MatSnackBar, private titleService: Title, public authService: AuthenticationService) { }
 
   ngOnInit() {
@@ -36,7 +41,30 @@ export class PoiDetailsComponent implements OnInit {
       this.getData();
     }
     this.titleService.setTitle('Details - POI');
+    this.getAverageRating();
+  }
 
+  getAverageRating() {
+    this.ratingService.getAll().subscribe(receivedRatings => {
+      this.ratings = receivedRatings;
+      console.log(receivedRatings)
+
+      for(var i = 0; i<this.ratings.rows.length; i++){
+        if (this.ratings.rows[i].poi == this.poiService.selectedPoi.id) {//5e33c287246bcb0ad40d3985
+          if(this.poiRatings == undefined) {
+            this.poiRatings.rows = [this.ratings.rows[i]];
+          }else {
+            this.poiRatings.rows.push(this.ratings.rows[i]);
+          }
+        }
+      }
+      console.log(this.poiRatings)
+
+      for(var i = 0; i<this.poiRatings.rows.length; i++) {
+        this.averageRating += this.poiRatings.rows[i].rating;
+      }
+      this.averageRating = this.averageRating/this.poiRatings.rows.length;
+    })
   }
 
   getAllLanguages() {

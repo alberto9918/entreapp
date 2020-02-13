@@ -32,12 +32,13 @@
     </mat-card>
     
       <mat-card fxLayout="column" fxLayoutGap="5%" fxFlex.gt-sm="20" fxFlex="100">
-        <h3>Detalles</h3>
+        <h3>Details</h3>
         <p><strong>Price:</strong> {{poi.price}} €</p>
         <p *ngIf="poi.status == 'Open'"><strong>Status:</strong> <span class="verde"> {{poi.status}}</span></p>
         <p *ngIf="poi.status == 'Close'"><strong>Status:</strong> <span class="rojo"> {{poi.status}}</span></p>
         <p><strong>Schedule: </strong>{{poi.schedule}}</p>
         <p><strong>Unique Name: </strong>{{poi.uniqueName}}</p>
+        <p><strong>Media: </strong>{{ averageRating }}</p>
       </mat-card>
     
 </div>

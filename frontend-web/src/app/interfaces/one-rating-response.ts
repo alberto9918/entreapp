@@ -1,4 +1,4 @@
-export interface Rating {
+export interface OneRatingResponse {
     id: string;
     user: string
     rating: number;
