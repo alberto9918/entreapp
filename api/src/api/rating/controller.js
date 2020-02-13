@@ -10,7 +10,8 @@ export const create = ({ user, bodymen: { body } }, res, next) =>
 export const index = ({ querymen: { query, select, cursor } }, res, next) =>
   Rating.count(query)
     .then(count => Rating.find(query, select, cursor)
-      .populate('user').populate('pois')
+      .populate('user')
+      .populate('poi')
       .then((ratings) => ({
         count,
         rows: ratings.map((rating) => rating.view())

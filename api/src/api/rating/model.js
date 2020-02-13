@@ -9,7 +9,7 @@ const ratingSchema = new Schema({
   rating: {
     type: Number
   },
-  pois: {
+  poi: {
     type: Schema.Types.ObjectId,
     ref: 'Poi',
     required: true
@@ -29,7 +29,7 @@ ratingSchema.methods = {
       id: this.id,
       user: this.user.view(full),
       rating: this.rating,
-      poi: this.poi,
+      poi: this.poi.view(full),
       createdAt: this.createdAt,
       updatedAt: this.updatedAt
     }
