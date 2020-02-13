@@ -24,7 +24,7 @@ export class PoiDetailsComponent implements OnInit {
   averageRating: number;
   languages: LanguagesResponse;
   ratings: RatingResponse;
-  poiRatings: RatingResponse;
+  poiRatings: number[];
   arrayLanguages: string[];
   arrayAudios: string[];
   arrayDescriptions: string[];
@@ -50,20 +50,23 @@ export class PoiDetailsComponent implements OnInit {
       console.log(receivedRatings)
 
       for(var i = 0; i<this.ratings.rows.length; i++){
-        if (this.ratings.rows[i].poi == this.poiService.selectedPoi.id) {//5e33c287246bcb0ad40d3985
-          if(this.poiRatings == undefined) {
-            this.poiRatings.rows = [this.ratings.rows[i]];
-          }else {
-            this.poiRatings.rows.push(this.ratings.rows[i]);
-          }
+        //Falta un if con el que se obtenga solo las valoraciones del monumento actual
+        if(this.poiRatings == undefined) {
+          this.poiRatings = [this.ratings.rows[i].rating];
+        }else {
+          this.poiRatings.push(this.ratings.rows[i].rating);
         }
+        
       }
       console.log(this.poiRatings)
 
-      for(var i = 0; i<this.poiRatings.rows.length; i++) {
-        this.averageRating += this.poiRatings.rows[i].rating;
+      this.averageRating = 0;
+
+      for(var i = 0; i<this.poiRatings.length; i++) {
+        this.averageRating += this.poiRatings[i];
       }
-      this.averageRating = this.averageRating/this.poiRatings.rows.length;
+      
+      this.averageRating = (this.averageRating/this.poiRatings.length);
     })
   }
 
