@@ -47,19 +47,16 @@ export class PoiDetailsComponent implements OnInit {
   getAverageRating() {
     this.ratingService.getAll().subscribe(receivedRatings => {
       this.ratings = receivedRatings;
-      console.log(receivedRatings)
 
       for(var i = 0; i<this.ratings.rows.length; i++){
-        //Falta un if con el que se obtenga solo las valoraciones del monumento actual
-        if(this.poiRatings == undefined) {
-          this.poiRatings = [this.ratings.rows[i].rating];
-        }else {
-          this.poiRatings.push(this.ratings.rows[i].rating);
+        if(this.ratings.rows[i].poi == this.poiService.selectedPoi.id){
+          if(this.poiRatings == undefined) {
+            this.poiRatings = [this.ratings.rows[i].rating];
+          }else {
+            this.poiRatings.push(this.ratings.rows[i].rating);
+          }
         }
-        
       }
-      console.log(this.poiRatings)
-
       this.averageRating = 0;
 
       for(var i = 0; i<this.poiRatings.length; i++) {

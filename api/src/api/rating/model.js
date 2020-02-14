@@ -29,7 +29,7 @@ ratingSchema.methods = {
       id: this.id,
       user: this.user.view(full),
       rating: this.rating,
-      poi: this.poi.view(full),
+      poi: this.poi,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt
     }

@@ -11,7 +11,6 @@ export const index = ({ querymen: { query, select, cursor } }, res, next) =>
   Rating.count(query)
     .then(count => Rating.find(query, select, cursor)
       .populate('user')
-      .populate('poi')
       .then((ratings) => ({
         count,
         rows: ratings.map((rating) => rating.view())
