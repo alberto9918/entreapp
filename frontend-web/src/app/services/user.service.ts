@@ -20,6 +20,8 @@ const masterKey = '?access_token=WYGSKxg0IwVvtZAWjDtVAWfWcbnugIbX';
 export class UserService {
   // tslint:disable-next-line:max-line-length
   token = `?access_token=${this.authService.getToken()}`;
+
+  public selectedUser : UserResponse;
   constructor(private http: HttpClient, private authService: AuthenticationService) { }
 
   getAll(): Observable<UsersResponse> {

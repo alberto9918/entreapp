@@ -22,6 +22,7 @@ import { PoiComponent } from './poi/poi.component';
 import { RouteDetailsComponent } from './route-details/route-details.component';
 import { RouteComponent } from './route/route.component';
 import { UserComponent } from './user/user.component';
+import { UserPicturesComponent } from './user-pictures/user-pictures.component';
 
 @NgModule({
   imports: [
@@ -50,7 +51,8 @@ import { UserComponent } from './user/user.component';
     MyProfileComponent,
     PoiEditComponent,
     PoiCreateComponent,
-    RouteDetailsComponent
+    RouteDetailsComponent,
+    UserPicturesComponent
   ],
 })
 

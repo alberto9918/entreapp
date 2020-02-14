@@ -54,6 +54,12 @@ export class UserComponent implements OnInit {
       this.getAll();
     });
   }
+
+
+  openPhotoUser(element){
+    this.userService.selectedUser = element;
+    this.router.navigate(['users/photos']);
+  }
   //dialog to create users
   openDialogNewUser() {
     const dialogNewUser = this.dialog.open(DialogCreateUserComponent, { width: '500px' });
