@@ -19,6 +19,7 @@ import { PoiCreateComponent } from './poi-create/poi-create.component';
 import { PoiDetailsComponent } from './poi-details/poi-details.component';
 import { PoiEditComponent } from './poi-edit/poi-edit.component';
 import { PoiComponent } from './poi/poi.component';
+import { BarRatingModule } from "ngx-bar-rating";
 import { RouteDetailsComponent } from './route-details/route-details.component';
 import { RouteComponent } from './route/route.component';
 import { UserComponent } from './user/user.component';
@@ -30,6 +31,7 @@ import { UserComponent } from './user/user.component';
     FlexLayoutModule,
     FormsModule,
     ReactiveFormsModule,
+    BarRatingModule,
     RouterModule.forChild(DashboardRoutes),
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyA-JcBiiDwRaudqbUlqAC4c-Ehn4uPCsqY'

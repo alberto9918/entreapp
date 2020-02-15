@@ -11,6 +11,7 @@ import { LanguageService } from '../../services/language.service';
 import { RatingResponse } from './../../interfaces/rating-response';
 import { LanguagesResponse } from '../../interfaces/languages-response';
 import { RatingService } from 'src/app/services/rating.service';
+import { BarRatingModule } from "ngx-bar-rating";
 
 @Component({
   selector: 'app-poi-details',

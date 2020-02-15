@@ -25,6 +25,7 @@ import { DialogEditCategoryComponent } from './dialogs/dialog-edit-category/dial
 import { DialogEditUserComponent } from './dialogs/dialog-edit-user/dialog-edit-user.component';
 import { DialogPoiDeleteComponent } from './dialogs/dialog-poi-delete/dialog-poi-delete.component';
 import { DialogRouteComponent } from './dialogs/dialog-route/dialog-route.component';
+import { BarRatingModule } from "ngx-bar-rating";
 import { DialogUpdateProfileComponent } from './dialogs/dialog-update-profile/dialog-update-profile.component';
 import { MaterialModule } from './material-module';
 
@@ -46,6 +47,7 @@ import { MaterialModule } from './material-module';
   ],
   imports: [
     BrowserModule,
+    BarRatingModule,
     BrowserAnimationsModule,
     MaterialModule,
     FormsModule,
