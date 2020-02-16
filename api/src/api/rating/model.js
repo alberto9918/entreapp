@@ -27,7 +27,7 @@ ratingSchema.methods = {
     const view = {
       // simple view
       id: this.id,
-      user: this.user.view(full),
+      user: this.user,
       rating: this.rating,
       poi: this.poi,
       createdAt: this.createdAt,

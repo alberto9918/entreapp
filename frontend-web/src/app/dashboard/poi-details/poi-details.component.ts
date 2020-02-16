@@ -12,6 +12,9 @@ import { RatingResponse } from './../../interfaces/rating-response';
 import { LanguagesResponse } from '../../interfaces/languages-response';
 import { RatingService } from 'src/app/services/rating.service';
 import { BarRatingModule } from "ngx-bar-rating";
+import { OneRatingResponse } from 'src/app/interfaces/one-rating-response';
+import { UserService } from 'src/app/services/user.service';
+import { UserResponse } from 'src/app/interfaces/user-response';
 
 @Component({
   selector: 'app-poi-details',
@@ -25,14 +28,16 @@ export class PoiDetailsComponent implements OnInit {
   averageRating: number;
   languages: LanguagesResponse;
   ratings: RatingResponse;
-  poiRatings: number[];
+  poiRatings: OneRatingResponse[];
   arrayLanguages: string[];
   arrayAudios: string[];
   arrayDescriptions: string[];
+  userRating: number;
   
   showSettings = false;
   constructor(private poiService: PoiService, public languageService: LanguageService, public router: Router,  public ratingService: RatingService,
-    public dialog: MatDialog, public snackBar: MatSnackBar, private titleService: Title, public authService: AuthenticationService) { }
+    public dialog: MatDialog, public snackBar: MatSnackBar, private titleService: Title, public authService: AuthenticationService,
+    public userService: UserService) { }
 
   ngOnInit() {
     if (this.poiService.selectedPoi == null) {
@@ -46,22 +51,30 @@ export class PoiDetailsComponent implements OnInit {
   }
 
   getAverageRating() {
+    console.log(localStorage.getItem('id'))
     this.ratingService.getAll().subscribe(receivedRatings => {
       this.ratings = receivedRatings;
+      this.averageRating = 0;
+      this.userRating = 0;
 
       for(var i = 0; i<this.ratings.rows.length; i++){
         if(this.ratings.rows[i].poi == this.poiService.selectedPoi.id){
           if(this.poiRatings == undefined) {
-            this.poiRatings = [this.ratings.rows[i].rating];
+            this.poiRatings = [this.ratings.rows[i]];
           }else {
-            this.poiRatings.push(this.ratings.rows[i].rating);
+            this.poiRatings.push(this.ratings.rows[i]);
           }
         }
       }
-      this.averageRating = 0;
+      
+      for(var i = 0; i<this.poiRatings.length; i++){
+        if(this.poiRatings[i].user == localStorage.getItem('id')){
+          this.userRating = this.poiRatings[i].rating;
+        }   
+      }
 
       for(var i = 0; i<this.poiRatings.length; i++) {
-        this.averageRating += this.poiRatings[i];
+        this.averageRating += this.poiRatings[i].rating;
       }
       
       this.averageRating = (this.averageRating/this.poiRatings.length);
