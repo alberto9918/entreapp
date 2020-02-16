@@ -58,7 +58,7 @@ export class UserComponent implements OnInit {
 
   openPhotoUser(element){
     this.userService.selectedUser = element;
-    this.router.navigate(['users/photos']);
+    this.router.navigate(['home/user/photos']);
   }
   //dialog to create users
   openDialogNewUser() {
