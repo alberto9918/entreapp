@@ -21,7 +21,7 @@
           </mat-chip-list>
 
           <p>{{poi.creator}} - {{poi.year}}</p>
-          <bar-rating [rate]="averageRating" [max]="5" theme="default"></bar-rating>
+          <bar-rating [rate]="averageRating" [max]="5" theme="default" (rateChange)="ratingChange($event, poi.id)"></bar-rating>
           <p>Tu valoración: {{userRating}}</p>
 
         </div>

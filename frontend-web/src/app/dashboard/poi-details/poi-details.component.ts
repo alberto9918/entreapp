@@ -15,6 +15,7 @@ import { BarRatingModule } from "ngx-bar-rating";
 import { OneRatingResponse } from 'src/app/interfaces/one-rating-response';
 import { UserService } from 'src/app/services/user.service';
 import { UserResponse } from 'src/app/interfaces/user-response';
+import { RatingDto } from 'src/app/dto/rating.dto';
 
 @Component({
   selector: 'app-poi-details',
@@ -33,6 +34,8 @@ export class PoiDetailsComponent implements OnInit {
   arrayAudios: string[];
   arrayDescriptions: string[];
   userRating: number;
+  rating: OneRatingResponse;
+  newRating: RatingDto;
   
   showSettings = false;
   constructor(private poiService: PoiService, public languageService: LanguageService, public router: Router,  public ratingService: RatingService,
@@ -48,6 +51,24 @@ export class PoiDetailsComponent implements OnInit {
     }
     this.titleService.setTitle('Details - POI');
     this.getAverageRating();
+  }
+
+  ratingChange(e, poi){
+    console.log("has entrado aqui")
+    console.log(e)
+    for(var i = 0; i<this.ratings.rows.length; i++) {
+      if (this.ratings.rows[i].user == localStorage.getItem('id') && this.ratings.rows[i].poi == poi){
+        this.rating = this.ratings.rows[i];
+      }
+    }
+    console.log(this.rating)
+    this.newRating = {user: localStorage.getItem('id'), rating: e, poi: poi}
+    if(this.rating == undefined) {
+      this.ratingService.create(this.newRating);
+    }else {
+      this.ratingService.edit(this.rating.id, this.newRating);
+    }
+    console.log("has salido de aqui")
   }
 
   getAverageRating() {
