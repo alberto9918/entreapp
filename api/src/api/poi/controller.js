@@ -2,6 +2,7 @@ import _ from 'lodash'
 import QRCode from 'qrcode'
 
 import { Poi } from '.'
+import { Rating } from '../rating';
 import mongoose from '../../services/mongoose'
 import { notFound, success } from '../../services/response/'
 import { Badge } from '../badge'
@@ -92,6 +93,7 @@ export const index = ({ querymen: { query, select, cursor } }, res, next) => {
 
 /** Show one poi translated to user language */
 export const showTranslated = ({ params, user }, res, next) => {
+  let number;
   console.log('Entramos en showTranslated')
   // console.log('ID: ' + params.id)
   let query = {
@@ -130,6 +132,23 @@ export const showTranslated = ({ params, user }, res, next) => {
       poi.set('visited', _.includes(user.visited, poi.id))
 
       return poi
+    })
+    .then((poi) => {
+      Rating.aggregate([{ 
+        $match: { poi: poi.id } },{
+            $group:{
+                _id: "id_averageStars",
+                total: {
+                    $avg:"$rating"
+                }
+            }
+        }])/*.then((rating) => {
+          poi.set('averageRating', rating)
+        })*/
+
+        poi.set('averageRating', 12)
+
+        return poi;
     })
     .then(success(res))
     .catch(next)
