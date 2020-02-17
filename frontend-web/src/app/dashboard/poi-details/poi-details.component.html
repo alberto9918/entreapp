@@ -22,7 +22,7 @@
 
           <p>{{poi.creator}} - {{poi.year}}</p>
           <bar-rating [rate]="averageRating" [max]="5" theme="default" (rateChange)="ratingChange($event, poi.id)"></bar-rating>
-          <p>Tu valoración: {{userRating}}</p>
+          <p *ngIf="userRating != 0">Tu valoración: {{userRating}}</p>
 
         </div>
         

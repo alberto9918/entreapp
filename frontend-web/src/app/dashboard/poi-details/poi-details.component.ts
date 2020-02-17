@@ -63,11 +63,17 @@ export class PoiDetailsComponent implements OnInit {
     }
     console.log(this.rating)
     this.newRating = {user: localStorage.getItem('id'), rating: e, poi: poi}
+    this.userRating = e;
     if(this.rating == undefined) {
-      this.ratingService.create(this.newRating);
+      this.ratingService.create(this.newRating).subscribe(resp => {
+        console.log(resp);
+      });
     }else {
-      this.ratingService.edit(this.rating.id, this.newRating);
+      this.ratingService.edit(this.rating.id, this.newRating).subscribe(resp =>{
+        console.log(resp);
+      });
     }
+    
     console.log("has salido de aqui")
   }
 
@@ -193,8 +199,8 @@ export class PoiDetailsComponent implements OnInit {
     return `${environment.apiUrl}/files/` + key;
   }
   loadQR(key: String) {
-    return  key +  '?access_token='+localStorage.getItem('token');
-  }
+    return key + '?access_token='+localStorage.getItem('token');
+  }                                                           
   
   loadImages(key: String) {
     
