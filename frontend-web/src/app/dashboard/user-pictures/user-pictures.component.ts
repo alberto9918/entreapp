@@ -30,22 +30,7 @@ export class UserPicturesComponent implements OnInit {
 
     this.arrayPois = new Array<OnePoiResponse>();
     this.getAll();
-/*
-      this.POIs.rows.forEach(e => {
-         this.cont = 0;
-       this.userService.selectedUser.images.forEach(element =>{
-        if(e.id == element.poi.id){
-         this.cont++; 
-        }
-       })
-       if(this.cont == 0){
-        this.POIs.rows.splice(this.POIs.rows.indexOf(e),1);
-       }
-      });*/
-
-
-    
-    
+ 
 
       
     
@@ -97,6 +82,13 @@ export class UserPicturesComponent implements OnInit {
 
   loadCoverImage(key: String) {
     return `${environment.apiUrl}/files/` + key;
+  }
+
+
+  goToPoiUserPhoto(p){
+    this.poiService.selectedPoi = p;
+    this.router.navigate(['home/user/photos/poi']);
+
   }
 
 

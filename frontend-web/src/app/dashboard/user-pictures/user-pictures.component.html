@@ -1,27 +1,13 @@
 <h1>Points of Interest</h1>
 <div fxLayout="row wrap">
   <mat-card *ngFor="let p of arrayPois" class="poi-card">
-    <a mat-mini-fab class="card-floating-button" [matMenuTriggerFor]="menu" *ngIf="authService.isAdmin()">
-      <mat-icon>more_horiz</mat-icon>
-    </a>
-    <a mat-mini-fab class="card-floating-button" (click)="openDialogTranslatePoi(p)" *ngIf="authService.isContributor()">
-        <mat-icon>translate</mat-icon>
-      </a>
-    <mat-menu #menu="matMenu">
-      <button mat-menu-item (click)="openEditPoi(p)">
-        <mat-icon>edit</mat-icon>
-        <span>Edit</span>
-      </button>
-    </mat-menu>
-    <mat-card-header [style.background-image]="'url(' + loadCoverImage(p.coverImage) + ')'" (click)="goPoiDetails(p)">
+ 
+    
+    
+    <mat-card-header [style.background-image]="'url(' + loadCoverImage(p.coverImage) + ')'" (click)="goToPoiUserPhoto(p)">
       <mat-card-title>{{p.name}}</mat-card-title>
     </mat-card-header>
-    <mat-card-content>
-
-      <mat-chip-list>
-        <mat-chip *ngFor="let cat of p.categories">{{cat.name}}</mat-chip>
-      </mat-chip-list>
-    </mat-card-content>
+    
   </mat-card>
 
 

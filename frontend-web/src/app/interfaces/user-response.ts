@@ -6,11 +6,13 @@ export interface UserResponse {
     role: string;
     picture: string;
     images: [{
+        _id: String;
         poi: OnePoiResponse,
         thumbnail: String,
         full: String,
     }];
     invalidImages:[{
+        _id: String;
         thumbnail: String,
         full: String,
         dateToBeRemoved: Date

@@ -1,0 +1,7 @@
+<ul>
+  <li *ngFor="let p of imagesUser" >
+    <input type="checkbox" [id]="p._id" (change)="addArray($event, p)"/>
+    <label [for]="p._id"><img [src]="p.thumbnail" /></label>
+  </li>
+  
+</ul>
