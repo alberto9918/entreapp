@@ -21,7 +21,7 @@ export interface UserResponse {
     email: string;
     createAt: string;
     country: string;
-    language: string;
+    language:string;
     badges: {
         id: string;
         points: number

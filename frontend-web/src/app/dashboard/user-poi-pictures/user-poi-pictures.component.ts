@@ -6,6 +6,8 @@ import { Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { UserImagesResponse } from 'src/app/interfaces/user-images-response';
+import { UserImagesInvalidResponse } from 'src/app/interfaces/user-invalida-images-response';
+import { UserImageInvalidDto } from 'src/app/dto/user.image.invalid.dto';
 
 @Component({
   selector: 'app-user-poi-pictures',
@@ -15,6 +17,7 @@ import { UserImagesResponse } from 'src/app/interfaces/user-images-response';
 export class UserPoiPicturesComponent implements OnInit {
 
   imagesUser: UserImagesResponse[];
+  imageInvalid : UserImageInvalidDto;
   idImages : String[];
 
   constructor(private userService: UserService,private poiService: PoiService, public dialog: MatDialog,
@@ -53,13 +56,55 @@ export class UserPoiPicturesComponent implements OnInit {
       this.idImages.forEach(element => {
 
         if (element == p._id){
-          this.idImages.splice(this.idImages.indexOf(p),1);
+          this.idImages.splice(this.idImages.indexOf(element),1);
           console.log(this.idImages)
 
         }
         
       });
     }
+  }
+
+  updateUser(){
+    
+    this.userService.selectedUser.images.forEach(element => {
+      console.log(element);
+    });
+  
+
+    this.userService.selectedUser.images.forEach(element => {
+      console.log("Array de bucle")
+      console.log(this.userService.selectedUser.images)
+        this.idImages.forEach(i => {
+          if(element._id == i ){
+            this.userService.selectedUser.images.splice(this.userService.selectedUser.images.indexOf(element),1)
+
+
+
+            this.imageInvalid = new UserImageInvalidDto("","","",new Date());
+
+
+            this.imageInvalid._id = element._id
+            this.imageInvalid.dateToBeRemoved.setDate(Date.now() + 15)
+            this.imageInvalid.full = element.full
+            this.imageInvalid.thumbnail = element.thumbnail
+            
+
+            this.userService.selectedUser.invalidImages.push(this.imageInvalid)
+          }
+        });
+       
+
+    });
+
+    
+    console.log(this.userService.selectedUser)
+    this.userService.editMyProfile(this.userService.selectedUser ,this.userService.selectedUser.id.toString())
+    .subscribe(r => this.snackBar.open('User updated successfully.', 'Close', { duration: 3000 }),
+      e => this.snackBar.open('Failed to update user.', 'Close', { duration: 3000 }));
+
+
+    this.router.navigate(['home/user/photos'])
   }
 
 

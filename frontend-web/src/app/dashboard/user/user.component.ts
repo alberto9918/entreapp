@@ -57,7 +57,10 @@ export class UserComponent implements OnInit {
 
 
   openPhotoUser(element){
+    console.log(element)
     this.userService.selectedUser = element;
+    this.userService.selectedUser.language = element.language.id;
+    console.log (this.userService.selectedUser)
     this.router.navigate(['home/user/photos']);
   }
   //dialog to create users
