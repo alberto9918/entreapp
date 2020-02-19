@@ -208,7 +208,6 @@ export const show = ({ params, user }, res, next) =>
         return poi;
       })
     })
-    .then((poi) => poi ? poi.view(3) : null)
     .then(success(res))
     .catch(next)
 

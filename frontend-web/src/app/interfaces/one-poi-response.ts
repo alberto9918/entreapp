@@ -43,4 +43,12 @@ export interface OnePoiResponse {
     status: string;
     schedule: string;
     price?: number;
+    averageRating: number;
+    userRating: [{
+        rating: number;
+        poi: string;
+        user: string;
+        id: string;
+    }];
+    isRated: boolean;
 }

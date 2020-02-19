@@ -34,7 +34,7 @@ export class PoiDetailsComponent implements OnInit {
   arrayAudios: string[];
   arrayDescriptions: string[];
   userRating: number;
-  rating: OneRatingResponse;
+  userLogged: UserResponse;
   newRating: RatingDto;
   
   showSettings = false;
@@ -56,20 +56,17 @@ export class PoiDetailsComponent implements OnInit {
   ratingChange(e, poi){
     console.log("has entrado aqui")
     console.log(e)
-    for(var i = 0; i<this.ratings.rows.length; i++) {
-      if (this.ratings.rows[i].user == localStorage.getItem('id') && this.ratings.rows[i].poi == poi){
-        this.rating = this.ratings.rows[i];
-      }
-    }
-    console.log(this.rating)
-    this.newRating = {user: localStorage.getItem('id'), rating: e, poi: poi}
-    this.userRating = e;
-    if(this.rating == undefined) {
+    this.userService.getMe().subscribe(result => {
+      this.userLogged = result;
+    })
+    console.log(this.userLogged)
+    this.newRating = {user: this.userLogged.id, rating: e, poi: poi.id}
+    if(poi.isRated == false) {
       this.ratingService.create(this.newRating).subscribe(resp => {
         console.log(resp);
       });
     }else {
-      this.ratingService.edit(this.rating.id, this.newRating).subscribe(resp =>{
+      this.ratingService.edit(poi.userRating[0].id, this.newRating).subscribe(resp =>{
         console.log(resp);
       });
     }

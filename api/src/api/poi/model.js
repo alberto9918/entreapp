@@ -152,26 +152,7 @@ poiSchema.methods = {
       schedule: this.schedule,
       price: this.price
     }
-    const ultimateFullView = {
-      id: this.id,
-      name: this.name,
-      categories: this.categories,
-      uniqueName: this.uniqueName,
-      qrCode: this.qrCode,
-      description: this.description,
-      coverImage: this.coverImage,
-      year: this.year,
-      creator: this.creator,
-      loc: this.loc,
-      audioguides: this.audioguides,
-      images: this.images,
-      status: this.status,
-      schedule: this.schedule,
-      price: this.price,
-      averageRating: this.averageRating,
-      userRating: this.userRating,
-      isRated: this.isRated
-    }
+    
     switch (full) {
       case 0:
         return view
@@ -179,8 +160,6 @@ poiSchema.methods = {
         return fullView
       case 2:
         return translationView
-      case 3:
-        return ultimateFullView
       default:
         return view
     }

@@ -21,8 +21,8 @@
           </mat-chip-list>
 
           <p>{{poi.creator}} - {{poi.year}}</p>
-          <bar-rating [rate]="averageRating" [max]="5" theme="default" (rateChange)="ratingChange($event, poi.id)"></bar-rating>
-          <p *ngIf="userRating != 0">Tu valoración: {{userRating}}</p>
+          <bar-rating [rate]="poi.averageRating" [max]="5" theme="default" (rateChange)="ratingChange($event, poi)"></bar-rating>
+          <p *ngIf="poi.isRated">Tu valoración: {{poi.userRating[0].rating}}</p>
 
         </div>
         
@@ -40,7 +40,7 @@
         <p *ngIf="poi.status == 'Close'"><strong>Status:</strong> <span class="rojo"> {{poi.status}}</span></p>
         <p><strong>Schedule: </strong>{{poi.schedule}}</p>
         <p><strong>Unique Name: </strong>{{poi.uniqueName}}</p>
-        <p><strong>Media: </strong>{{ averageRating }}</p>
+        <p><strong>Media: </strong>{{ poi.averageRating }}</p>
       </mat-card>
     
 </div>
