@@ -93,7 +93,6 @@ export const index = ({ querymen: { query, select, cursor } }, res, next) => {
 
 /** Show one poi translated to user language */
 export const showTranslated = ({ params, user }, res, next) => {
-  let number;
   console.log('Entramos en showTranslated')
   // console.log('ID: ' + params.id)
   let query = {
@@ -134,31 +133,82 @@ export const showTranslated = ({ params, user }, res, next) => {
       return poi
     })
     .then((poi) => {
-      Rating.aggregate([{ 
-        $match: { poi: poi.id } },{
+      let idToSearch = mongoose.Types.ObjectId(poi.id)
+      return Rating.aggregate([{ 
+        $match: { poi: idToSearch } },{
             $group:{
                 _id: "id_averageStars",
                 total: {
                     $avg:"$rating"
                 }
             }
-        }])/*.then((rating) => {
-          poi.set('averageRating', rating)
-        })*/
-
-        poi.set('averageRating', 12)
-
+        }]).then((rating) => {
+          if(rating[0]) {
+            poi.set('averageRating', rating[0].total)
+          }else {
+            poi.set('averageRating', 0)
+          }
+          return poi;
+        })
+    })
+    .then((poi) => {
+      let idPoiToSearch = mongoose.Types.ObjectId(poi.id)
+      let idUserToSearch = mongoose.Types.ObjectId(user.id)
+      return Rating.find({ poi: idPoiToSearch, user: idUserToSearch }, { _id: 1, rating:1, poi:1, user:1 })
+      .then((rating) => {
+        if (rating[0]){
+          poi.set('userRating', rating)
+          poi.set('isRated', true)
+        } else {
+          poi.set('userRating', rating)
+          poi.set('isRated', false)
+        }
         return poi;
+      })
     })
     .then(success(res))
     .catch(next)
 }
 
 /**  Show one POI info. Without visit it */
-export const show = ({ params }, res, next) =>
+export const show = ({ params, user }, res, next) =>
   Poi.findById(params.id).populate('categories', 'id name')
     .then(notFound(res))
-    .then((poi) => poi ? poi.view(1) : null)
+    .then((poi) => {
+      let idToSearch = mongoose.Types.ObjectId(poi.id)
+      return Rating.aggregate([{ 
+        $match: { poi: idToSearch } },{
+            $group:{
+                _id: "id_averageStars",
+                total: {
+                    $avg:"$rating"
+                }
+            }
+        }]).then((rating) => {
+          if(rating[0]) {
+            poi.set('averageRating', rating[0].total)
+          }else {
+            poi.set('averageRating', 0)
+          }
+          return poi;
+        })
+    })
+    .then((poi) => {
+      let idPoiToSearch = mongoose.Types.ObjectId(poi.id)
+      let idUserToSearch = mongoose.Types.ObjectId(user.id)
+      return Rating.find({ poi: idPoiToSearch, user: idUserToSearch }, { _id: 1, rating:1, poi:1, user:1 })
+      .then((rating) => {
+        if (rating[0]){
+          poi.set('userRating', rating)
+          poi.set('isRated', true)
+        } else {
+          poi.set('userRating', rating)
+          poi.set('isRated', false)
+        }
+        return poi;
+      })
+    })
+    .then((poi) => poi ? poi.view(3) : null)
     .then(success(res))
     .catch(next)
 
