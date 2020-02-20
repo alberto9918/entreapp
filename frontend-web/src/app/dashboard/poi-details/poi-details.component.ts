@@ -28,6 +28,7 @@ export class PoiDetailsComponent implements OnInit {
   coverImage: string;
   averageRating: number;
   userRating: number;
+  isRated: boolean;
   languages: LanguagesResponse;
   //ratings: RatingResponse;
   //poiRatings: OneRatingResponse[];
@@ -58,12 +59,14 @@ export class PoiDetailsComponent implements OnInit {
 
     });
     this.loadNewRatings();
+    //location.reload(false);
   }
 
   loadNewRatings() {
     this.poiService.getOne(this.poiService.selectedPoi.id).subscribe(p => {
       this.averageRating = p.averageRating;
       this.userRating = p.userRating[0].rating;
+      this.isRated = p.isRated;
     })
   }
 
@@ -257,6 +260,7 @@ export class PoiDetailsComponent implements OnInit {
       
       this.averageRating = p.averageRating;
       this.userRating = p.userRating[0].rating;
+      this.isRated = p.isRated;
       this.coverImage = p.coverImage;
       let posicionDescripcion = -1, posicionAudio = -1;
       let textoTraducido = '', audioTraducido = '';
