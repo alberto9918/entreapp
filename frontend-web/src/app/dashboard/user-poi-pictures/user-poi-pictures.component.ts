@@ -81,11 +81,11 @@ export class UserPoiPicturesComponent implements OnInit {
 
 
 
-            this.imageInvalid = new UserImageInvalidDto("","","",new Date());
+            this.imageInvalid = new UserImageInvalidDto("","","",new Date(Date.now()));
 
 
             this.imageInvalid._id = element._id
-            this.imageInvalid.dateToBeRemoved.setDate(Date.now() + 15)
+            this.imageInvalid.dateToBeRemoved.setDate( this.imageInvalid.dateToBeRemoved.getDate() + 15)
             this.imageInvalid.full = element.full
             this.imageInvalid.thumbnail = element.thumbnail
             
