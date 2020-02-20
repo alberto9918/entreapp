@@ -11,6 +11,7 @@ import { RouterModule } from '@angular/router';
 import { DragScrollModule } from 'ngx-drag-scroll';
 import { GooglePlaceModule } from 'ngx-google-places-autocomplete';
 import { QuillModule } from 'ngx-quill';
+import {MatIconModule} from '@angular/material/icon';
 
 import { routes } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -48,6 +49,7 @@ import { MaterialModule } from './material-module';
   imports: [
     BrowserModule,
     BarRatingModule,
+    MatIconModule,
     BrowserAnimationsModule,
     MaterialModule,
     FormsModule,

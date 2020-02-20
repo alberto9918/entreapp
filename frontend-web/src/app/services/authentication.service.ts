@@ -73,6 +73,15 @@ export class AuthenticationService {
     return passGenerada;
   }
   logout() {
+    localStorage.removeItem('id');
+    localStorage.removeItem('token');
+    localStorage.removeItem('name');
+    localStorage.removeItem('email');
+    localStorage.removeItem('role');
+    localStorage.removeItem('picture');
+    localStorage.removeItem('language');
+    localStorage.removeItem('languageId');
+    localStorage.removeItem('isoCode');
     localStorage.clear();
   }
 

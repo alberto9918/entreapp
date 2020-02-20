@@ -27,13 +27,13 @@ export class PoiDetailsComponent implements OnInit {
   poi: OnePoiResponse;
   coverImage: string;
   averageRating: number;
+  userRating: number;
   languages: LanguagesResponse;
-  ratings: RatingResponse;
-  poiRatings: OneRatingResponse[];
+  //ratings: RatingResponse;
+  //poiRatings: OneRatingResponse[];
   arrayLanguages: string[];
   arrayAudios: string[];
   arrayDescriptions: string[];
-  userRating: number;
   userLogged: UserResponse;
   newRating: RatingDto;
   
@@ -50,17 +50,28 @@ export class PoiDetailsComponent implements OnInit {
       this.getData();
     }
     this.titleService.setTitle('Details - POI');
-    this.getAverageRating();
+    //this.getAverageRating();
+  }
+
+  deleteRating(id) {
+    this.ratingService.remove(id).subscribe(resp => {
+
+    });
+    this.loadNewRatings();
+  }
+
+  loadNewRatings() {
+    this.poiService.getOne(this.poiService.selectedPoi.id).subscribe(p => {
+      this.averageRating = p.averageRating;
+      this.userRating = p.userRating[0].rating;
+    })
   }
 
   ratingChange(e, poi){
     console.log("has entrado aqui")
     console.log(e)
-    this.userService.getMe().subscribe(result => {
-      this.userLogged = result;
-    })
-    console.log(this.userLogged)
-    this.newRating = {user: this.userLogged.id, rating: e, poi: poi.id}
+
+    this.newRating = {user: localStorage.getItem('id'), rating: e, poi: poi.id}
     if(poi.isRated == false) {
       this.ratingService.create(this.newRating).subscribe(resp => {
         console.log(resp);
@@ -70,11 +81,11 @@ export class PoiDetailsComponent implements OnInit {
         console.log(resp);
       });
     }
-    
+    this.loadNewRatings();
     console.log("has salido de aqui")
   }
 
-  getAverageRating() {
+  /*getAverageRating() {
     console.log(localStorage.getItem('id'))
     this.ratingService.getAll().subscribe(receivedRatings => {
       this.ratings = receivedRatings;
@@ -103,7 +114,7 @@ export class PoiDetailsComponent implements OnInit {
       
       this.averageRating = (this.averageRating/this.poiRatings.length);
     })
-  }
+  }*/
 
   getAllLanguages() {
     this.languageService.getAllLanguages(this.authService.getToken()).subscribe(receivedLanguages => {
@@ -243,6 +254,9 @@ export class PoiDetailsComponent implements OnInit {
   getData() {
     this.poiService.getOne(this.poiService.selectedPoi.id).subscribe(p => {
       this.poi = p;
+      
+      this.averageRating = p.averageRating;
+      this.userRating = p.userRating[0].rating;
       this.coverImage = p.coverImage;
       let posicionDescripcion = -1, posicionAudio = -1;
       let textoTraducido = '', audioTraducido = '';
