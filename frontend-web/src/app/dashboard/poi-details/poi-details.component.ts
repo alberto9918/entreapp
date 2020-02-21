@@ -26,6 +26,7 @@ export class PoiDetailsComponent implements OnInit {
 
   poi: OnePoiResponse;
   coverImage: string;
+  idRating: string;
   averageRating: number;
   userRating: number;
   isRated: boolean;
@@ -54,18 +55,23 @@ export class PoiDetailsComponent implements OnInit {
     //this.getAverageRating();
   }
 
-  deleteRating(id) {
-    this.ratingService.remove(id).subscribe(resp => {
-
+  deleteRating() {
+    this.ratingService.remove(this.idRating).subscribe(resp => {
+      this.loadNewRatings();
     });
-    this.loadNewRatings();
     //location.reload(false);
   }
 
   loadNewRatings() {
     this.poiService.getOne(this.poiService.selectedPoi.id).subscribe(p => {
       this.averageRating = p.averageRating;
-      this.userRating = p.userRating[0].rating;
+      if(p.userRating[0]){
+        this.idRating = p.userRating[0].id;
+        this.userRating = p.userRating[0].rating;
+      }else{
+        this.idRating = '';
+        this.userRating = 0;
+      }
       this.isRated = p.isRated;
     })
   }
@@ -75,16 +81,17 @@ export class PoiDetailsComponent implements OnInit {
     console.log(e)
 
     this.newRating = {user: localStorage.getItem('id'), rating: e, poi: poi.id}
-    if(poi.isRated == false) {
+    if(this.isRated == false) {
       this.ratingService.create(this.newRating).subscribe(resp => {
         console.log(resp);
+        this.loadNewRatings();
       });
     }else {
-      this.ratingService.edit(poi.userRating[0].id, this.newRating).subscribe(resp =>{
+      this.ratingService.edit(this.idRating, this.newRating).subscribe(resp =>{
         console.log(resp);
+        this.loadNewRatings();
       });
     }
-    this.loadNewRatings();
     console.log("has salido de aqui")
   }
 
@@ -259,7 +266,13 @@ export class PoiDetailsComponent implements OnInit {
       this.poi = p;
       
       this.averageRating = p.averageRating;
-      this.userRating = p.userRating[0].rating;
+      if(p.userRating[0]){
+        this.idRating = p.userRating[0].id;
+        this.userRating = p.userRating[0].rating;
+      }else{
+        this.idRating = '';
+        this.userRating = 0;
+      }
       this.isRated = p.isRated;
       this.coverImage = p.coverImage;
       let posicionDescripcion = -1, posicionAudio = -1;

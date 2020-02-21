@@ -22,7 +22,7 @@
 
           <p>{{poi.creator}} - {{poi.year}}</p>
           <bar-rating [rate]="averageRating" [max]="5" theme="default" (rateChange)="ratingChange($event, poi)"></bar-rating>
-          <p *ngIf="isRated">Tu valoración: {{userRating}} <span><img src="../../../assets/images/RedCross.png" (click)="deleteRating(poi.userRating[0].id)"></span></p>
+          <p *ngIf="isRated">Your rating: {{userRating}} <span><img src="../../../assets/images/RedCross.png" (click)="deleteRating()"></span></p>
 
         </div>
         
@@ -40,7 +40,7 @@
         <p *ngIf="poi.status == 'Close'"><strong>Status:</strong> <span class="rojo"> {{poi.status}}</span></p>
         <p><strong>Schedule: </strong>{{poi.schedule}}</p>
         <p><strong>Unique Name: </strong>{{poi.uniqueName}}</p>
-        <p><strong>Media: </strong>{{ averageRating }}</p>
+        <p><strong>Average rating: </strong>{{ averageRating }}</p>
       </mat-card>
     
 </div>
