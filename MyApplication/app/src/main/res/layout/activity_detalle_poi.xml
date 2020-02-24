@@ -120,10 +120,10 @@
                                 style="@style/Green.Small.AppCompatRatingBar"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:clickable="false"
+                                android:clickable="true"
                                 android:numStars="5"
                                 android:rating="3.5"
-                                android:stepSize="1"
+                                android:stepSize="0.1"
                                 android:theme="@style/Green.Small.AppCompatRatingBar" />
 
                             <TextView
@@ -134,7 +134,16 @@
                                 android:layout_marginLeft="@dimen/spacing_medium"
                                 android:text="0"
                                 android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-                                android:textColor="@color/grey_40" />
+                                android:textColor="@color/colorPrimaryDark"
+                                android:textSize="14sp" />
+
+                            <ImageButton
+                                android:id="@+id/imageButtonRated"
+                                android:layout_width="30dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="5dp"
+                                android:backgroundTint="@color/color_input_hint"
+                                app:srcCompat="@drawable/ic_thumb_up_black_24dp" />
 
                             <View
                                 android:layout_width="0dp"

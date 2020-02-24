@@ -72,6 +72,7 @@ public class DetallePoiActivity extends AppCompatActivity {
     private LinearLayout layout_dots;
     private AdapterImageSlider adapterImageSlider;
     private ImageView[] dots;
+    private ImageButton imgbtRated;
     private TextView tvPrecio, tvDescripcion, tvTitulo, tvInfo, tvReviews;
     AppCompatRatingBar ratingBarPoi;
     private CardView audioPlayer;
@@ -137,11 +138,19 @@ public class DetallePoiActivity extends AppCompatActivity {
         tvPrecio = findViewById(R.id.precio_poi);
         tvDescripcion = findViewById(R.id.descripcion_poi);
         audioPlayer = findViewById(R.id.audioPlayer);
+        imgbtRated = findViewById(R.id.imageButtonRated);
 
-        // ratingBarPoi.setRating(poi.getStars());
-        // tvReviews.setText(poi.getStars() + "/5.0");
+        // Log.e("rating",poi.getAverageRating().toString());
+        ratingBarPoi.setRating(poi.getAverageRating());
+        tvReviews.setText(poi.getAverageRating().toString());
         tvTitulo.setText(Html.fromHtml(poi.getName()));
+
+        if(poi.getIsRated() == false){
+            imgbtRated.setVisibility(View.INVISIBLE);
+        }
+
         tvInfo.setText(poi.getSchedule() + " ["+poi.getStatus()+"]");
+
         if(poi.getPrice() == 0.0f) {
             tvPrecio.setText("Gratis");
         } else {
@@ -178,6 +187,16 @@ public class DetallePoiActivity extends AppCompatActivity {
 
             @Override
             public void onPageScrollStateChanged(int state) {
+            }
+        });
+        showUserRating();
+    }
+
+    private void showUserRating() {
+        imgbtRated.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                Toast.makeText(DetallePoiActivity.this, "Your rating is: "+poi.getUserRating()[0].getRating(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -255,6 +274,7 @@ public class DetallePoiActivity extends AppCompatActivity {
      */
     private void buttonPlayerAction() {
         bt_play.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View arg0) {
                 // check for already playing
@@ -392,6 +412,7 @@ public class DetallePoiActivity extends AppCompatActivity {
                     Toast.makeText(DetallePoiActivity.this, "Request Error", Toast.LENGTH_SHORT).show();
                 } else {
                     poi = response.body();
+                    // Log.i("rating", poi.getAverageRating().toString());
                     array_image_poi = new ArrayList<>();
                     if(poi.getImages().size() > 0) {
                         array_image_poi.addAll(poi.getImages());
