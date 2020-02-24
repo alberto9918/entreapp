@@ -9,6 +9,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
@@ -46,9 +48,12 @@ import eu.visiton.app.R;
 import eu.visiton.app.materialx.utils.Tools;
 import eu.visiton.app.model.Image;
 import eu.visiton.app.responses.PoiResponse;
+import eu.visiton.app.responses.UserImageResponse;
+import eu.visiton.app.responses.UserResponse;
 import eu.visiton.app.retrofit.generator.AuthType;
 import eu.visiton.app.retrofit.generator.ServiceGenerator;
 import eu.visiton.app.retrofit.services.PoiService;
+import eu.visiton.app.retrofit.services.UserService;
 import eu.visiton.app.ui.pois.qrScanner.QrCodeActivity;
 import eu.visiton.app.util.Constantes;
 import eu.visiton.app.util.MusicUtils;
@@ -66,6 +71,7 @@ public class DetallePoiActivity extends AppCompatActivity {
 
     private static String id, dialogTitle, dialogMessage, dialogAnimation;
     private PoiResponse poi;
+    private UserResponse user;
 
     private View parent_view;
     private ViewPager viewPager;
@@ -78,7 +84,9 @@ public class DetallePoiActivity extends AppCompatActivity {
     private static final int PERMISSIONS_REQUEST_ACCESS_CAMERA = 2;
 
 
+    private List<Image> items2;
     private static List<String> array_image_poi = new ArrayList<>();
+    private static List<String> array_image_user = new ArrayList<>();
 
 
     // MEDIA PLAYER
@@ -102,6 +110,7 @@ public class DetallePoiActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detalle_poi);
 
         initToolbar();
+
         Bundle extras = getIntent().getExtras();
         id = extras.getString("id");
 
@@ -130,6 +139,8 @@ public class DetallePoiActivity extends AppCompatActivity {
         layout_dots = findViewById(R.id.layout_dots);
         viewPager = findViewById(R.id.pager);
 
+        RecyclerView recyclerStart = findViewById(R.id.recyclerStart);
+
         ratingBarPoi = findViewById(R.id.rating_poi);
         tvReviews = findViewById(R.id.reviews_poi);
         tvTitulo = findViewById(R.id.titulo_poi);
@@ -140,6 +151,8 @@ public class DetallePoiActivity extends AppCompatActivity {
 
         // ratingBarPoi.setRating(poi.getStars());
         // tvReviews.setText(poi.getStars() + "/5.0");
+        recyclerStart.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+
         tvTitulo.setText(Html.fromHtml(poi.getName()));
         tvInfo.setText(poi.getSchedule() + " ["+poi.getStatus()+"]");
         if(poi.getPrice() == 0.0f) {
@@ -149,6 +162,20 @@ public class DetallePoiActivity extends AppCompatActivity {
         }
 
         tvDescripcion.setText(Html.fromHtml(poi.getDescription().getTranslations().get(0).getTranslatedDescription()));
+
+        List<Image> items2 = new ArrayList<>();
+        for (int i=0; i<array_image_user.size(); i++) {
+            String img = array_image_user.get(i);
+            Image obj = new Image();
+            obj.image = img;
+            items2.add(obj);
+        }
+        recyclerStart.setAdapter(new AdapterSnapGeneric(this, items2, R.layout.item_snap_basic));
+        recyclerStart.setOnFlingListener(null);
+        new StartSnapHelper().attachToRecyclerView(recyclerStart);
+
+
+
 
         adapterImageSlider = new AdapterImageSlider(this, new ArrayList<Image>());
 
@@ -277,6 +304,9 @@ public class DetallePoiActivity extends AppCompatActivity {
 
     public void controlClick(View v) {
         int id = v.getId();
+
+
+
         switch (id) {
             case R.id.bt_repeat: {
                 toggleButtonColor((ImageButton) v);
@@ -382,8 +412,13 @@ public class DetallePoiActivity extends AppCompatActivity {
     private void getPoiDetails() {
         String jwt = UtilToken.getToken(Objects.requireNonNull(DetallePoiActivity.this));
         PoiService service = ServiceGenerator.createService(PoiService.class, jwt, AuthType.JWT);
+        UserService serviceUser = ServiceGenerator.createService(UserService.class, jwt, AuthType.JWT);
         String idLang = UtilToken.getLanguageId(this);
         Call<PoiResponse> call = service.getPoiLang(id, idLang);
+        Call<UserResponse> callUser = serviceUser.getMe();
+
+
+
 
         call.enqueue(new Callback<PoiResponse>() {
             @Override
@@ -392,6 +427,33 @@ public class DetallePoiActivity extends AppCompatActivity {
                     Toast.makeText(DetallePoiActivity.this, "Request Error", Toast.LENGTH_SHORT).show();
                 } else {
                     poi = response.body();
+
+                    callUser.enqueue(new Callback<UserResponse>() {
+                        @Override
+                        public void onResponse( @NonNull Call<UserResponse> call, @NonNull Response<UserResponse> response) {
+                            if (response.code() != 200) {
+                                Toast.makeText(DetallePoiActivity.this, "Request Error", Toast.LENGTH_SHORT).show();
+                            } else {
+                                user = response.body();
+                                array_image_user = new ArrayList<>();
+                                for ( UserImageResponse image :user.getImages()) {
+
+                                    if (image.getPoi().getId() == poi.getId()){
+
+                                        array_image_user.add(image.getThumbnail());
+                                    }
+
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(@NonNull Call<UserResponse> call, @NonNull Throwable t) {
+                            Log.e("Network Failure", t.getMessage());
+                            Toast.makeText(DetallePoiActivity.this, "Network Error churra", Toast.LENGTH_SHORT).show();
+
+                        }
+                    });
                     array_image_poi = new ArrayList<>();
                     if(poi.getImages().size() > 0) {
                         array_image_poi.addAll(poi.getImages());
