@@ -56,10 +56,12 @@ export class PoiDetailsComponent implements OnInit {
   }
 
   deleteRating() {
-    this.ratingService.remove(this.idRating).subscribe(resp => {
-      this.loadNewRatings();
-    });
-    //location.reload(false);
+    if(window.confirm('Are you sure yo delete your rate?')){
+      this.ratingService.remove(this.idRating).subscribe(resp => {
+        this.loadNewRatings();
+      });
+      //location.reload(false);
+    }
   }
 
   loadNewRatings() {
