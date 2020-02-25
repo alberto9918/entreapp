@@ -19,6 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+
         <activity android:name=".ui.badges.detail.BadgeDetailActivity" />
         <activity
             android:name=".ui.pois.details.DetallePoiActivity"

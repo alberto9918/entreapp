@@ -190,6 +190,16 @@ public class DetallePoiActivity extends AppCompatActivity {
             }
         });
         showUserRating();
+        changeRating();
+    }
+
+    private void changeRating() {
+        ratingBarPoi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                
+            }
+        });
     }
 
     private void showUserRating() {
