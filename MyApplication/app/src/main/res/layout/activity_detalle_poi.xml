@@ -122,8 +122,10 @@
                                 android:layout_height="wrap_content"
                                 android:clickable="true"
                                 android:numStars="5"
+                                android:onClick="controlClick"
                                 android:rating="3.5"
-                                android:stepSize="0.1"
+                                android:stepSize="0.5"
+                                android:isIndicator="false"
                                 android:theme="@style/Green.Small.AppCompatRatingBar" />
 
                             <TextView

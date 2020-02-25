@@ -33,6 +33,8 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
+import android.widget.RatingBar.OnRatingBarChangeListener;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -45,10 +47,12 @@ import com.google.android.material.snackbar.Snackbar;
 import eu.visiton.app.R;
 import eu.visiton.app.materialx.utils.Tools;
 import eu.visiton.app.model.Image;
+import eu.visiton.app.responses.CreateRatingResponse;
 import eu.visiton.app.responses.PoiResponse;
 import eu.visiton.app.retrofit.generator.AuthType;
 import eu.visiton.app.retrofit.generator.ServiceGenerator;
 import eu.visiton.app.retrofit.services.PoiService;
+import eu.visiton.app.retrofit.services.RatingService;
 import eu.visiton.app.ui.pois.qrScanner.QrCodeActivity;
 import eu.visiton.app.util.Constantes;
 import eu.visiton.app.util.MusicUtils;
@@ -74,7 +78,7 @@ public class DetallePoiActivity extends AppCompatActivity {
     private ImageView[] dots;
     private ImageButton imgbtRated;
     private TextView tvPrecio, tvDescripcion, tvTitulo, tvInfo, tvReviews;
-    AppCompatRatingBar ratingBarPoi;
+    private RatingBar ratingBarPoi;
     private CardView audioPlayer;
     private static final int PERMISSIONS_REQUEST_ACCESS_CAMERA = 2;
 
@@ -95,7 +99,6 @@ public class DetallePoiActivity extends AppCompatActivity {
     private MusicUtils utils;
 
     boolean repetir = false;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -194,12 +197,17 @@ public class DetallePoiActivity extends AppCompatActivity {
     }
 
     private void changeRating() {
-        ratingBarPoi.setOnClickListener(new View.OnClickListener() {
+        ratingBarPoi.setOnRatingBarChangeListener(new OnRatingBarChangeListener() {
             @Override
-            public void onClick(View arg0) {
-                
+            public void onRatingChanged(RatingBar ratingBarPoi, float rating, boolean fromUser) {
+                if(poi.getIsRated() == false){
+                    createRating(rating, poi.getId());
+                } else {
+                    editRating(rating, poi.getId(), poi.getUserRating()[0].getId());
+                }
             }
         });
+
     }
 
     private void showUserRating() {
@@ -407,6 +415,61 @@ public class DetallePoiActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /** Api call to create rating **/
+    private void editRating(float rating, String poi, String id) {
+        String jwt = UtilToken.getToken(Objects.requireNonNull(DetallePoiActivity.this));
+        RatingService service = ServiceGenerator.createService(RatingService.class, jwt, AuthType.JWT);
+        CreateRatingResponse createRating = new CreateRatingResponse(rating, poi);
+        Call<CreateRatingResponse> call = service.editRating(id, createRating);
+
+        call.enqueue(new Callback<CreateRatingResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<CreateRatingResponse> call, @NonNull Response<CreateRatingResponse> response) {
+                if (response.code() != 200) {
+                    Toast.makeText(DetallePoiActivity.this, "Request Error", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(DetallePoiActivity.this, "Rating edited successfully!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<CreateRatingResponse> call, @NonNull Throwable t) {
+                Log.e("Network Failure", t.getMessage());
+                Toast.makeText(DetallePoiActivity.this, "Network Error", Toast.LENGTH_SHORT).show();
+            }
+        });
+        getPoiDetailsEdited();
+
+    }
+
+    /** Api call to create rating **/
+    private void createRating(float rating, String poi) {
+        String jwt = UtilToken.getToken(Objects.requireNonNull(DetallePoiActivity.this));
+        RatingService service = ServiceGenerator.createService(RatingService.class, jwt, AuthType.JWT);
+        CreateRatingResponse createRating = new CreateRatingResponse(rating, poi);
+        Call<CreateRatingResponse> call = service.createRating(createRating);
+
+        call.enqueue(new Callback<CreateRatingResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<CreateRatingResponse> call, @NonNull Response<CreateRatingResponse> response) {
+                if (response.code() != 201) {
+                    Toast.makeText(DetallePoiActivity.this, "Request Error", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(DetallePoiActivity.this, "Rated successfully!", Toast.LENGTH_SHORT).show();
+                    imgbtRated.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<CreateRatingResponse> call, @NonNull Throwable t) {
+                Log.e("Network Failure", t.getMessage());
+                Toast.makeText(DetallePoiActivity.this, "Network Error", Toast.LENGTH_SHORT).show();
+            }
+
+        });
+        getPoiDetailsEdited();
+
+    }
 
     /** Api call to get details of one POI **/
     private void getPoiDetails() {
@@ -440,6 +503,36 @@ public class DetallePoiActivity extends AppCompatActivity {
         });
     }
 
+    /** Api call to get details of one POI **/
+    private void getPoiDetailsEdited() {
+        String jwt = UtilToken.getToken(Objects.requireNonNull(DetallePoiActivity.this));
+        PoiService service = ServiceGenerator.createService(PoiService.class, jwt, AuthType.JWT);
+        String idLang = UtilToken.getLanguageId(this);
+        Call<PoiResponse> call = service.getPoiLang(id, idLang);
+
+        call.enqueue(new Callback<PoiResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<PoiResponse> call, @NonNull Response<PoiResponse> response) {
+                if (response.code() != 200) {
+                    Toast.makeText(DetallePoiActivity.this, "Request Error", Toast.LENGTH_SHORT).show();
+                } else {
+                    poi.setUserRating(response.body().getUserRating());
+                    poi.setAverageRating(response.body().getAverageRating());
+                    poi.setIsRated(response.body().getIsRated());
+                    ratingBarPoi.setRating(poi.getAverageRating());
+                    tvReviews.setText(poi.getAverageRating().toString());
+
+                    // Log.i("rating", poi.getAverageRating().toString());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<PoiResponse> call, @NonNull Throwable t) {
+                Log.e("Network Failure", t.getMessage());
+                Toast.makeText(DetallePoiActivity.this, "Network Error", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
     private static class AdapterImageSlider extends PagerAdapter {
 

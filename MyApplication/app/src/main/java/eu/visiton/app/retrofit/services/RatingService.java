@@ -1,6 +1,7 @@
 package eu.visiton.app.retrofit.services;
 
 import eu.visiton.app.model.Comment;
+import eu.visiton.app.responses.CreateRatingResponse;
 import eu.visiton.app.responses.ResponseContainer;
 import eu.visiton.app.responses.UserRatingResponse;
 
@@ -22,9 +23,10 @@ public interface RatingService {
     @GET(BASE_URL + "/{id}")
     Call<UserRatingResponse> getRating(@Path("id") String id);
 
-    @PUT(BASE_URL + "/fav/add/{id}")
-    Call<UserRatingResponse> editRating(@Path("id") String id);
+    @PUT(BASE_URL + "/{id}")
+    Call<CreateRatingResponse> editRating(@Path("id") String id, @Body CreateRatingResponse c);
 
     @POST(BASE_URL)
-    Call<UserRatingResponse> createRating(@Body Comment c);
+    Call<CreateRatingResponse> createRating(@Body CreateRatingResponse c);
+
 }
