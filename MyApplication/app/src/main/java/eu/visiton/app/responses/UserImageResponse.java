@@ -3,12 +3,12 @@ package eu.visiton.app.responses;
 public class UserImageResponse {
 
     private String _id;
-    private PoiResponse poi;
+    private String poi;
     private String thumbnail;
     private String full;
 
 
-    public UserImageResponse(String id, PoiResponse poi, String thumbnail, String full) {
+    public UserImageResponse(String id, String poi, String thumbnail, String full) {
         _id = id;
         this.poi = poi;
         this.thumbnail = thumbnail;
@@ -31,11 +31,11 @@ public class UserImageResponse {
         this.full = full;
     }
 
-    public PoiResponse getPoi() {
+    public String getPoi() {
         return poi;
     }
 
-    public void setPoi(PoiResponse poi) {
+    public void setPoi(String poi) {
         this.poi = poi;
     }
 
