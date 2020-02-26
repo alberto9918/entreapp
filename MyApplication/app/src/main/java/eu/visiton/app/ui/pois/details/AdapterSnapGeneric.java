@@ -10,12 +10,15 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import eu.visiton.app.R;
 import eu.visiton.app.materialx.utils.Tools;
 import eu.visiton.app.model.Image;
+import eu.visiton.app.util.Constantes;
 
 
 public class AdapterSnapGeneric extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -68,12 +71,15 @@ public class AdapterSnapGeneric extends RecyclerView.Adapter<RecyclerView.ViewHo
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-        Image obj = items.get(position);
+        Image obj = new Image();
+        obj.image=items.get(position).image;
         if (holder instanceof OriginalViewHolder) {
             OriginalViewHolder view = (OriginalViewHolder) holder;
             view.name.setText(obj.name);
             view.brief.setText(obj.brief);
-            Tools.displayImageOriginal(ctx, view.image, obj.image);
+
+
+            Glide.with(ctx).load(obj.image).into(view.image);
             view.lyt_parent.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

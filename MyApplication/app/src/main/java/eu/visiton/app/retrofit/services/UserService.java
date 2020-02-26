@@ -9,6 +9,7 @@ import eu.visiton.app.responses.UserResponse;
 
 import java.util.List;
 
+import eu.visiton.app.responses.UserSResponse;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -45,7 +46,10 @@ public interface UserService {
     Call<UserResponse> getUserResponse(@Path("id") String id);
 
     @GET(BASE_URL + "/me")
-    Call<UserResponse> getMe();
+    Call<UserSResponse> getMe();
+
+    @GET(BASE_URL + "/me")
+    Call<UserResponse> getMe2();
 
     @PUT(BASE_URL + "/{id}")
     Call<UserEditResponse> editUser(@Path("id") String id, @Body UserEditDto user);

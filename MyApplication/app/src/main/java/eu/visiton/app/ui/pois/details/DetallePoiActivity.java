@@ -50,6 +50,7 @@ import eu.visiton.app.model.Image;
 import eu.visiton.app.responses.PoiResponse;
 import eu.visiton.app.responses.UserImageResponse;
 import eu.visiton.app.responses.UserResponse;
+import eu.visiton.app.responses.UserSResponse;
 import eu.visiton.app.retrofit.generator.AuthType;
 import eu.visiton.app.retrofit.generator.ServiceGenerator;
 import eu.visiton.app.retrofit.services.PoiService;
@@ -71,7 +72,7 @@ public class DetallePoiActivity extends AppCompatActivity {
 
     private static String id, dialogTitle, dialogMessage, dialogAnimation;
     private PoiResponse poi;
-    private UserResponse user;
+    private UserSResponse user;
 
     private View parent_view;
     private ViewPager viewPager;
@@ -415,10 +416,7 @@ public class DetallePoiActivity extends AppCompatActivity {
         UserService serviceUser = ServiceGenerator.createService(UserService.class, jwt, AuthType.JWT);
         String idLang = UtilToken.getLanguageId(this);
         Call<PoiResponse> call = service.getPoiLang(id, idLang);
-        Call<UserResponse> callUser = serviceUser.getMe();
-
-
-
+        Call<UserSResponse> callUser = serviceUser.getMe();
 
         call.enqueue(new Callback<PoiResponse>() {
             @Override
@@ -428,9 +426,9 @@ public class DetallePoiActivity extends AppCompatActivity {
                 } else {
                     poi = response.body();
 
-                    callUser.enqueue(new Callback<UserResponse>() {
+                    callUser.enqueue(new Callback<UserSResponse>() {
                         @Override
-                        public void onResponse( @NonNull Call<UserResponse> call, @NonNull Response<UserResponse> response) {
+                        public void onResponse(@NonNull Call<UserSResponse> call, @NonNull Response<UserSResponse> response) {
                             if (response.code() != 200) {
                                 Toast.makeText(DetallePoiActivity.this, "Request Error", Toast.LENGTH_SHORT).show();
                             } else {
@@ -438,28 +436,33 @@ public class DetallePoiActivity extends AppCompatActivity {
                                 array_image_user = new ArrayList<>();
                                 for ( UserImageResponse image :user.getImages()) {
 
-                                    if (image.getPoi().getId() == poi.getId()){
+                                    if (image.getPoi().equals(poi.getId())){
 
                                         array_image_user.add(image.getThumbnail());
                                     }
 
                                 }
                             }
+
+                            array_image_poi = new ArrayList<>();
+                            if(poi.getImages().size() > 0) {
+                                array_image_poi.addAll(poi.getImages());
+                            }
+                            initComponent();
+                            initPlayer();
+
                         }
 
                         @Override
-                        public void onFailure(@NonNull Call<UserResponse> call, @NonNull Throwable t) {
-                            Log.e("Network Failure", t.getMessage());
+                        public void onFailure(@NonNull Call<UserSResponse> call, @NonNull Throwable t) {
+                            Log.e("Network Failure estoy hasta....", t.getMessage());
                             Toast.makeText(DetallePoiActivity.this, "Network Error churra", Toast.LENGTH_SHORT).show();
 
                         }
                     });
-                    array_image_poi = new ArrayList<>();
-                    if(poi.getImages().size() > 0) {
-                        array_image_poi.addAll(poi.getImages());
-                    }
-                    initComponent();
-                    initPlayer();
+
+
+
                 }
             }
 

@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content">
 
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/cardView2"
+                    android:id="@+id/cardViewMainPhoto"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:cardCornerRadius="0dp"
@@ -84,7 +84,7 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/cardView3"
+                    android:id="@+id/cardViewInformacion"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:cardBackgroundColor="@android:color/white"
@@ -92,7 +92,7 @@
                     app:cardElevation="2dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/cardView2">
+                    app:layout_constraintTop_toBottomOf="@+id/cardViewMainPhoto">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -165,16 +165,16 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/cardView4"
-                    android:layout_width="423dp"
-                    android:layout_height="81dp"
-                    android:layout_marginTop="16dp"
+                    android:id="@+id/cardViewDescripcion"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     app:cardBackgroundColor="@android:color/white"
                     app:cardCornerRadius="0dp"
                     app:cardElevation="2dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/cardView3">
+                    app:layout_constraintTop_toBottomOf="@+id/coordinadorGaleriaUser">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -203,12 +203,14 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.coordinatorlayout.widget.CoordinatorLayout
-                    android:id="@+id/parent_view2"
+                    android:id="@+id/coordinadorGaleriaUser"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginTop="8dp"
                     android:background="@android:color/white"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/cardView4">
+                    app:layout_constraintTop_toBottomOf="@+id/cardViewInformacion">
 
 
                     <androidx.core.widget.NestedScrollView
@@ -232,15 +234,7 @@
                                 android:gravity="center_vertical"
                                 android:orientation="horizontal"
                                 android:paddingLeft="@dimen/spacing_large"
-                                android:paddingRight="@dimen/spacing_large">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Snap Start"
-                                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
-
-                            </LinearLayout>
+                                android:paddingRight="@dimen/spacing_large"/>
 
                             <LinearLayout
                                 android:layout_width="match_parent"
