@@ -81,7 +81,7 @@ export class UserPoiPicturesComponent implements OnInit {
 
 
 
-            this.imageInvalid = new UserImageInvalidDto("","","",new Date(Date.now()));
+            this.imageInvalid = new UserImageInvalidDto("",element.poi, "","",new Date(Date.now()));
 
 
             this.imageInvalid._id = element._id
