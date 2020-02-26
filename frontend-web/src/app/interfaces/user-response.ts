@@ -13,6 +13,7 @@ export interface UserResponse {
     }];
     invalidImages:[{
         _id: String;
+        poi: OnePoiResponse,
         thumbnail: String,
         full: String,
         dateToBeRemoved: Date
