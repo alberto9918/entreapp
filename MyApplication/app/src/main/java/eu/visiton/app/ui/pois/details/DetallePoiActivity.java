@@ -28,6 +28,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -70,6 +71,7 @@ public class DetallePoiActivity extends AppCompatActivity {
 
     private static String id, dialogTitle, dialogMessage, dialogAnimation;
     private PoiResponse poi;
+    private boolean cambiarValoracion = true;
 
     private View parent_view;
     private ViewPager viewPager;
@@ -81,7 +83,7 @@ public class DetallePoiActivity extends AppCompatActivity {
     private RatingBar ratingBarPoi;
     private CardView audioPlayer;
     private static final int PERMISSIONS_REQUEST_ACCESS_CAMERA = 2;
-
+    float valorRating = 0.0f;
 
     private static List<String> array_image_poi = new ArrayList<>();
 
@@ -197,17 +199,17 @@ public class DetallePoiActivity extends AppCompatActivity {
     }
 
     private void changeRating() {
-        ratingBarPoi.setOnRatingBarChangeListener(new OnRatingBarChangeListener() {
-            @Override
-            public void onRatingChanged(RatingBar ratingBarPoi, float rating, boolean fromUser) {
+        ratingBarPoi.setOnRatingBarChangeListener((ratingBar, valorRating, b) -> {
+            if(cambiarValoracion) {
                 if(poi.getIsRated() == false){
-                    createRating(rating, poi.getId());
+                    createRating(valorRating, poi.getId());
                 } else {
-                    editRating(rating, poi.getId(), poi.getUserRating()[0].getId());
+                    editRating(valorRating, poi.getId(), poi.getUserRating()[0].getId());
                 }
+            } else {
+                cambiarValoracion = true;
             }
         });
-
     }
 
     private void showUserRating() {
@@ -429,6 +431,7 @@ public class DetallePoiActivity extends AppCompatActivity {
                     Toast.makeText(DetallePoiActivity.this, "Request Error", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(DetallePoiActivity.this, "Rating edited successfully!", Toast.LENGTH_SHORT).show();
+                    getPoiDetailsEdited();
                 }
             }
 
@@ -438,7 +441,6 @@ public class DetallePoiActivity extends AppCompatActivity {
                 Toast.makeText(DetallePoiActivity.this, "Network Error", Toast.LENGTH_SHORT).show();
             }
         });
-        getPoiDetailsEdited();
 
     }
 
@@ -457,6 +459,7 @@ public class DetallePoiActivity extends AppCompatActivity {
                 } else {
                     Toast.makeText(DetallePoiActivity.this, "Rated successfully!", Toast.LENGTH_SHORT).show();
                     imgbtRated.setVisibility(View.VISIBLE);
+                    getPoiDetailsEdited();
                 }
             }
 
@@ -467,7 +470,6 @@ public class DetallePoiActivity extends AppCompatActivity {
             }
 
         });
-        getPoiDetailsEdited();
 
     }
 
@@ -519,8 +521,14 @@ public class DetallePoiActivity extends AppCompatActivity {
                     poi.setUserRating(response.body().getUserRating());
                     poi.setAverageRating(response.body().getAverageRating());
                     poi.setIsRated(response.body().getIsRated());
-                    ratingBarPoi.setRating(poi.getAverageRating());
-                    tvReviews.setText(poi.getAverageRating().toString());
+
+                    if(response.body().getAverageRating() == ratingBarPoi.getRating()) {
+                        cambiarValoracion = true;
+                    } else {
+                        cambiarValoracion = false;
+                        ratingBarPoi.setRating(response.body().getAverageRating());
+                    }
+                    tvReviews.setText(response.body().getAverageRating().toString());
 
                     // Log.i("rating", poi.getAverageRating().toString());
                 }
