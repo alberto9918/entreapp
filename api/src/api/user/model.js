@@ -52,6 +52,10 @@ const userSchema = new Schema({
     }
   }],
   invalidImages: [{
+    poi: {
+      type: Schema.Types.ObjectId,
+      ref: 'Poi'
+    },
     thumbnail: {
       type: String
     },
