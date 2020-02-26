@@ -73,6 +73,7 @@ public class AdapterSnapGeneric extends RecyclerView.Adapter<RecyclerView.ViewHo
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         Image obj = new Image();
         obj.image=items.get(position).image;
+        obj.name =items.get(position).name;
         if (holder instanceof OriginalViewHolder) {
             OriginalViewHolder view = (OriginalViewHolder) holder;
             view.name.setText(obj.name);

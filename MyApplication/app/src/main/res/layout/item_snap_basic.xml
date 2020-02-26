@@ -46,17 +46,6 @@
                 android:paddingBottom="@dimen/spacing_xmedium">
 
                 <TextView
-                    android:id="@+id/name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:text="Two Line"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                    android:textColor="@android:color/white"
-                    android:textStyle="bold" />
-
-                <TextView
                     android:id="@+id/brief"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -64,7 +53,19 @@
                     android:singleLine="true"
                     android:text="Support Text"
                     android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-                    android:textColor="@color/grey_10" />
+                    android:textColor="@color/grey_10"
+                    android:visibility="invisible" />
+
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:text="Two Line"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textColor="@color/color_input_hint"
+                    android:textStyle="bold" />
 
             </LinearLayout>
         </RelativeLayout>

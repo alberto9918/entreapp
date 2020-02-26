@@ -47,9 +47,9 @@ import com.google.android.material.snackbar.Snackbar;
 import eu.visiton.app.R;
 import eu.visiton.app.materialx.utils.Tools;
 import eu.visiton.app.model.Image;
+import eu.visiton.app.responses.ImageInvalidResponse;
 import eu.visiton.app.responses.PoiResponse;
 import eu.visiton.app.responses.UserImageResponse;
-import eu.visiton.app.responses.UserResponse;
 import eu.visiton.app.responses.UserSResponse;
 import eu.visiton.app.retrofit.generator.AuthType;
 import eu.visiton.app.retrofit.generator.ServiceGenerator;
@@ -88,6 +88,7 @@ public class DetallePoiActivity extends AppCompatActivity {
     private List<Image> items2;
     private static List<String> array_image_poi = new ArrayList<>();
     private static List<String> array_image_user = new ArrayList<>();
+    private static List<String> array_invalid_image_user = new ArrayList<>();
 
 
     // MEDIA PLAYER
@@ -171,6 +172,19 @@ public class DetallePoiActivity extends AppCompatActivity {
             obj.image = img;
             items2.add(obj);
         }
+
+        for (int i=0; i<array_invalid_image_user.size(); i++) {
+            String img = array_invalid_image_user.get(i);
+            Image obj = new Image();
+            obj.image = img;
+            obj.brief="Deleted";
+            obj.name = "Deleted";
+            items2.add(obj);
+        }
+
+
+
+
         recyclerStart.setAdapter(new AdapterSnapGeneric(this, items2, R.layout.item_snap_basic));
         recyclerStart.setOnFlingListener(null);
         new StartSnapHelper().attachToRecyclerView(recyclerStart);
@@ -442,6 +456,16 @@ public class DetallePoiActivity extends AppCompatActivity {
                                     }
 
                                 }
+
+                                array_invalid_image_user = new ArrayList<>();
+                                for ( ImageInvalidResponse imageInvalid :user.getInvalidImages()) {
+
+                                    if (imageInvalid.getPoi().equals(poi.getId())){
+                                        array_invalid_image_user.add(imageInvalid.getThumbnail());
+                                    }
+
+                                }
+
                             }
 
                             array_image_poi = new ArrayList<>();
@@ -455,7 +479,7 @@ public class DetallePoiActivity extends AppCompatActivity {
 
                         @Override
                         public void onFailure(@NonNull Call<UserSResponse> call, @NonNull Throwable t) {
-                            Log.e("Network Failure estoy hasta....", t.getMessage());
+                            Log.e("Network Failure estoy ", t.getMessage());
                             Toast.makeText(DetallePoiActivity.this, "Network Error churra", Toast.LENGTH_SHORT).show();
 
                         }
