@@ -67,20 +67,17 @@ export class UserPoiPicturesComponent implements OnInit {
 
   updateUser(){
     
-    this.userService.selectedUser.images.forEach(element => {
-      console.log(element);
-    });
-  
-
-    this.userService.selectedUser.images.forEach(element => {
+    this.idImages.forEach(i => {
       console.log("Array de bucle")
-      console.log(this.userService.selectedUser.images)
-        this.idImages.forEach(i => {
+        
+        this.userService.selectedUser.images.forEach(element => {
+          console.log(this.idImages.indexOf(i) + " Macundra")
+          console.log(this.userService.selectedUser.images.indexOf(element) + " pepe");
           if(element._id == i ){
-            this.userService.selectedUser.images.splice(this.userService.selectedUser.images.indexOf(element),1)
-
-
-
+            console.log(this.idImages.indexOf(i) + " MacundraSupremo")
+            console.log(this.userService.selectedUser.images.indexOf(element) + " pepeSupremo");
+            console.log(this.userService.selectedUser.images.splice(this.userService.selectedUser.images.indexOf(element),1));
+            
             this.imageInvalid = new UserImageInvalidDto("",element.poi, "","",new Date(Date.now()));
 
 
