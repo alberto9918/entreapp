@@ -1,11 +1,16 @@
 package eu.visiton.app.ui.pois.details;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -33,6 +38,8 @@ public class AdapterSnapGeneric extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     public interface OnItemClickListener {
         void onItemClick(View view, Image obj, int position);
+
+
     }
 
     public void setOnItemClickListener(final OnItemClickListener mItemClickListener) {
@@ -84,8 +91,11 @@ public class AdapterSnapGeneric extends RecyclerView.Adapter<RecyclerView.ViewHo
             view.lyt_parent.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
+                    showDialogImageFull(items.get(position));
                     if (mOnItemClickListener != null) {
                         mOnItemClickListener.onItemClick(view, items.get(position), position);
+
                     }
                 }
             });
@@ -107,6 +117,26 @@ public class AdapterSnapGeneric extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     public interface OnLoadMoreListener {
         void onLoadMore(int current_page);
+    }
+
+    private void showDialogImageFull(Image item) {
+        Toast.makeText(ctx, "BUeenos diias", Toast.LENGTH_SHORT).show();
+        final Dialog dialog = new Dialog(ctx);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
+        dialog.setContentView(R.layout.dialog_image);
+
+        // Button btnDownload =  dialog.findViewById(R.id.button_download);
+        // onClickListener
+
+        Button btn = null;
+        btn.setOnClickListener(view -> {
+
+        });
+
+        Glide.with(ctx).load(item.image).into((ImageView) dialog.findViewById(R.id.ImageView_photo));
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setCancelable(true);
+        dialog.show();
     }
 
 }
