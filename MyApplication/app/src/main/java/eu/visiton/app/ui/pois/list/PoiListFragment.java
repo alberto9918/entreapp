@@ -21,6 +21,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,6 +32,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.Task;
 import eu.visiton.app.R;
+import eu.visiton.app.data.PoiViewModel;
 import eu.visiton.app.responses.PoiResponse;
 import eu.visiton.app.responses.ResponseContainer;
 import eu.visiton.app.retrofit.generator.AuthType;
@@ -63,6 +66,8 @@ public class PoiListFragment extends Fragment {
     private Location mLastKnownLocation;
     private final LatLng mDefaultLocation = new LatLng(37.3866245, -5.9942548);
 
+    private PoiViewModel poiViewModel;
+
 
     public PoiListFragment() {
     }
@@ -93,6 +98,10 @@ public class PoiListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        poiViewModel = ViewModelProviders.of(getActivity())
+                .get(PoiViewModel.class);
+
         jwt = UtilToken.getToken(Objects.requireNonNull(getContext()));
 
         if (getArguments() != null) {
@@ -140,6 +149,15 @@ public class PoiListFragment extends Fragment {
 
     /** API Call to get All Pois **/
     private void getAllPois(double latitude, double longitude) {
+
+        poiViewModel.getPois().observe(getActivity(), new Observer<ResponseContainer<PoiResponse>>() {
+            @Override
+            public void onChanged(ResponseContainer<PoiResponse> poiResponseResponseContainer) {
+                //mListener = poiResponseResponseContainer;
+               // adapter.setData(mListener);
+            }
+        });
+
         items = new ArrayList<>();
         PoiService service = ServiceGenerator.createService(PoiService.class, jwt, AuthType.JWT);
 

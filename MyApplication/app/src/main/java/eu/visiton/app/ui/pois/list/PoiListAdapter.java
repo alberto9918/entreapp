@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import eu.visiton.app.R;
 import eu.visiton.app.responses.PoiResponse;
+import eu.visiton.app.responses.ResponseContainer;
 import eu.visiton.app.responses.UserFavResponse;
 import eu.visiton.app.responses.UserResponse;
 import eu.visiton.app.retrofit.generator.AuthType;
@@ -125,6 +126,11 @@ public class PoiListAdapter extends RecyclerView.Adapter<PoiListAdapter.ViewHold
             String coords = viewHolder.mItem.getLoc().getCoordinates().get(0) + "," + viewHolder.mItem.getLoc().getCoordinates().get(1);
             mListener.showGoogleMaps(coords);
         });
+    }
+
+    public void setData(List<PoiResponse> poiList){
+        this.data = poiList;
+        notifyDataSetChanged();
     }
 
     private void addFav(String id) {
