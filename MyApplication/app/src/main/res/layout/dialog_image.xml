@@ -22,7 +22,11 @@
         <androidx.cardview.widget.CardView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/spacing_large"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="@dimen/spacing_large"
+            android:layout_marginTop="@dimen/spacing_large"
+            android:layout_marginEnd="10"
+            android:layout_marginBottom="@dimen/spacing_large"
             app:cardBackgroundColor="@color/overlay_dark_20"
             app:cardCornerRadius="@dimen/spacing_medium"
             app:cardElevation="0dp">
@@ -37,50 +41,23 @@
                     android:layout_height="0dp" />
 
                 <ImageView
-                    android:layout_width="@dimen/spacing_large"
+                    android:layout_width="17dp"
                     android:layout_height="@dimen/spacing_large"
-                    android:tint="@android:color/white"
-                     />
-
-                <View
-                    android:layout_width="@dimen/spacing_middle"
-                    android:layout_height="0dp" />
+                    android:tint="@android:color/white" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/spacing_xlarge"
                     android:gravity="center"
-                    android:text="Berlin, Germany"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                     android:textColor="@color/grey_5" />
 
                 <View
-                    android:layout_width="@dimen/spacing_mlarge"
-                    android:layout_height="0dp" />
+                    android:layout_width="11dp"
+                    android:layout_height="4dp" />
 
             </LinearLayout>
 
-
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_margin="@dimen/spacing_large"
-            app:cardBackgroundColor="@android:color/white"
-            app:cardCornerRadius="@dimen/spacing_medium"
-            app:cardElevation="1dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/spacing_xlarge"
-                android:gravity="center"
-                android:paddingLeft="@dimen/spacing_large"
-                android:paddingRight="@dimen/spacing_large"
-                android:text="Aliquam Lucidus"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                android:textColor="@color/grey_90" />
 
         </androidx.cardview.widget.CardView>
 
