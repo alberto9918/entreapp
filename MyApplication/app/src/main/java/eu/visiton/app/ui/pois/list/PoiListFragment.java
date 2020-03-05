@@ -150,37 +150,18 @@ public class PoiListFragment extends Fragment {
     /** API Call to get All Pois **/
     private void getAllPois(double latitude, double longitude) {
 
-        poiViewModel.getPois().observe(getActivity(), new Observer<ResponseContainer<PoiResponse>>() {
-            @Override
-            public void onChanged(ResponseContainer<PoiResponse> poiResponseResponseContainer) {
-                //mListener = poiResponseResponseContainer;
-               // adapter.setData(mListener);
-            }
+        poiViewModel.getPois(latitude, longitude).observe(getActivity(), poiResponseResponseContainer -> {
+            items = poiResponseResponseContainer;
+
+            adapter = new PoiListAdapter(
+                    ctx,
+                    items,
+                    mListener);
+            recycler.setAdapter(adapter);
+
+            adapter.setData(items);
         });
 
-        items = new ArrayList<>();
-        PoiService service = ServiceGenerator.createService(PoiService.class, jwt, AuthType.JWT);
-
-        String coords = longitude + "," + latitude;
-        Call<ResponseContainer<PoiResponse>> call = service.listPois(coords, 5000);
-        call.enqueue(new Callback<ResponseContainer<PoiResponse>>() {
-            @Override
-            public void onResponse(@NonNull Call<ResponseContainer<PoiResponse>> call, @NonNull Response<ResponseContainer<PoiResponse>> response) {
-                if (response.code() != 200) {
-                    Toast.makeText(getActivity(), "Request Error", Toast.LENGTH_SHORT).show();
-                } else {
-                    items = Objects.requireNonNull(response.body()).getRows();
-                    adapter = new PoiListAdapter(ctx, items, mListener);
-                    recycler.setAdapter(adapter);
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<ResponseContainer<PoiResponse>> call, @NonNull Throwable t) {
-                Log.e("Network Failure", t.getMessage());
-                Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     /** API Call to get FAV Pois **/
