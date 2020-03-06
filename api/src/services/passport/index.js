@@ -27,8 +27,10 @@ export const facebook = () =>
 export const google = () =>
   passport.authenticate('google', { session: false })
 
-export const master = () =>
-  passport.authenticate('master', { session: false })
+export const master = () => passport.authenticate('master', { session: false })
+
+
+
 
 export const token = ({ required, roles = User.roles } = {}) => (req, res, next) =>
   passport.authenticate('token', { session: false }, (err, user, info) => {
@@ -79,6 +81,7 @@ passport.use('google', new BearerStrategy((token, done) => {
 }))
 
 passport.use('master', new BearerStrategy((token, done) => {
+  console.log("Token: "+ token)
   if (token === masterKey) {
     done(null, {})
   } else {

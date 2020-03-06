@@ -152,7 +152,6 @@ poiSchema.methods = {
       schedule: this.schedule,
       price: this.price
     }
-    
     switch (full) {
       case 0:
         return view

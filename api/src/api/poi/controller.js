@@ -2,7 +2,6 @@ import _ from 'lodash'
 import QRCode from 'qrcode'
 
 import { Poi } from '.'
-import { Rating } from '../rating';
 import mongoose from '../../services/mongoose'
 import { notFound, success } from '../../services/response/'
 import { Badge } from '../badge'
@@ -132,82 +131,15 @@ export const showTranslated = ({ params, user }, res, next) => {
 
       return poi
     })
-    .then((poi) => {
-      let idToSearch = mongoose.Types.ObjectId(poi.id)
-      return Rating.aggregate([{ 
-        $match: { poi: idToSearch } },{
-            $group:{
-                _id: "id_averageStars",
-                total: {
-                    $avg:"$rating"
-                }
-            }
-        }]).then((rating) => {
-          if(rating[0]) {
-            poi.set('averageRating', rating[0].total)
-          }else {
-            poi.set('averageRating', 0)
-          }
-          return poi;
-        })
-    })
-    .then((poi) => {
-      let idPoiToSearch = mongoose.Types.ObjectId(poi.id)
-      let idUserToSearch = mongoose.Types.ObjectId(user.id)
-      return Rating.find({ poi: idPoiToSearch, user: idUserToSearch }, { _id: 1, rating:1, poi:1, user:1 })
-      .then((rating) => {
-        if (rating[0]){
-          poi.set('userRating', rating)
-          poi.set('isRated', true)
-        } else {
-          poi.set('userRating', rating)
-          poi.set('isRated', false)
-        }
-        return poi;
-      })
-    })
     .then(success(res))
     .catch(next)
 }
 
 /**  Show one POI info. Without visit it */
-export const show = ({ params, user }, res, next) =>
+export const show = ({ params }, res, next) =>
   Poi.findById(params.id).populate('categories', 'id name')
     .then(notFound(res))
-    .then((poi) => {
-      let idToSearch = mongoose.Types.ObjectId(poi.id)
-      return Rating.aggregate([{ 
-        $match: { poi: idToSearch } },{
-            $group:{
-                _id: "id_averageStars",
-                total: {
-                    $avg:"$rating"
-                }
-            }
-        }]).then((rating) => {
-          if(rating[0]) {
-            poi.set('averageRating', rating[0].total)
-          }else {
-            poi.set('averageRating', 0)
-          }
-          return poi;
-        })
-    })
-    .then((poi) => {
-      let idPoiToSearch = mongoose.Types.ObjectId(poi.id)
-      let idUserToSearch = mongoose.Types.ObjectId(user.id)
-      return Rating.find({ poi: idPoiToSearch, user: idUserToSearch }, { _id: 1, rating:1, poi:1, user:1 })
-      .then((rating) => {
-        if (rating[0]){
-          poi.set('userRating', rating)
-          poi.set('isRated', true)
-        } else {
-          poi.set('userRating', rating)
-          poi.set('isRated', false)
-        }
-        return poi;
-      })
-    })
+    .then((poi) => poi ? poi.view(1) : null)
     .then(success(res))
     .catch(next)
 

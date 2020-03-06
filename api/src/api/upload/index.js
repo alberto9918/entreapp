@@ -1,6 +1,6 @@
 // server.js
 import { Router } from 'express'
-import { uploadS3, postUploadS3, getFile, deleteFile } from './controller'
+import { uploadS3, postUploadS3, getFile, deleteFile, hola } from './controller'
 import { master } from '../../services/passport'
 /*const path = require('path')
 const multer = require('multer')

@@ -21,8 +21,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,7 +30,6 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.Task;
 import eu.visiton.app.R;
-import eu.visiton.app.data.PoiViewModel;
 import eu.visiton.app.responses.PoiResponse;
 import eu.visiton.app.responses.ResponseContainer;
 import eu.visiton.app.retrofit.generator.AuthType;
@@ -66,8 +63,6 @@ public class PoiListFragment extends Fragment {
     private Location mLastKnownLocation;
     private final LatLng mDefaultLocation = new LatLng(37.3866245, -5.9942548);
 
-    private PoiViewModel poiViewModel;
-
 
     public PoiListFragment() {
     }
@@ -98,10 +93,6 @@ public class PoiListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        poiViewModel = ViewModelProviders.of(getActivity())
-                .get(PoiViewModel.class);
-
         jwt = UtilToken.getToken(Objects.requireNonNull(getContext()));
 
         if (getArguments() != null) {
@@ -149,56 +140,78 @@ public class PoiListFragment extends Fragment {
 
     /** API Call to get All Pois **/
     private void getAllPois(double latitude, double longitude) {
+        items = new ArrayList<>();
+        PoiService service = ServiceGenerator.createService(PoiService.class, jwt, AuthType.JWT);
 
-        poiViewModel.getPois(latitude, longitude).observe(getActivity(), poiResponseResponseContainer -> {
-            items = poiResponseResponseContainer;
+        String coords = longitude + "," + latitude;
+        Call<ResponseContainer<PoiResponse>> call = service.listPois(coords, 5000);
+        call.enqueue(new Callback<ResponseContainer<PoiResponse>>() {
+            @Override
+            public void onResponse(@NonNull Call<ResponseContainer<PoiResponse>> call, @NonNull Response<ResponseContainer<PoiResponse>> response) {
+                if (response.code() != 200) {
+                    Toast.makeText(getActivity(), "Request Error", Toast.LENGTH_SHORT).show();
+                } else {
+                    items = Objects.requireNonNull(response.body()).getRows();
+                    adapter = new PoiListAdapter(ctx, items, mListener);
+                    recycler.setAdapter(adapter);
+                }
+            }
 
-            adapter = new PoiListAdapter(
-                    ctx,
-                    items,
-                    mListener);
-            recycler.setAdapter(adapter);
-
-            adapter.setData(items);
+            @Override
+            public void onFailure(@NonNull Call<ResponseContainer<PoiResponse>> call, @NonNull Throwable t) {
+                Log.e("Network Failure", t.getMessage());
+                Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_SHORT).show();
+            }
         });
-
     }
 
     /** API Call to get FAV Pois **/
     private void getFavPois() {
-        //items = new ArrayList<>();
-        //PoiService service = ServiceGenerator.createService(PoiService.class, jwt, AuthType.JWT);
+        items = new ArrayList<>();
+        PoiService service = ServiceGenerator.createService(PoiService.class, jwt, AuthType.JWT);
+        Call<ResponseContainer<PoiResponse>> call = service.listFavPois();
+        call.enqueue(new Callback<ResponseContainer<PoiResponse>>() {
+            @Override
+            public void onResponse(@NonNull Call<ResponseContainer<PoiResponse>> call, @NonNull Response<ResponseContainer<PoiResponse>> response) {
+                if (response.code() != 200) {
+                    Toast.makeText(getActivity(), "Request Error", Toast.LENGTH_SHORT).show();
+                } else {
+                    items = Objects.requireNonNull(response.body()).getRows();
+                    adapter = new PoiListAdapter(ctx, items, mListener);
+                    recycler.setAdapter(adapter);
+                }
+            }
 
-        poiViewModel.getFavPois().observe(getActivity(), poiResponses -> {
-            items = poiResponses;
-
-            adapter = new PoiListAdapter(
-                    ctx,
-                    items,
-                    mListener);
-
-            recycler.setAdapter(adapter);
-
-            adapter.setData(items);
+            @Override
+            public void onFailure(@NonNull Call<ResponseContainer<PoiResponse>> call, @NonNull Throwable t) {
+                Log.e("Network Failure", t.getMessage());
+                Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
     /** API Call to get VISITED Pois **/
     private void getVisitedPois() {
-        //items = new ArrayList<>();
-        //PoiService service = ServiceGenerator.createService(PoiService.class, jwt, AuthType.JWT);
+        items = new ArrayList<>();
+        PoiService service = ServiceGenerator.createService(PoiService.class, jwt, AuthType.JWT);
+        Call<ResponseContainer<PoiResponse>> call = service.listVisitedPois();
+        call.enqueue(new Callback<ResponseContainer<PoiResponse>>() {
+            @Override
+            public void onResponse(@NonNull Call<ResponseContainer<PoiResponse>> call, @NonNull Response<ResponseContainer<PoiResponse>> response) {
+                if (response.code() != 200) {
+                    Toast.makeText(getActivity(), "Request Error", Toast.LENGTH_SHORT).show();
+                } else {
+                    items = Objects.requireNonNull(response.body()).getRows();
+                    adapter = new PoiListAdapter(ctx, items, mListener);
+                    recycler.setAdapter(adapter);
+                }
+            }
 
-        poiViewModel.getVisitedPois().observe(getActivity(), poiResponses -> {
-            items = poiResponses;
-
-            adapter = new PoiListAdapter(
-                    ctx,
-                    items,
-                    mListener);
-
-            recycler.setAdapter(adapter);
-
-            adapter.setData(items);
+            @Override
+            public void onFailure(@NonNull Call<ResponseContainer<PoiResponse>> call, @NonNull Throwable t) {
+                Log.e("Network Failure", t.getMessage());
+                Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 

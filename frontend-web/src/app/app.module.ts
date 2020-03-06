@@ -11,7 +11,6 @@ import { RouterModule } from '@angular/router';
 import { DragScrollModule } from 'ngx-drag-scroll';
 import { GooglePlaceModule } from 'ngx-google-places-autocomplete';
 import { QuillModule } from 'ngx-quill';
-import {MatIconModule} from '@angular/material/icon';
 
 import { routes } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -26,7 +25,6 @@ import { DialogEditCategoryComponent } from './dialogs/dialog-edit-category/dial
 import { DialogEditUserComponent } from './dialogs/dialog-edit-user/dialog-edit-user.component';
 import { DialogPoiDeleteComponent } from './dialogs/dialog-poi-delete/dialog-poi-delete.component';
 import { DialogRouteComponent } from './dialogs/dialog-route/dialog-route.component';
-import { BarRatingModule } from "ngx-bar-rating";
 import { DialogUpdateProfileComponent } from './dialogs/dialog-update-profile/dialog-update-profile.component';
 import { MaterialModule } from './material-module';
 
@@ -45,11 +43,10 @@ import { MaterialModule } from './material-module';
     DialogDeleteBadgeComponent,
     DialogRouteComponent,
     DialogDeleteRouteComponent
+    
   ],
   imports: [
     BrowserModule,
-    BarRatingModule,
-    MatIconModule,
     BrowserAnimationsModule,
     MaterialModule,
     FormsModule,

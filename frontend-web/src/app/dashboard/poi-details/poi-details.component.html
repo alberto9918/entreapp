@@ -21,8 +21,6 @@
           </mat-chip-list>
 
           <p>{{poi.creator}} - {{poi.year}}</p>
-          <bar-rating [rate]="averageRating" [max]="5" theme="default" (rateChange)="ratingChange($event, poi)"></bar-rating>
-          <p *ngIf="isRated">Your rating: {{userRating}} <span><img src="../../../assets/images/RedCross.png" (click)="deleteRating()"></span></p>
 
         </div>
         
@@ -34,13 +32,12 @@
     </mat-card>
     
       <mat-card fxLayout="column" fxLayoutGap="5%" fxFlex.gt-sm="20" fxFlex="100">
-        <h3>Details</h3>
+        <h3>Detalles</h3>
         <p><strong>Price:</strong> {{poi.price}} €</p>
         <p *ngIf="poi.status == 'Open'"><strong>Status:</strong> <span class="verde"> {{poi.status}}</span></p>
         <p *ngIf="poi.status == 'Close'"><strong>Status:</strong> <span class="rojo"> {{poi.status}}</span></p>
         <p><strong>Schedule: </strong>{{poi.schedule}}</p>
         <p><strong>Unique Name: </strong>{{poi.uniqueName}}</p>
-        <p><strong>Average rating: </strong>{{ averageRating }}</p>
       </mat-card>
     
 </div>

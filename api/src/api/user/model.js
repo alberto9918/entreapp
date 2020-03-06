@@ -39,6 +39,33 @@ const userSchema = new Schema({
     type: String,
     trim: true
   },
+  images: [{
+    poi: {
+      type: Schema.Types.ObjectId,
+      ref: 'Poi'
+    },
+    thumbnail: {
+      type: String
+    },
+    full: {
+      type: String
+    }
+  }],
+  invalidImages: [{
+    poi: {
+      type: Schema.Types.ObjectId,
+      ref: 'Poi'
+    },
+    thumbnail: {
+      type: String
+    },
+    full: {
+      type: String
+    },
+    dateToBeRemoved: {
+      type: Date
+    }
+  }],
   likes: [{
     type: Schema.Types.ObjectId,
     ref: 'Category'
@@ -102,6 +129,8 @@ userSchema.methods = {
       id: this.id,
       name: this.name,
       picture: this.picture,
+      images: this.images,
+      invalidImages: this.invalidImages,
       badges: this.badges,
       role: this.role,
       email: this.email,

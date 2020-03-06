@@ -14,14 +14,11 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import eu.visiton.app.R;
-import eu.visiton.app.data.PeopleViewModel;
 import eu.visiton.app.responses.PeopleResponse;
 import eu.visiton.app.retrofit.generator.AuthType;
 import eu.visiton.app.retrofit.generator.ServiceGenerator;
@@ -51,8 +48,6 @@ public class PeopleFragment extends Fragment {
     private int mColumnCount = 1;
     private IPeopleListener mListener;
 
-    private PeopleViewModel peopleViewModel;
-
 
     public PeopleFragment() {
     }
@@ -69,10 +64,6 @@ public class PeopleFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        peopleViewModel = ViewModelProviders.of(getActivity())
-                .get(PeopleViewModel.class);
-
         jwt = UtilToken.getToken(getContext());
         idUser = UtilToken.getId(getContext());
         if (jwt == null) {
@@ -110,8 +101,8 @@ public class PeopleFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_people_list, container, false);
 
         // Set the adapter
@@ -124,24 +115,33 @@ public class PeopleFragment extends Fragment {
                 recyclerView.setLayoutManager(new GridLayoutManager(ctx, mColumnCount));
             }
 
-            //users = new ArrayList<>();
-            //UserService service = ServiceGenerator.createService(UserService.class, jwt, AuthType.JWT);
+            users = new ArrayList<>();
+            UserService service = ServiceGenerator.createService(UserService.class, jwt, AuthType.JWT);
+            Call<List<PeopleResponse>> callList = service.listUsersAndFriended();
 
-            peopleViewModel.getPeople().observe(getActivity(), peopleResponses -> {
-                users = peopleResponses;
+            callList.enqueue(new Callback<List<PeopleResponse>>() {
+                @Override
+                public void onResponse(Call<List<PeopleResponse>> call, Response<List<PeopleResponse>> response) {
+                    if (response.code() != 200) {
+                        Toast.makeText(getActivity(), "Error in request", Toast.LENGTH_SHORT).show();
+                    } else {
+                        users = response.body();
+                        adapter = new MyPeopleRecyclerViewAdapter( getFragmentManager(), ctx, users, mListener);
+                        recyclerView.setAdapter(adapter);
 
-                adapter = new MyPeopleRecyclerViewAdapter(
-                        getFragmentManager(),
-                        ctx,
-                        users,
-                        mListener);
 
-                recyclerView.setAdapter(adapter);
+                    }
+                }
 
-                adapter.setData(users);
-
+                @Override
+                public void onFailure(Call<List<PeopleResponse>> call, Throwable t) {
+                    Log.e("NetworkFailure", t.getMessage());
+                    Toast.makeText(getActivity(), "Network Failure", Toast.LENGTH_SHORT).show();
+                }
             });
+
         }
+
         return view;
     }
 

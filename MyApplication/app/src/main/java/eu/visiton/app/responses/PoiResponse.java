@@ -71,16 +71,6 @@ public class PoiResponse {
     @SerializedName("id")
     @Expose
     private String id;
-    @SerializedName("averageRating")
-    @Expose
-    private Float averageRating;
-    @SerializedName("userRating")
-    @Expose
-    private UserRatingResponse[] userRating;
-    @SerializedName("isRated")
-    @Expose
-    private Boolean isRated;
-
 
     /**
      * No args constructor for use in serialization
@@ -110,13 +100,10 @@ public class PoiResponse {
      * @param fav
      * @param categories
      * @param id
-     * @param averageRating
-     * @param userRating
-     * @param isRated
      * @param status
      * @param updatedAt
      */
-    public PoiResponse(LocResponse loc, AudioguidesResponse audioguides, DescriptionResponse description, List<CategoryResponse> categories, List<String> images, String name, String uniqueName, String qrCode, Integer year, String creator, String status, String schedule, Integer price, String createdAt, String updatedAt, Integer v, String coverImage, Double distance, Boolean fav, Boolean visited, String id, Float averageRating, UserRatingResponse[] userRating, Boolean isRated) {
+    public PoiResponse(LocResponse loc, AudioguidesResponse audioguides, DescriptionResponse description, List<CategoryResponse> categories, List<String> images, String name, String uniqueName, String qrCode, Integer year, String creator, String status, String schedule, Integer price, String createdAt, String updatedAt, Integer v, String coverImage, Double distance, Boolean fav, Boolean visited, String id) {
         super();
         this.loc = loc;
         this.audioguides = audioguides;
@@ -139,9 +126,6 @@ public class PoiResponse {
         this.fav = fav;
         this.visited = visited;
         this.id = id;
-        this.averageRating = averageRating;
-        this.userRating = userRating;
-        this.isRated = isRated;
     }
 
     public LocResponse getLoc() {
@@ -310,30 +294,6 @@ public class PoiResponse {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public Float getAverageRating() {
-        return averageRating;
-    }
-
-    public void setAverageRating(Float averageRating) {
-        this.averageRating = averageRating;
-    }
-
-    public UserRatingResponse[] getUserRating() {
-        return userRating;
-    }
-
-    public void setUserRating(UserRatingResponse[] userRating) {
-        this.userRating = userRating;
-    }
-
-    public Boolean getIsRated() {
-        return isRated;
-    }
-
-    public void setIsRated(Boolean isRated) {
-        this.isRated = isRated;
     }
 
 }

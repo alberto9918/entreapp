@@ -38,6 +38,12 @@ export const uploadS3 = (type) => {
     })
   })
 }
+
+export const hola = (req, res, next) => { 
+  console.log("Hola Mundo")
+  next()
+}
+
 export const postUploadS3 = (req, res, next) => {
   if (!req.file) {
     console.log('Petición UPLOAD sin fichero')

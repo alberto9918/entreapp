@@ -17,7 +17,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import eu.visiton.app.R;
 import eu.visiton.app.responses.PoiResponse;
-import eu.visiton.app.responses.ResponseContainer;
 import eu.visiton.app.responses.UserFavResponse;
 import eu.visiton.app.responses.UserResponse;
 import eu.visiton.app.retrofit.generator.AuthType;
@@ -60,75 +59,72 @@ public class PoiListAdapter extends RecyclerView.Adapter<PoiListAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull final PoiListAdapter.ViewHolder viewHolder, int i) {
-        if(data != null) {
-
-            String jwt = UtilToken.getToken(context);
-            // private final PoiListListener mListener;
-            UserService service = ServiceGenerator.createService(UserService.class, jwt, AuthType.JWT);
-            Call<UserResponse> call = service.getUserResponse(UtilToken.getId(context));
-            call.enqueue(new Callback<UserResponse>() {
-                @Override
-                public void onResponse(@NonNull Call<UserResponse> call, @NonNull Response<UserResponse> response) {
-                    if (!response.isSuccessful()) {
-                        Toast.makeText(context, "You have to be logged in", Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<UserResponse> call, @NonNull Throwable t) {
+        String jwt = UtilToken.getToken(context);
+        // private final PoiListListener mListener;
+        UserService service = ServiceGenerator.createService(UserService.class, jwt, AuthType.JWT);
+        Call<UserResponse> call = service.getUserResponse(UtilToken.getId(context));
+        call.enqueue(new Callback<UserResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<UserResponse> call, @NonNull Response<UserResponse> response) {
+                if (!response.isSuccessful()) {
                     Toast.makeText(context, "You have to be logged in", Toast.LENGTH_SHORT).show();
                 }
-            });
-
-            viewHolder.mItem = data.get(i);
-            viewHolder.imageViewFav.setImageResource(R.drawable.ic_like_empty);
-            viewHolder.title.setText(viewHolder.mItem.getName());
-            if (viewHolder.mItem.getDistance() != null) {
-                viewHolder.distance.setText(Math.round(viewHolder.mItem.getDistance()) + " " + context.getString(R.string.meters));
             }
-            if (viewHolder.mItem.getPrice() == 0.0f) {
-                viewHolder.price.setText("Gratis");
+
+            @Override
+            public void onFailure(@NonNull Call<UserResponse> call, @NonNull Throwable t) {
+                Toast.makeText(context, "You have to be logged in", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        viewHolder.mItem = data.get(i);
+        viewHolder.imageViewFav.setImageResource(R.drawable.ic_like_empty);
+        viewHolder.title.setText(viewHolder.mItem.getName());
+        if(viewHolder.mItem.getDistance() != null) {
+            viewHolder.distance.setText(Math.round(viewHolder.mItem.getDistance()) + " " + context.getString(R.string.meters));
+        }
+        if(viewHolder.mItem.getPrice() == 0.0f) {
+            viewHolder.price.setText("Gratis");
+        } else {
+            viewHolder.price.setText("€ " + viewHolder.mItem.getPrice());
+        }
+
+        Glide.with(context)
+                .load(viewHolder.mItem.getCoverImage())
+                .apply(new RequestOptions().centerCrop())
+                .into(viewHolder.bgImage);
+
+        viewHolder.bgImage.setOnClickListener(v -> mListener.goPoiDetails(viewHolder.mItem.getId()));
+
+        if(viewHolder.mItem.getFav()) {
+            viewHolder.imageViewFav.setImageResource(R.drawable.ic_like_red);
+        }
+
+        viewHolder.imageViewFav.setOnClickListener(view -> {
+            if(viewHolder.mItem.getFav()) {
+                viewHolder.imageViewFav.setImageResource(R.drawable.ic_like_empty);
+                viewHolder.mItem.setFav(false);
+                deleteFav(viewHolder.mItem.getId());
             } else {
-                viewHolder.price.setText("€ " + viewHolder.mItem.getPrice());
+                viewHolder.mItem.setFav(true);
+                viewHolder.imageViewFav.setVisibility(View.GONE);
+                viewHolder.lottieAnimationView.setVisibility(View.VISIBLE);
+                viewHolder.lottieAnimationView.playAnimation();
+                addFav(viewHolder.mItem.getId());
             }
+        });
 
-            Glide.with(context)
-                    .load(viewHolder.mItem.getCoverImage())
-                    .apply(new RequestOptions().centerCrop())
-                    .into(viewHolder.bgImage);
-
-            viewHolder.bgImage.setOnClickListener(v -> mListener.goPoiDetails(viewHolder.mItem.getId()));
-
-            if (viewHolder.mItem.getFav()) {
-                viewHolder.imageViewFav.setImageResource(R.drawable.ic_like_red);
-            }
-
-            viewHolder.imageViewFav.setOnClickListener(view -> {
-                if (viewHolder.mItem.getFav()) {
-                    viewHolder.imageViewFav.setImageResource(R.drawable.ic_like_empty);
-                    viewHolder.mItem.setFav(false);
-                    deleteFav(viewHolder.mItem.getId());
-                } else {
-                    viewHolder.mItem.setFav(true);
-                    viewHolder.imageViewFav.setVisibility(View.GONE);
-                    viewHolder.lottieAnimationView.setVisibility(View.VISIBLE);
-                    viewHolder.lottieAnimationView.playAnimation();
-                    addFav(viewHolder.mItem.getId());
-                }
-            });
-
-            viewHolder.lottieAnimationView.setOnClickListener(view -> {
+        viewHolder.lottieAnimationView.setOnClickListener(view -> {
                 viewHolder.imageViewFav.setImageResource(R.drawable.ic_like_empty);
                 viewHolder.imageViewFav.setVisibility(View.VISIBLE);
                 viewHolder.lottieAnimationView.setVisibility(View.GONE);
                 viewHolder.mItem.setFav(false);
-            });
+        });
 
-            viewHolder.distance.setOnClickListener(view -> {
-                String coords = viewHolder.mItem.getLoc().getCoordinates().get(0) + "," + viewHolder.mItem.getLoc().getCoordinates().get(1);
-                mListener.showGoogleMaps(coords);
-            });
-        }
+        viewHolder.distance.setOnClickListener(view -> {
+            String coords = viewHolder.mItem.getLoc().getCoordinates().get(0) + "," + viewHolder.mItem.getLoc().getCoordinates().get(1);
+            mListener.showGoogleMaps(coords);
+        });
     }
 
     private void addFav(String id) {
@@ -169,18 +165,9 @@ public class PoiListAdapter extends RecyclerView.Adapter<PoiListAdapter.ViewHold
         });
     }
 
-    public void setData(List<PoiResponse> poiList){
-        this.data = poiList;
-        notifyDataSetChanged();
-    }
-
     @Override
-    public int getItemCount(){
-        if(data!=null){
-            return data.size();
-        }else{
-            return 0;
-        }
+    public int getItemCount() {
+        return data.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

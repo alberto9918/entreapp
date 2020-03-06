@@ -43,12 +43,14 @@ export class MyProfileComponent implements OnInit {
 
     ngOnInit() {
     this.titleService.setTitle('My Profile');
+    
     this.getMe();
   }
 
   getMe() {
     this.userService.getMe().subscribe(result => {
       this.user = result;
+      console.log(result);
     });
   }
 

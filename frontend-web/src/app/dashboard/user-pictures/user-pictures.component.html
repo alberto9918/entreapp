@@ -1,0 +1,14 @@
+<h1>Points of Interest</h1>
+<div fxLayout="row wrap">
+  <mat-card *ngFor="let p of arrayPois" class="poi-card">
+ 
+    
+    
+    <mat-card-header [style.background-image]="'url(' + loadCoverImage(p.coverImage) + ')'" (click)="goToPoiUserPhoto(p)">
+      <mat-card-title>{{p.name}}</mat-card-title>
+    </mat-card-header>
+    
+  </mat-card>
+
+
+</div>

@@ -7,7 +7,7 @@
     <color name="color_log_in">#80B1B1B1</color>
     <color name="color_sign_up">#94418E9A</color>
 
-    <color name="white_transparent">#fafafa</color>
+    <color name="white_transparent">#FAFAFA</color>
 
     <color name="color_input_hint">#FFFFFF</color>
     <color name="color_text_highlight">#fafafa</color>
@@ -32,7 +32,7 @@
     <color name="grey_80">#37474F</color>
     <color name="grey_90">#263238</color>
     <color name="grey_95">#1a1a1a</color>
-    <color name="grey_100_">#0d0d0d</color>
+    <color name="grey_100_">#0D0D0D</color>
 
     <color name="overlay_dark_10">#1A000000</color>
     <color name="overlay_dark_20">#33000000</color>

@@ -8,14 +8,7 @@ import { PoiService } from 'src/app/services/poi.service';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { environment } from 'src/environments/environment';
 import { LanguageService } from '../../services/language.service';
-import { RatingResponse } from './../../interfaces/rating-response';
 import { LanguagesResponse } from '../../interfaces/languages-response';
-import { RatingService } from 'src/app/services/rating.service';
-import { BarRatingModule } from "ngx-bar-rating";
-import { OneRatingResponse } from 'src/app/interfaces/one-rating-response';
-import { UserService } from 'src/app/services/user.service';
-import { UserResponse } from 'src/app/interfaces/user-response';
-import { RatingDto } from 'src/app/dto/rating.dto';
 
 @Component({
   selector: 'app-poi-details',
@@ -26,23 +19,14 @@ export class PoiDetailsComponent implements OnInit {
 
   poi: OnePoiResponse;
   coverImage: string;
-  idRating: string;
-  averageRating: number;
-  userRating: number;
-  isRated: boolean;
   languages: LanguagesResponse;
-  //ratings: RatingResponse;
-  //poiRatings: OneRatingResponse[];
   arrayLanguages: string[];
   arrayAudios: string[];
   arrayDescriptions: string[];
-  userLogged: UserResponse;
-  newRating: RatingDto;
   
   showSettings = false;
-  constructor(private poiService: PoiService, public languageService: LanguageService, public router: Router,  public ratingService: RatingService,
-    public dialog: MatDialog, public snackBar: MatSnackBar, private titleService: Title, public authService: AuthenticationService,
-    public userService: UserService) { }
+  constructor(private poiService: PoiService, public languageService: LanguageService, public router: Router,
+    public dialog: MatDialog, public snackBar: MatSnackBar, private titleService: Title, public authService: AuthenticationService) { }
 
   ngOnInit() {
     if (this.poiService.selectedPoi == null) {
@@ -52,81 +36,8 @@ export class PoiDetailsComponent implements OnInit {
       this.getData();
     }
     this.titleService.setTitle('Details - POI');
-    //this.getAverageRating();
+
   }
-
-  deleteRating() {
-    if(window.confirm('Are you sure yo delete your rate?')){
-      this.ratingService.remove(this.idRating).subscribe(resp => {
-        this.loadNewRatings();
-      });
-      //location.reload(false);
-    }
-  }
-
-  loadNewRatings() {
-    this.poiService.getOne(this.poiService.selectedPoi.id).subscribe(p => {
-      this.averageRating = p.averageRating;
-      if(p.userRating[0]){
-        this.idRating = p.userRating[0].id;
-        this.userRating = p.userRating[0].rating;
-      }else{
-        this.idRating = '';
-        this.userRating = 0;
-      }
-      this.isRated = p.isRated;
-    })
-  }
-
-  ratingChange(e, poi){
-    console.log("has entrado aqui")
-    console.log(e)
-
-    this.newRating = {user: localStorage.getItem('id'), rating: e, poi: poi.id}
-    if(this.isRated == false) {
-      this.ratingService.create(this.newRating).subscribe(resp => {
-        console.log(resp);
-        this.loadNewRatings();
-      });
-    }else {
-      this.ratingService.edit(this.idRating, this.newRating).subscribe(resp =>{
-        console.log(resp);
-        this.loadNewRatings();
-      });
-    }
-    console.log("has salido de aqui")
-  }
-
-  /*getAverageRating() {
-    console.log(localStorage.getItem('id'))
-    this.ratingService.getAll().subscribe(receivedRatings => {
-      this.ratings = receivedRatings;
-      this.averageRating = 0;
-      this.userRating = 0;
-
-      for(var i = 0; i<this.ratings.rows.length; i++){
-        if(this.ratings.rows[i].poi == this.poiService.selectedPoi.id){
-          if(this.poiRatings == undefined) {
-            this.poiRatings = [this.ratings.rows[i]];
-          }else {
-            this.poiRatings.push(this.ratings.rows[i]);
-          }
-        }
-      }
-      
-      for(var i = 0; i<this.poiRatings.length; i++){
-        if(this.poiRatings[i].user == localStorage.getItem('id')){
-          this.userRating = this.poiRatings[i].rating;
-        }   
-      }
-
-      for(var i = 0; i<this.poiRatings.length; i++) {
-        this.averageRating += this.poiRatings[i].rating;
-      }
-      
-      this.averageRating = (this.averageRating/this.poiRatings.length);
-    })
-  }*/
 
   getAllLanguages() {
     this.languageService.getAllLanguages(this.authService.getToken()).subscribe(receivedLanguages => {
@@ -219,8 +130,8 @@ export class PoiDetailsComponent implements OnInit {
     return `${environment.apiUrl}/files/` + key;
   }
   loadQR(key: String) {
-    return key + '?access_token='+localStorage.getItem('token');
-  }                                                           
+    return  key +  '?access_token='+localStorage.getItem('token');
+  }
   
   loadImages(key: String) {
     
@@ -266,16 +177,6 @@ export class PoiDetailsComponent implements OnInit {
   getData() {
     this.poiService.getOne(this.poiService.selectedPoi.id).subscribe(p => {
       this.poi = p;
-      
-      this.averageRating = p.averageRating;
-      if(p.userRating[0]){
-        this.idRating = p.userRating[0].id;
-        this.userRating = p.userRating[0].rating;
-      }else{
-        this.idRating = '';
-        this.userRating = 0;
-      }
-      this.isRated = p.isRated;
       this.coverImage = p.coverImage;
       let posicionDescripcion = -1, posicionAudio = -1;
       let textoTraducido = '', audioTraducido = '';

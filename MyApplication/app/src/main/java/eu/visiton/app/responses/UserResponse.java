@@ -9,6 +9,8 @@ public class UserResponse {
     private String name;
     private String role;
     private String picture;
+    private List<UserImageResponse> images =new ArrayList<>();
+    private List<ImageInvalidResponse> invalidImages =new ArrayList<>();
     private String password;
     private String email;
     private String createAt;
@@ -23,10 +25,12 @@ public class UserResponse {
     public UserResponse() {
     }
 
-    public UserResponse(String id, String name, String role, boolean friended, String picture, String password, String email, String createAt, String country, LanguageResponse language, List<String> favs, List<String> visited, List<BadgeUserResponse> badges, List<UserLikesResponse> likes, List<String> friends) {        this.id = id;
+    public UserResponse(String id, String name, String role, boolean friended, String picture,List<UserImageResponse> images,List<ImageInvalidResponse> invalidImages, String password, String email, String createAt, String country, LanguageResponse language, List<String> favs, List<String> visited, List<BadgeUserResponse> badges, List<UserLikesResponse> likes, List<String> friends) {        this.id = id;
         this.name = name;
         this.role = role;
         this.picture = picture;
+        this.images = images;
+        this.invalidImages = invalidImages;
         this.password = password;
         this.email = email;
         this.createAt = createAt;
@@ -167,5 +171,21 @@ public class UserResponse {
                 ", badges=" + badges +
                 ", likes=" + likes +
                 '}';
+    }
+
+    public List<UserImageResponse> getImages() {
+        return images;
+    }
+
+    public void setImages(List<UserImageResponse> images) {
+        this.images = images;
+    }
+
+    public List<ImageInvalidResponse> getInvalidImages() {
+        return invalidImages;
+    }
+
+    public void setInvalidImages(List<ImageInvalidResponse> invalidImages) {
+        this.invalidImages = invalidImages;
     }
 }
