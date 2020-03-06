@@ -166,51 +166,39 @@ public class PoiListFragment extends Fragment {
 
     /** API Call to get FAV Pois **/
     private void getFavPois() {
-        items = new ArrayList<>();
-        PoiService service = ServiceGenerator.createService(PoiService.class, jwt, AuthType.JWT);
-        Call<ResponseContainer<PoiResponse>> call = service.listFavPois();
-        call.enqueue(new Callback<ResponseContainer<PoiResponse>>() {
-            @Override
-            public void onResponse(@NonNull Call<ResponseContainer<PoiResponse>> call, @NonNull Response<ResponseContainer<PoiResponse>> response) {
-                if (response.code() != 200) {
-                    Toast.makeText(getActivity(), "Request Error", Toast.LENGTH_SHORT).show();
-                } else {
-                    items = Objects.requireNonNull(response.body()).getRows();
-                    adapter = new PoiListAdapter(ctx, items, mListener);
-                    recycler.setAdapter(adapter);
-                }
-            }
+        //items = new ArrayList<>();
+        //PoiService service = ServiceGenerator.createService(PoiService.class, jwt, AuthType.JWT);
 
-            @Override
-            public void onFailure(@NonNull Call<ResponseContainer<PoiResponse>> call, @NonNull Throwable t) {
-                Log.e("Network Failure", t.getMessage());
-                Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_SHORT).show();
-            }
+        poiViewModel.getFavPois().observe(getActivity(), poiResponses -> {
+            items = poiResponses;
+
+            adapter = new PoiListAdapter(
+                    ctx,
+                    items,
+                    mListener);
+
+            recycler.setAdapter(adapter);
+
+            adapter.setData(items);
         });
     }
 
     /** API Call to get VISITED Pois **/
     private void getVisitedPois() {
-        items = new ArrayList<>();
-        PoiService service = ServiceGenerator.createService(PoiService.class, jwt, AuthType.JWT);
-        Call<ResponseContainer<PoiResponse>> call = service.listVisitedPois();
-        call.enqueue(new Callback<ResponseContainer<PoiResponse>>() {
-            @Override
-            public void onResponse(@NonNull Call<ResponseContainer<PoiResponse>> call, @NonNull Response<ResponseContainer<PoiResponse>> response) {
-                if (response.code() != 200) {
-                    Toast.makeText(getActivity(), "Request Error", Toast.LENGTH_SHORT).show();
-                } else {
-                    items = Objects.requireNonNull(response.body()).getRows();
-                    adapter = new PoiListAdapter(ctx, items, mListener);
-                    recycler.setAdapter(adapter);
-                }
-            }
+        //items = new ArrayList<>();
+        //PoiService service = ServiceGenerator.createService(PoiService.class, jwt, AuthType.JWT);
 
-            @Override
-            public void onFailure(@NonNull Call<ResponseContainer<PoiResponse>> call, @NonNull Throwable t) {
-                Log.e("Network Failure", t.getMessage());
-                Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_SHORT).show();
-            }
+        poiViewModel.getVisitedPois().observe(getActivity(), poiResponses -> {
+            items = poiResponses;
+
+            adapter = new PoiListAdapter(
+                    ctx,
+                    items,
+                    mListener);
+
+            recycler.setAdapter(adapter);
+
+            adapter.setData(items);
         });
     }
 

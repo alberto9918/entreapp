@@ -20,7 +20,7 @@ import java.util.List;
 
 public class MyPeopleRecyclerViewAdapter extends RecyclerView.Adapter<MyPeopleRecyclerViewAdapter.ViewHolder> {
 
-    private final List<PeopleResponse> mValues;
+    private List<PeopleResponse> mValues;
     private final IPeopleListener mListener;
     Context ctx;
     FragmentManager fragmentManager;
@@ -41,32 +41,43 @@ public class MyPeopleRecyclerViewAdapter extends RecyclerView.Adapter<MyPeopleRe
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        String id =mValues.get(position).get_id();
-  //      holder.idUser.setText(mValues.get(position).getId());
-        holder.name.setText(mValues.get(position).getName());
-        holder.country.setText(mValues.get(position).getCity());
-        Glide.with(holder.mView).load(mValues.get(position).getPicture()).into(holder.picture);
-        holder.mView.setOnClickListener(v -> {
-            if (null != mListener) {
-                mListener.onPeopleClick(holder.mItem);
-            }
-        });
+        if(mValues != null) {
+            holder.mItem = mValues.get(position);
+            String id = mValues.get(position).get_id();
+            //holder.idUser.setText(mValues.get(position).getId());
+            holder.name.setText(mValues.get(position).getName());
+            holder.country.setText(mValues.get(position).getCity());
+            Glide.with(holder.mView).load(mValues.get(position).getPicture()).into(holder.picture);
+            holder.mView.setOnClickListener(v -> {
+                if (null != mListener) {
+                    mListener.onPeopleClick(holder.mItem);
+                }
+            });
 
-        /* holder.action.setOnClickListener(v -> {
-            if(holder.action.getDrawable().equals(R.drawable.ic_person_add))
-                holder.action.setImageResource(R.drawable.ic_delete);
-            else
-                holder.action.setImageResource(R.drawable.ic_person_add);
+            /* holder.action.setOnClickListener(v -> {
+                if(holder.action.getDrawable().equals(R.drawable.ic_person_add))
+                    holder.action.setImageResource(R.drawable.ic_delete);
+                else
+                    holder.action.setImageResource(R.drawable.ic_person_add);
 
-        });
-        */
+            });
+            */
+        }
 
+    }
+
+    public void setData(List<PeopleResponse> peopleList){
+        this.mValues = peopleList;
+        notifyDataSetChanged();
     }
 
     @Override
     public int getItemCount() {
-        return mValues.size();
+        if(mValues != null){
+            return mValues.size();
+        }else{
+            return 0;
+        }
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

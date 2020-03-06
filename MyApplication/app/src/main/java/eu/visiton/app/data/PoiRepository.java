@@ -58,4 +58,50 @@ public class PoiRepository {
 
         return data;
     }
+
+    public LiveData<List<PoiResponse>> getFavPois(){
+        final MutableLiveData<List<PoiResponse>> data = new MutableLiveData<>();
+
+        Call<ResponseContainer<PoiResponse>> call = poiService.listFavPois();
+        call.enqueue(new Callback<ResponseContainer<PoiResponse>>() {
+            @Override
+            public void onResponse(@NonNull Call<ResponseContainer<PoiResponse>> call, @NonNull Response<ResponseContainer<PoiResponse>> response) {
+                if (response.code() != 200) {
+                    Toast.makeText(MyApp.getContext(), "Request Error", Toast.LENGTH_SHORT).show();
+                } else {
+                   data.setValue(response.body().getRows());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ResponseContainer<PoiResponse>> call, @NonNull Throwable t) {
+                Log.e("Network Failure", t.getMessage());
+                Toast.makeText(MyApp.getContext(), "Network Error", Toast.LENGTH_SHORT).show();
+            }
+        });
+        return data;
+    }
+
+    public LiveData<List<PoiResponse>> getVisitedPois(){
+        final MutableLiveData<List<PoiResponse>> data = new MutableLiveData<>();
+
+        Call<ResponseContainer<PoiResponse>> call = poiService.listVisitedPois();
+        call.enqueue(new Callback<ResponseContainer<PoiResponse>>() {
+            @Override
+            public void onResponse(@NonNull Call<ResponseContainer<PoiResponse>> call, @NonNull Response<ResponseContainer<PoiResponse>> response) {
+                if (response.code() != 200) {
+                    Toast.makeText(MyApp.getContext(), "Request Error", Toast.LENGTH_SHORT).show();
+                } else {
+                    data.setValue(response.body().getRows());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ResponseContainer<PoiResponse>> call, @NonNull Throwable t) {
+                Log.e("Network Failure", t.getMessage());
+                Toast.makeText(MyApp.getContext(), "Network Error", Toast.LENGTH_SHORT).show();
+            }
+        });
+        return data;
+    }
 }

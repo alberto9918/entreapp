@@ -24,4 +24,14 @@ public class PoiViewModel extends AndroidViewModel {
         pois = poiRepository.getAllPois(latitud,longitud);
         return pois;
     }
+
+    public LiveData<List<PoiResponse>> getFavPois(){
+        pois = poiRepository.getFavPois();
+        return pois;
+    }
+
+    public LiveData<List<PoiResponse>> getVisitedPois(){
+        pois = poiRepository.getVisitedPois();
+        return pois;
+    }
 }
