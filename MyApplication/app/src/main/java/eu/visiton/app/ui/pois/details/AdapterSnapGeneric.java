@@ -1,8 +1,12 @@
 package eu.visiton.app.ui.pois.details;
 
+import android.Manifest;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,14 +16,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.bumptech.glide.Glide;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
+import dmax.dialog.SpotsDialog;
 import eu.visiton.app.R;
 import eu.visiton.app.materialx.utils.Tools;
 import eu.visiton.app.model.Image;
@@ -31,10 +41,14 @@ public class AdapterSnapGeneric extends RecyclerView.Adapter<RecyclerView.ViewHo
     private List<Image> items = new ArrayList<>();
 
     private OnLoadMoreListener onLoadMoreListener;
-
+    private SaveImageHelper saveImageHelper;
     private Context ctx;
     private int layout_id;
+    private AlertDialog dialog3;
     private OnItemClickListener mOnItemClickListener;
+    private DetallePoiActivity detallePoiActivity;
+
+    private static final int PERMISSION_REQUEST_CODE = 1000;
 
     public interface OnItemClickListener {
         void onItemClick(View view, Image obj, int position);
@@ -72,6 +86,7 @@ public class AdapterSnapGeneric extends RecyclerView.Adapter<RecyclerView.ViewHo
         RecyclerView.ViewHolder vh;
         View v = LayoutInflater.from(parent.getContext()).inflate(layout_id, parent, false);
         vh = new OriginalViewHolder(v);
+        new DetallePoiActivity();
         return vh;
     }
 
@@ -127,16 +142,43 @@ public class AdapterSnapGeneric extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         // Button btnDownload =  dialog.findViewById(R.id.button_download);
         // onClickListener
+        CardView cardView = dialog.findViewById(R.id.cardViewDescarga);
 
-        Button btn = null;
-        btn.setOnClickListener(view -> {
-
-        });
 
         Glide.with(ctx).load(item.image).into((ImageView) dialog.findViewById(R.id.ImageView_photo));
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dialog.setCancelable(true);
         dialog.show();
+
+        cardView.setOnClickListener(v ->{
+
+            dialog3 = new SpotsDialog(ctx);
+
+            dialog3.show();
+            dialog3.setMessage("Downloading ...");
+
+            String fileName = UUID.randomUUID().toString() + ".jpg";
+
+
+
+            Picasso.get().load(item.image)
+                    .into(saveImageHelper=new SaveImageHelper(ctx,
+                            dialog3,
+                            ctx.getContentResolver(),
+                            fileName,
+                            "Image description"));
+
+
+        });
+
+
+
     }
 
+
+
+
+
 }
+
+

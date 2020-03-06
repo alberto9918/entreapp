@@ -44,6 +44,9 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.balysv.materialripple.MaterialRippleLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.squareup.picasso.Picasso;
+
+import dmax.dialog.SpotsDialog;
 import eu.visiton.app.R;
 import eu.visiton.app.materialx.utils.Tools;
 import eu.visiton.app.model.Image;
@@ -63,6 +66,7 @@ import eu.visiton.app.util.UtilToken;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -105,6 +109,8 @@ public class DetallePoiActivity extends AppCompatActivity {
 
     boolean repetir = false;
 
+    private static final int PERMISSION_REQUEST_CODE = 1000;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,6 +132,12 @@ public class DetallePoiActivity extends AppCompatActivity {
         } catch (Exception e) {
         }
         getPoiDetails();
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) ;
+        requestPermissions(new String[]{
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+        }, PERMISSION_REQUEST_CODE);
     }
 
     private void initToolbar() {
@@ -638,5 +650,32 @@ public class DetallePoiActivity extends AppCompatActivity {
         builder.setView(v);
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    public void checkPerm() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, "You should grant permissions", Toast.LENGTH_SHORT).show();
+            requestPermissions(new String[]{
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+            }, PERMISSION_REQUEST_CODE);
+            return;
+        } else {
+            android.app.AlertDialog dialog = new SpotsDialog(this);
+            dialog.show();
+            dialog.setMessage("Downloading ...");
+
+            String fileName = UUID.randomUUID().toString() + ".jpg";
+           /* Picasso.with(getBaseContext())
+                    .load("https://www.pastafarismo.es/wp-content/uploads/SistineHirez3-tentative-1024x495.jpg")
+                    .into(new SaveImageHelper(getBaseContext(),
+                            dialog,
+                            getApplicationContext().getContentResolver(),
+                            fileName,
+                            "Image description"));
+*/
+
+        }
+
     }
 }

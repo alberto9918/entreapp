@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="380dp"
     app:cardBackgroundColor="@android:color/white"
@@ -20,12 +21,13 @@
             android:scaleType="centerCrop" />
 
         <androidx.cardview.widget.CardView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/cardViewDescarga"
+            android:layout_width="25dp"
+            android:layout_height="23dp"
             android:layout_alignParentEnd="true"
             android:layout_marginStart="@dimen/spacing_large"
             android:layout_marginTop="@dimen/spacing_large"
-            android:layout_marginEnd="10"
+            android:layout_marginEnd="14dp"
             android:layout_marginBottom="@dimen/spacing_large"
             app:cardBackgroundColor="@color/overlay_dark_20"
             app:cardCornerRadius="@dimen/spacing_medium"
@@ -36,25 +38,13 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical">
 
-                <View
-                    android:layout_width="@dimen/spacing_middle"
-                    android:layout_height="0dp" />
-
                 <ImageView
-                    android:layout_width="17dp"
-                    android:layout_height="@dimen/spacing_large"
-                    android:tint="@android:color/white" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/spacing_xlarge"
-                    android:gravity="center"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                    android:textColor="@color/grey_5" />
-
-                <View
-                    android:layout_width="11dp"
-                    android:layout_height="4dp" />
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="3dp"
+                    android:tint="@color/grey_10"
+                    app:srcCompat="@drawable/ic_descargar"
+                    tools:srcCompat="@drawable/ic_descargar" />
 
             </LinearLayout>
 
