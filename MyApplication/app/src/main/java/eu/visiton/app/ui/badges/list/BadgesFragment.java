@@ -15,12 +15,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import eu.visiton.app.R;
+import eu.visiton.app.data.BadgeViewModel;
 import eu.visiton.app.responses.BadgeResponse;
 import eu.visiton.app.retrofit.generator.AuthType;
 import eu.visiton.app.retrofit.generator.ServiceGenerator;
@@ -51,6 +54,8 @@ public class BadgesFragment extends Fragment {
     private boolean asc;
     MenuItem menuItemSort;
     private boolean earnedFilter = false;
+
+    private BadgeViewModel badgeViewModel;
 
 //    @Override
 //    protected FragmentToolbar builder() {
@@ -104,25 +109,17 @@ public class BadgesFragment extends Fragment {
     }
 
     private void listBadgesAndEarnedFiltered() {
-        BadgeService service = ServiceGenerator.createService(BadgeService.class, jwt, AuthType.JWT);
-        Call<List<BadgeResponse>> call = service.listBadgesAndEarnedFiltered();
-        call.enqueue(new Callback<List<BadgeResponse>>() {
-            @Override
-            public void onResponse(Call<List<BadgeResponse>> call, Response<List<BadgeResponse>> response) {
-                if (response.code() != 200) {
-                    Toast.makeText(getActivity(), "Request Error", Toast.LENGTH_SHORT).show();
-                } else {
-                    items = response.body();
-                    adapter = new BadgesAdapter(ctx, items, mListener);
-                    recycler.setAdapter(adapter);
-                }
-            }
+        badgeViewModel.getBadgesAndEarnedFiltered().observe(getActivity(), badgeResponses -> {
+            items = badgeResponses;
 
-            @Override
-            public void onFailure(Call<List<BadgeResponse>> call, Throwable t) {
-                Log.e("Network Failure", t.getMessage());
-                Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_SHORT).show();
-            }
+            adapter = new BadgesAdapter(
+                    ctx,
+                    items,
+                    mListener);
+
+            recycler.setAdapter(adapter);
+
+            adapter.setData(items);
         });
     }
 
@@ -140,59 +137,42 @@ public class BadgesFragment extends Fragment {
     }
 
     public void listBadgesAndEarned() {
-        BadgeService service = ServiceGenerator.createService(BadgeService.class, jwt, AuthType.JWT);
-        Call<List<BadgeResponse>> call = service.listBadgesAndEarned();
-        call.enqueue(new Callback<List<BadgeResponse>>() {
-            @Override
-            public void onResponse(Call<List<BadgeResponse>> call, Response<List<BadgeResponse>> response) {
-                if (response.code() != 200) {
-                    Toast.makeText(getActivity(), "Request Error", Toast.LENGTH_SHORT).show();
-                } else {
-                    items = response.body();
-                    adapter = new BadgesAdapter(ctx, items, mListener);
-                    recycler.setAdapter(adapter);
-                }
-            }
+        badgeViewModel.getBadgesAndEarned().observe(getActivity(), badgeResponses -> {
+            items = badgeResponses;
 
-            @Override
-            public void onFailure(Call<List<BadgeResponse>> call, Throwable t) {
-                Log.e("Network Failure", t.getMessage());
-                Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_SHORT).show();
-            }
+            adapter = new BadgesAdapter(
+                    ctx,
+                    items,
+                    mListener);
+
+            recycler.setAdapter(adapter);
+
+            adapter.setData(items);
         });
     }
 
     public void listBadgesAndEarnedSort(String userId) {
-        BadgeService service = ServiceGenerator.createService(BadgeService.class, jwt, AuthType.JWT);
-        Call<List<BadgeResponse>> call = null;
-        if (asc) {
-            call = service.listBadgesAndEarned("-points");
-        } else {
-            call = service.listBadgesAndEarned("points");
-        }
-        call.enqueue(new Callback<List<BadgeResponse>>() {
-            @Override
-            public void onResponse(Call<List<BadgeResponse>> call, Response<List<BadgeResponse>> response) {
-                if (response.code() != 200) {
-                    Toast.makeText(getActivity(), "Request Error", Toast.LENGTH_SHORT).show();
-                } else {
-                    items = response.body();
-                    adapter = new BadgesAdapter(ctx, items, mListener);
-                    recycler.setAdapter(adapter);
-                }
-            }
 
-            @Override
-            public void onFailure(Call<List<BadgeResponse>> call, Throwable t) {
-                Log.e("Network Error", t.getMessage());
-                Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_SHORT).show();
-            }
+        badgeViewModel.getBadgesAndEarnedSort(asc).observe(getActivity(), badgeResponses -> {
+            items = badgeResponses;
+
+            adapter = new BadgesAdapter(
+                    ctx,
+                    items,
+                    mListener);
+
+            recycler.setAdapter(adapter);
+
+            adapter.setData(items);
         });
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        badgeViewModel = ViewModelProviders.of(getActivity())
+                .get(BadgeViewModel.class);
 //        if (getArguments() != null) {
 //            mParam1 = getArguments().getString(ARG_PARAM1);
 //            mParam2 = getArguments().getString(ARG_PARAM2);

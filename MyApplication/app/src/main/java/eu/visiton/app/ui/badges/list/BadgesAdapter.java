@@ -48,27 +48,38 @@ class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int i) {
-        jwt = UtilToken.getToken(context);
-        viewHolder.mItem = data.get(i);
-        Glide.with(context).load(data.get(i).getIcon()).into(viewHolder.icon);
-        viewHolder.title.setText(data.get(i).getName());
-        viewHolder.body.setText(data.get(i).getDescription());
-        viewHolder.points.setText(String.valueOf(data.get(i).getPoints()));
-        if (data.get(i).isEarned()) {
-            viewHolder.earned.setVisibility(View.VISIBLE);
-        }
-
-        viewHolder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.onBadgeClick(v, viewHolder.mItem);
+        if(data != null) {
+            jwt = UtilToken.getToken(context);
+            viewHolder.mItem = data.get(i);
+            Glide.with(context).load(data.get(i).getIcon()).into(viewHolder.icon);
+            viewHolder.title.setText(data.get(i).getName());
+            viewHolder.body.setText(data.get(i).getDescription());
+            viewHolder.points.setText(String.valueOf(data.get(i).getPoints()));
+            if (data.get(i).isEarned()) {
+                viewHolder.earned.setVisibility(View.VISIBLE);
             }
-        });
+
+            viewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.onBadgeClick(v, viewHolder.mItem);
+                }
+            });
+        }
+    }
+
+    public void setData(List<BadgeResponse> badgeList){
+        this.data = badgeList;
+        notifyDataSetChanged();
     }
 
     @Override
     public int getItemCount() {
-        return data.size();
+        if(data != null){
+            return data.size();
+        }else{
+            return 0;
+        }
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
