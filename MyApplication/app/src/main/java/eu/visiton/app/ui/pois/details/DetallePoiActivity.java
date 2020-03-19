@@ -9,6 +9,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
@@ -45,15 +47,22 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.balysv.materialripple.MaterialRippleLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.squareup.picasso.Picasso;
+
+import dmax.dialog.SpotsDialog;
 import eu.visiton.app.R;
 import eu.visiton.app.materialx.utils.Tools;
 import eu.visiton.app.model.Image;
 import eu.visiton.app.responses.CreateRatingResponse;
+import eu.visiton.app.responses.ImageInvalidResponse;
 import eu.visiton.app.responses.PoiResponse;
+import eu.visiton.app.responses.UserImageResponse;
+import eu.visiton.app.responses.UserSResponse;
 import eu.visiton.app.retrofit.generator.AuthType;
 import eu.visiton.app.retrofit.generator.ServiceGenerator;
 import eu.visiton.app.retrofit.services.PoiService;
 import eu.visiton.app.retrofit.services.RatingService;
+import eu.visiton.app.retrofit.services.UserService;
 import eu.visiton.app.ui.pois.qrScanner.QrCodeActivity;
 import eu.visiton.app.util.Constantes;
 import eu.visiton.app.util.MusicUtils;
@@ -62,6 +71,7 @@ import eu.visiton.app.util.UtilToken;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -72,6 +82,7 @@ public class DetallePoiActivity extends AppCompatActivity {
     private static String id, dialogTitle, dialogMessage, dialogAnimation;
     private PoiResponse poi;
     private boolean cambiarValoracion = true;
+    private UserSResponse user;
 
     private View parent_view;
     private ViewPager viewPager;
@@ -85,7 +96,10 @@ public class DetallePoiActivity extends AppCompatActivity {
     private static final int PERMISSIONS_REQUEST_ACCESS_CAMERA = 2;
     float valorRating = 0.0f;
 
+    private List<Image> items2;
     private static List<String> array_image_poi = new ArrayList<>();
+    private static List<String> array_image_user = new ArrayList<>();
+    private static List<String> array_invalid_image_user = new ArrayList<>();
 
 
     // MEDIA PLAYER
@@ -102,12 +116,16 @@ public class DetallePoiActivity extends AppCompatActivity {
 
     boolean repetir = false;
 
+    private static final int PERMISSION_REQUEST_CODE = 1000;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalle_poi);
 
         initToolbar();
+
         Bundle extras = getIntent().getExtras();
         id = extras.getString("id");
 
@@ -121,6 +139,12 @@ public class DetallePoiActivity extends AppCompatActivity {
         } catch (Exception e) {
         }
         getPoiDetails();
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) ;
+        requestPermissions(new String[]{
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+        }, PERMISSION_REQUEST_CODE);
     }
 
     private void initToolbar() {
@@ -136,6 +160,8 @@ public class DetallePoiActivity extends AppCompatActivity {
         layout_dots = findViewById(R.id.layout_dots);
         viewPager = findViewById(R.id.pager);
 
+        RecyclerView recyclerStart = findViewById(R.id.recyclerStart);
+
         ratingBarPoi = findViewById(R.id.rating_poi);
         tvReviews = findViewById(R.id.reviews_poi);
         tvTitulo = findViewById(R.id.titulo_poi);
@@ -148,6 +174,10 @@ public class DetallePoiActivity extends AppCompatActivity {
         // Log.e("rating",poi.getAverageRating().toString());
         ratingBarPoi.setRating(poi.getAverageRating());
         tvReviews.setText(poi.getAverageRating().toString());
+        // ratingBarPoi.setRating(poi.getStars());
+        // tvReviews.setText(poi.getStars() + "/5.0");
+        recyclerStart.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+
         tvTitulo.setText(Html.fromHtml(poi.getName()));
 
         if(poi.getIsRated() == false){
@@ -163,6 +193,33 @@ public class DetallePoiActivity extends AppCompatActivity {
         }
 
         tvDescripcion.setText(Html.fromHtml(poi.getDescription().getTranslations().get(0).getTranslatedDescription()));
+
+        List<Image> items2 = new ArrayList<>();
+        for (int i=0; i<array_image_user.size(); i++) {
+            String img = array_image_user.get(i);
+            Image obj = new Image();
+            obj.image = img;
+            items2.add(obj);
+        }
+
+        for (int i=0; i<array_invalid_image_user.size(); i++) {
+            String img = array_invalid_image_user.get(i);
+            Image obj = new Image();
+            obj.image = img;
+            obj.brief="Deleted";
+            obj.name = "Deleted";
+            items2.add(obj);
+        }
+
+
+
+
+        recyclerStart.setAdapter(new AdapterSnapGeneric(this, items2, R.layout.item_snap_basic));
+        recyclerStart.setOnFlingListener(null);
+        new StartSnapHelper().attachToRecyclerView(recyclerStart);
+
+
+
 
         adapterImageSlider = new AdapterImageSlider(this, new ArrayList<Image>());
 
@@ -317,6 +374,9 @@ public class DetallePoiActivity extends AppCompatActivity {
 
     public void controlClick(View v) {
         int id = v.getId();
+
+
+
         switch (id) {
             case R.id.bt_repeat: {
                 toggleButtonColor((ImageButton) v);
@@ -477,8 +537,10 @@ public class DetallePoiActivity extends AppCompatActivity {
     private void getPoiDetails() {
         String jwt = UtilToken.getToken(Objects.requireNonNull(DetallePoiActivity.this));
         PoiService service = ServiceGenerator.createService(PoiService.class, jwt, AuthType.JWT);
+        UserService serviceUser = ServiceGenerator.createService(UserService.class, jwt, AuthType.JWT);
         String idLang = UtilToken.getLanguageId(this);
         Call<PoiResponse> call = service.getPoiLang(id, idLang);
+        Call<UserSResponse> callUser = serviceUser.getMe();
 
         call.enqueue(new Callback<PoiResponse>() {
             @Override
@@ -494,6 +556,54 @@ public class DetallePoiActivity extends AppCompatActivity {
                     }
                     initComponent();
                     initPlayer();
+
+                    callUser.enqueue(new Callback<UserSResponse>() {
+                        @Override
+                        public void onResponse(@NonNull Call<UserSResponse> call, @NonNull Response<UserSResponse> response) {
+                            if (response.code() != 200) {
+                                Toast.makeText(DetallePoiActivity.this, "Request Error", Toast.LENGTH_SHORT).show();
+                            } else {
+                                user = response.body();
+                                array_image_user = new ArrayList<>();
+                                for ( UserImageResponse image :user.getImages()) {
+
+                                    if (image.getPoi().equals(poi.getId())){
+
+                                        array_image_user.add(image.getThumbnail());
+                                    }
+
+                                }
+
+                                array_invalid_image_user = new ArrayList<>();
+                                for ( ImageInvalidResponse imageInvalid :user.getInvalidImages()) {
+
+                                    if (imageInvalid.getPoi().equals(poi.getId())){
+                                        array_invalid_image_user.add(imageInvalid.getThumbnail());
+                                    }
+
+                                }
+
+                            }
+
+                            array_image_poi = new ArrayList<>();
+                            if(poi.getImages().size() > 0) {
+                                array_image_poi.addAll(poi.getImages());
+                            }
+                            initComponent();
+                            initPlayer();
+
+                        }
+
+                        @Override
+                        public void onFailure(@NonNull Call<UserSResponse> call, @NonNull Throwable t) {
+                            Log.e("Network Failure estoy ", t.getMessage());
+                            Toast.makeText(DetallePoiActivity.this, "Network Error churra", Toast.LENGTH_SHORT).show();
+
+                        }
+                    });
+
+
+
                 }
             }
 
@@ -681,5 +791,32 @@ public class DetallePoiActivity extends AppCompatActivity {
         builder.setView(v);
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    public void checkPerm() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, "You should grant permissions", Toast.LENGTH_SHORT).show();
+            requestPermissions(new String[]{
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+            }, PERMISSION_REQUEST_CODE);
+            return;
+        } else {
+            android.app.AlertDialog dialog = new SpotsDialog(this);
+            dialog.show();
+            dialog.setMessage("Downloading ...");
+
+            String fileName = UUID.randomUUID().toString() + ".jpg";
+           /* Picasso.with(getBaseContext())
+                    .load("https://www.pastafarismo.es/wp-content/uploads/SistineHirez3-tentative-1024x495.jpg")
+                    .into(new SaveImageHelper(getBaseContext(),
+                            dialog,
+                            getApplicationContext().getContentResolver(),
+                            fileName,
+                            "Image description"));
+*/
+
+        }
+
     }
 }

@@ -6,6 +6,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/grey_10">
+    android:layout_width="140dp"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/spacing_medium"
+    android:layout_marginTop="@dimen/spacing_medium"
+    android:layout_marginRight="@dimen/spacing_medium"
+    android:layout_marginBottom="@dimen/spacing_medium"
+    app:cardBackgroundColor="@android:color/white"
+    app:cardCornerRadius="4dp"
+    app:cardElevation="0dp">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
@@ -23,10 +32,10 @@
 
 
         <androidx.core.widget.NestedScrollView
-            android:layout_weight="1"
             android:id="@+id/nested_scroll_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_weight="1"
             android:clipToPadding="false"
             android:scrollbars="none"
             android:scrollingCache="true"
@@ -38,7 +47,7 @@
                 android:layout_height="wrap_content">
 
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/cardView2"
+                    android:id="@+id/cardViewMainPhoto"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:cardCornerRadius="0dp"
@@ -75,7 +84,7 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/cardView3"
+                    android:id="@+id/cardViewInformacion"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:cardBackgroundColor="@android:color/white"
@@ -83,7 +92,7 @@
                     app:cardElevation="2dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/cardView2">
+                    app:layout_constraintTop_toBottomOf="@+id/cardViewMainPhoto">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -167,20 +176,20 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/cardView4"
-                    android:layout_width="match_parent"
+                    android:id="@+id/cardViewDescripcion"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="8dp"
                     app:cardBackgroundColor="@android:color/white"
                     app:cardCornerRadius="0dp"
                     app:cardElevation="2dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/cardView3">
+                    app:layout_constraintTop_toBottomOf="@+id/coordinadorGaleriaUser">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_margin="@dimen/spacing_large"
                         android:orientation="vertical">
 
@@ -204,11 +213,71 @@
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
+                <androidx.coordinatorlayout.widget.CoordinatorLayout
+                    android:id="@+id/coordinadorGaleriaUser"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="8dp"
+                    android:background="@android:color/white"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/cardViewInformacion">
+
+
+                    <androidx.core.widget.NestedScrollView
+                        android:id="@+id/nested_scroll_view2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:clipToPadding="false"
+                        android:scrollbars="none"
+                        android:scrollingCache="true"
+                        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/spacing_mlarge"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal"
+                                android:paddingLeft="@dimen/spacing_large"
+                                android:paddingRight="@dimen/spacing_large"/>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:visibility="visible">
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </androidx.core.widget.NestedScrollView>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerStart"
+                        android:layout_width="402dp"
+                        android:layout_height="match_parent"
+                        android:clipToPadding="false"
+                        android:paddingLeft="@dimen/spacing_middle"
+                        android:paddingTop="@dimen/spacing_medium"
+                        android:paddingRight="@dimen/spacing_middle"
+                        android:paddingBottom="@dimen/spacing_medium"
+                        android:scrollbars="none"
+                        app:layout_anchor="@+id/nested_scroll_view2"
+                        app:layout_anchorGravity="center" />
+
+                </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.core.widget.NestedScrollView>
-
 
         <androidx.cardview.widget.CardView
             android:id="@+id/audioPlayer"

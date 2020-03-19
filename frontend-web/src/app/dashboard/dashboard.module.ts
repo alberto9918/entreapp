@@ -23,6 +23,8 @@ import { BarRatingModule } from "ngx-bar-rating";
 import { RouteDetailsComponent } from './route-details/route-details.component';
 import { RouteComponent } from './route/route.component';
 import { UserComponent } from './user/user.component';
+import { UserPicturesComponent } from './user-pictures/user-pictures.component';
+import { UserPoiPicturesComponent } from './user-poi-pictures/user-poi-pictures.component';
 
 @NgModule({
   imports: [
@@ -52,7 +54,9 @@ import { UserComponent } from './user/user.component';
     MyProfileComponent,
     PoiEditComponent,
     PoiCreateComponent,
-    RouteDetailsComponent
+    RouteDetailsComponent,
+    UserPicturesComponent,
+    UserPoiPicturesComponent
   ],
 })
 

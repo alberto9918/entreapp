@@ -3,7 +3,8 @@ package eu.visiton.app.responses;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserResponse {
+public class UserSResponse {
+
 
     private String id;
     private String name;
@@ -15,17 +16,17 @@ public class UserResponse {
     private String email;
     private String createAt;
     private String country;
-    private LanguageResponse language;
+    private String language;
     private List<String> favs = new ArrayList<>();
     private List<String> visited = new ArrayList<>();
     private List<BadgeUserResponse> badges = new ArrayList<>();
     private List<UserLikesResponse> likes  = new ArrayList<>();
     private List<String> friends = new ArrayList<>();
 
-    public UserResponse() {
+    public UserSResponse() {
     }
 
-    public UserResponse(String id, String name, String role, boolean friended, String picture,List<UserImageResponse> images,List<ImageInvalidResponse> invalidImages, String password, String email, String createAt, String country, LanguageResponse language, List<String> favs, List<String> visited, List<BadgeUserResponse> badges, List<UserLikesResponse> likes, List<String> friends) {        this.id = id;
+    public UserSResponse(String id, String name, String role, boolean friended, String picture,List<UserImageResponse> images,List<ImageInvalidResponse> invalidImages, String password, String email, String createAt, String country, String language, List<String> favs, List<String> visited, List<BadgeUserResponse> badges, List<UserLikesResponse> likes, List<String> friends) {        this.id = id;
         this.name = name;
         this.role = role;
         this.picture = picture;
@@ -115,11 +116,11 @@ public class UserResponse {
         this.country = country;
     }
 
-    public LanguageResponse getLanguage() {
+    public String getLanguage() {
         return language;
     }
 
-    public void setLanguage(LanguageResponse language) {
+    public void setLanguage(String language) {
         this.language = language;
     }
 
@@ -189,3 +190,4 @@ public class UserResponse {
         this.invalidImages = invalidImages;
     }
 }
+

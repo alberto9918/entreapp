@@ -44,6 +44,7 @@ export class DialogUpdateProfileComponent implements OnInit {
   //it let you update your profile
   updateProfile() {
     this.user.password = this.password;
+    console.log(this.user)
     this.userService.editMyProfile(this.user, this.user.id.toString())
       .subscribe(r => this.snackBar.open('User updated successfully.', 'Close', { duration: 3000 }),
         e => this.snackBar.open('Failed to update user.', 'Close', { duration: 3000 }));

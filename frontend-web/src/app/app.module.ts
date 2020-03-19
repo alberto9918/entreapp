@@ -45,6 +45,7 @@ import { MaterialModule } from './material-module';
     DialogDeleteBadgeComponent,
     DialogRouteComponent,
     DialogDeleteRouteComponent
+    
   ],
   imports: [
     BrowserModule,
