@@ -8,30 +8,26 @@ import androidx.lifecycle.LiveData;
 
 import java.util.List;
 
+import eu.visiton.app.dto.UserEditDto;
+import eu.visiton.app.responses.MyProfileResponse;
 import eu.visiton.app.responses.PoiResponse;
-import eu.visiton.app.responses.ResponseContainer;
+import eu.visiton.app.responses.UserEditResponse;
+import retrofit2.Response;
 
-public class PoiViewModel extends AndroidViewModel {
-    private PoiRepository poiRepository;
-    private LiveData<List<PoiResponse>> pois;
+public class ProfileViewModel extends AndroidViewModel {
+    public ProfileRepository profileRepository;
+    public LiveData<MyProfileResponse> userProfile;
+    public LiveData<UserEditResponse> editedProfile;
 
-    public PoiViewModel(@NonNull Application application) {
+    public ProfileViewModel(@NonNull Application application) {
         super(application);
-        poiRepository = new PoiRepository();
+        profileRepository = new ProfileRepository();
+        userProfile = profileRepository.getProfile();
     }
 
-    public LiveData<List<PoiResponse>> getPois(double latitud, double longitud){
-        pois = poiRepository.getAllPois(latitud,longitud);
-        return pois;
+    public LiveData<UserEditResponse> updateProfile(String id, UserEditDto userEditDto){
+        profileRepository.updateProfile(id, userEditDto);
+        return editedProfile;
     }
 
-    public LiveData<List<PoiResponse>> getFavPois(){
-        pois = poiRepository.getFavPois();
-        return pois;
-    }
-
-    public LiveData<List<PoiResponse>> getVisitedPois(){
-        pois = poiRepository.getVisitedPois();
-        return pois;
-    }
 }

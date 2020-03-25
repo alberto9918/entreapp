@@ -9,55 +9,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:context=".ui.profile.MyProfileFragment">
-        <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/edit_profile_image"
-            android:layout_width="140dp"
-            android:layout_height="140dp"
-            android:layout_marginTop="32dp"
-            android:src="@drawable/ic_account_circle_white_24dp"
-            app:civ_border_color="#FF000000"
-            app:civ_border_width="2dp"
-            app:civ_circle_background_color="#00DF6767"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-        <TextView
-            android:id="@+id/textViewPointsWritten_details"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/points"
-            android:textSize="18sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/edit_profile_image" />
-
-        <Button
-            android:id="@+id/btn_edit_profile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/roundbtn"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:text="@string/save"
-            android:textColor="@color/color_input_hint"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewPointsWritten_details"
-            tools:text="@string/save" />
 
         <TextView
             android:id="@+id/textViewName_details"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:layout_marginTop="32dp"
             android:text="@string/name"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_edit_profile" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
             android:id="@+id/editTextName"
