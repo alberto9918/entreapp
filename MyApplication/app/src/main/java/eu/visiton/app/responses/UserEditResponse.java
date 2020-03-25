@@ -8,6 +8,7 @@ public class UserEditResponse {
     private String id;
     private String name;
     private String picture;
+    private String city;
     private List<String> badges = new ArrayList<>();
     private String role;
     private String email;
@@ -22,10 +23,11 @@ public class UserEditResponse {
     public UserEditResponse() {
     }
 
-    public UserEditResponse(String id, String name, String picture, List<String> badges, String role, String email, List<String> likes, List<String> favs, List<String> visited, String language, List<String> friends, String createAt, String updateAt) {
+    public UserEditResponse(String id, String name, String picture, String city, List<String> badges, String role, String email, List<String> likes, List<String> favs, List<String> visited, String language, List<String> friends, String createAt, String updateAt) {
         this.id = id;
         this.name = name;
         this.picture = picture;
+        this.city = city;
         this.badges = badges;
         this.role = role;
         this.email = email;
@@ -52,6 +54,14 @@ public class UserEditResponse {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 
     public String getPicture() {
@@ -150,6 +160,7 @@ public class UserEditResponse {
         return Objects.equals(id, that.id) &&
                 Objects.equals(name, that.name) &&
                 Objects.equals(picture, that.picture) &&
+                Objects.equals(city, that.city) &&
                 Objects.equals(badges, that.badges) &&
                 Objects.equals(role, that.role) &&
                 Objects.equals(email, that.email) &&
@@ -164,7 +175,7 @@ public class UserEditResponse {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, picture, badges, role, email, likes, favs, visited, language, friends, createAt, updateAt);
+        return Objects.hash(id, name, picture, city, badges, role, email, likes, favs, visited, language, friends, createAt, updateAt);
     }
 
     @Override
@@ -173,6 +184,7 @@ public class UserEditResponse {
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", picture='" + picture + '\'' +
+                ", city='" + city + '\'' +
                 ", badges=" + badges +
                 ", role='" + role + '\'' +
                 ", email='" + email + '\'' +
