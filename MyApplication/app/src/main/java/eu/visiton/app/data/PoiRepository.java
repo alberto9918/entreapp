@@ -13,11 +13,14 @@ import java.util.Objects;
 
 import eu.visiton.app.common.MyApp;
 import eu.visiton.app.model.Poi;
+import eu.visiton.app.responses.CreateRatingResponse;
 import eu.visiton.app.responses.PoiResponse;
 import eu.visiton.app.responses.ResponseContainer;
 import eu.visiton.app.retrofit.generator.AuthType;
 import eu.visiton.app.retrofit.generator.ServiceGenerator;
 import eu.visiton.app.retrofit.services.PoiService;
+import eu.visiton.app.retrofit.services.RatingService;
+import eu.visiton.app.ui.pois.details.DetallePoiActivity;
 import eu.visiton.app.ui.pois.list.PoiListAdapter;
 import eu.visiton.app.util.UtilToken;
 import retrofit2.Call;
@@ -26,11 +29,13 @@ import retrofit2.Response;
 
 public class PoiRepository {
     PoiService poiService;
+    RatingService ratingService;
     String jwt;
 
     PoiRepository(){
         jwt = UtilToken.getToken(Objects.requireNonNull(MyApp.getContext()));
         poiService = ServiceGenerator.createService(PoiService.class, jwt, AuthType.JWT);
+        ratingService = ServiceGenerator.createService(RatingService.class, jwt, AuthType.JWT);
     }
 
     public LiveData<List<PoiResponse>> getAllPois(double latitude, double longitude){
@@ -104,4 +109,5 @@ public class PoiRepository {
         });
         return data;
     }
+
 }

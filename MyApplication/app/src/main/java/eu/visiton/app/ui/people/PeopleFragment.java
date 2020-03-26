@@ -85,27 +85,6 @@ public class PeopleFragment extends Fragment {
         UserService service = ServiceGenerator.createService(UserService.class,
                 jwt, AuthType.JWT);
 
-  /*      Call<ResponseContainer<UserResponse>> callList = service.listUsersAndFriended();
-
-        callList.enqueue(new Callback<ResponseContainer<UserResponse>>() {
-            @Override
-            public void onResponse(Call<ResponseContainer<UserResponse>> call, Response<ResponseContainer<UserResponse>> response) {
-                if (response.isSuccessful()) {
-                    Log.d("flama", "vas flama");
-                } else {
-                    Toast.makeText(ctx, "You have to log in!", Toast.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseContainer<UserResponse>> call, Throwable t) {
-//                Toast.makeText(ctx, "TokenFailure", Toast.LENGTH_LONG).show();
-            }
-        });
-
-        if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-        }*/
     }
 
 
