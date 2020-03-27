@@ -102,7 +102,7 @@ public class AdapterSnapGeneric extends RecyclerView.Adapter<RecyclerView.ViewHo
             view.brief.setText(obj.brief);
 
 
-            Glide.with(ctx).load(obj.image).into(view.image);
+            Glide.with(ctx).load( Constantes.FILES_BASE_URL +obj.image).into(view.image);
             view.lyt_parent.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -145,7 +145,7 @@ public class AdapterSnapGeneric extends RecyclerView.Adapter<RecyclerView.ViewHo
         CardView cardView = dialog.findViewById(R.id.cardViewDescarga);
 
 
-        Glide.with(ctx).load(item.image).into((ImageView) dialog.findViewById(R.id.ImageView_photo));
+        Glide.with(ctx).load(Constantes.FILES_BASE_URL + item.image).into((ImageView) dialog.findViewById(R.id.ImageView_photo));
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dialog.setCancelable(true);
         dialog.show();
@@ -161,7 +161,7 @@ public class AdapterSnapGeneric extends RecyclerView.Adapter<RecyclerView.ViewHo
 
 
 
-            Picasso.get().load(item.image)
+            Picasso.get().load(Constantes.FILES_BASE_URL +item.image)
                     .into(saveImageHelper=new SaveImageHelper(ctx,
                             dialog3,
                             ctx.getContentResolver(),

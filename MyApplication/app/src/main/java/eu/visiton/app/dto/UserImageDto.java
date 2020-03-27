@@ -1,15 +1,12 @@
-package eu.visiton.app.responses;
+package eu.visiton.app.dto;
 
-public class UserImageResponse {
-
-
+public class UserImageDto {
     private String poi;
     private String thumbnail;
     private String full;
 
 
-    public UserImageResponse(String poi, String thumbnail, String full) {
-
+    public UserImageDto(String poi, String thumbnail, String full) {
         this.poi = poi;
         this.thumbnail = thumbnail;
         this.full = full;
@@ -38,6 +35,4 @@ public class UserImageResponse {
     public void setPoi(String poi) {
         this.poi = poi;
     }
-
-
 }

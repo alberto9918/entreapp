@@ -1,13 +1,18 @@
 package eu.visiton.app.retrofit.services;
 
+import eu.visiton.app.responses.ImageResponse;
 import eu.visiton.app.responses.PoiResponse;
 import eu.visiton.app.responses.ResponseContainer;
 import eu.visiton.app.responses.UserFavResponse;
 import eu.visiton.app.responses.VisitPoiResponse;
 
+import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
+import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -15,6 +20,12 @@ import retrofit2.http.Query;
 public interface PoiService {
 
     String BASE_URL = "pois";
+
+
+
+    @Multipart
+    @POST("/files/upload/image")
+    Call<ImageResponse> uploadImage(@Part MultipartBody.Part photo);
 
     @GET(BASE_URL)
     Call<ResponseContainer<PoiResponse>> listPois();

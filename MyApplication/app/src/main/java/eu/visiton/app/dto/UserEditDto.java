@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import eu.visiton.app.responses.UserImageResponse;
+import eu.visiton.app.responses.UserLikesResponse;
+
 public class UserEditDto {
 /*email, name, city, language, likes, favs, friends*/
     private String email;
@@ -11,9 +14,10 @@ public class UserEditDto {
     private String city;
     private String language;
     private String picture;
-    private List<String> likes = new ArrayList<>();
+    private List<UserLikesResponse> likes = new ArrayList<>();
     private List<String> favs = new ArrayList<>();
     private List<String> friends = new ArrayList<>();
+    private List<UserImageResponse> images = new ArrayList<>();
 
 
 
@@ -23,7 +27,7 @@ public class UserEditDto {
     ;
 
 
-    public UserEditDto(String email, String name, String city, String language, String picture, List<String> likes, List<String> favs, List<String> friends) {
+    public UserEditDto(String email, String name, String city, String language, String picture, List<UserLikesResponse> likes,  List<String> favs, List<String> friends,List<UserImageResponse> images) {
         this.email = email;
         this.name = name;
         this.city = city;
@@ -32,6 +36,7 @@ public class UserEditDto {
         this.likes = likes;
         this.favs = favs;
         this.friends = friends;
+        this.images = images;
     }
 
     public String getEmail() {
@@ -74,11 +79,11 @@ public class UserEditDto {
         this.picture = picture;
     }
 
-    public List<String> getLikes() {
+    public List<UserLikesResponse> getLikes() {
         return likes;
     }
 
-    public void setLikes(List<String> likes) {
+    public void setLikes(List<UserLikesResponse> likes) {
         this.likes = likes;
     }
 
@@ -130,5 +135,13 @@ public class UserEditDto {
                 ", favs=" + favs +
                 ", friends=" + friends +
                 '}';
+    }
+
+    public List<UserImageResponse> getImages() {
+        return images;
+    }
+
+    public void setImages(List<UserImageResponse> images) {
+        this.images = images;
     }
 }

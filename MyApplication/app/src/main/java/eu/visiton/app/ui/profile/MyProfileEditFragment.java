@@ -329,7 +329,7 @@ public class MyProfileEditFragment extends Fragment {
         for (CategoryMyProfileResponse c:user.getLikes()){
         likes.add(c.getId());
         }
-        userEditDto.setLikes(likes);
+       // userEditDto.setLikes(likes);
 
 
         return userEditDto;
@@ -349,7 +349,7 @@ public class MyProfileEditFragment extends Fragment {
         for (CategoryMyProfileResponse c:user.getLikes()){
             likes.add(c.getId());
         }
-        userEditDto.setLikes(likes);
+        //userEditDto.setLikes(likes);
         userEditDto.setPicture(profilePicture);
         updatedUser.setPicture(profilePicture);
         mViewModel.selectUser(updatedUser);

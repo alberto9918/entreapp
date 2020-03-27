@@ -25,10 +25,7 @@ export class PoiComponent implements OnInit {
   ngOnInit() {
     this.titleService.setTitle('Home - Points of Interests');
     this.getAll();
-<<<<<<< HEAD
     //console.log(this.POIs.rows)
-=======
->>>>>>> profilepictures
   }
 
   /** Get the list of all POIs from API */
