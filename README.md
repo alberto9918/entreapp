@@ -14,6 +14,16 @@ Technologies used:
 - MEN REST API can be found in 'api' folder.
 - Web App can be found in 'frontend-web' folder.
 
+## IMPORTANTE - Antes de iniciar Angular
+---
+- En Angular utilizamos una librería llamada ngx-bar-rating la cual necesita ser instalada(haciendo un npm install --save ngx-bar-rating). Dentro de la carpeta que se cree en node modules de esta librería, y dentro de la carpeta themes, hay que añadir el archivo variables.scss y br-default-theme.scss
+
+## Proyecto de empresa AlarmMe
+---
+[Proyecto de empresa Entreapp](./Documentation/PlanEmpresaEntreapp.pdf)
+<br/><br/>
+<br/><br/>
+
 ## Descripción detallada del sistema
 ---
 VisitOn es una aplicación de turismo para estudiante ERASMUS+, en la que podremos encontrar información de los diferentes puntos de interés de sevilla para así visitarlos y podernos informar sobre ellos a través de los textos y audioguías que hay en la aplicación en varios idiomas. En el siguiente punto procederemos a explicar las diferente funcionalidades de la aplicación:
