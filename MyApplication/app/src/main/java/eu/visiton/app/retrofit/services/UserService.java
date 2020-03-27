@@ -1,6 +1,7 @@
 package eu.visiton.app.retrofit.services;
 
 import eu.visiton.app.dto.UserEditDto;
+import eu.visiton.app.responses.ImageResponse;
 import eu.visiton.app.responses.MyProfileResponse;
 import eu.visiton.app.responses.PeopleResponse;
 import eu.visiton.app.responses.ResponseContainer;
@@ -25,6 +26,11 @@ import retrofit2.http.Path;
 public interface UserService {
 
     String BASE_URL = "users";
+
+
+    @Multipart
+    @POST("/files/upload/avatar")
+    Call<ImageResponse> uploadAvatar(@Part MultipartBody.Part photo);
 
     @GET(BASE_URL)
     Call<ResponseContainer<UserResponse>> listUsers();
