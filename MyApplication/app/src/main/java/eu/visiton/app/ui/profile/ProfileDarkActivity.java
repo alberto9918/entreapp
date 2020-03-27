@@ -1,6 +1,7 @@
 package eu.visiton.app.ui.profile;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
@@ -9,6 +10,11 @@ import androidx.cardview.widget.CardView;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
+import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
@@ -42,6 +48,8 @@ import dmax.dialog.SpotsDialog;
 import eu.visiton.app.R;
 import eu.visiton.app.dto.UserEditDto;
 import eu.visiton.app.dto.UserImageDto;
+import eu.visiton.app.data.PoiViewModel;
+import eu.visiton.app.data.ProfileViewModel;
 import eu.visiton.app.materialx.utils.Tools;
 import eu.visiton.app.model.Image;
 import eu.visiton.app.responses.ImageInvalidResponse;
@@ -100,12 +108,17 @@ public class ProfileDarkActivity extends AppCompatActivity {
     private static List<String> array_invalid_image_user = new ArrayList<>();
 
 
+    private ProfileViewModel profileViewModel;
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        profileViewModel = ViewModelProviders.of(this)
+                .get(ProfileViewModel.class);
+
         setContentView(R.layout.activity_profile_dark);
         initToolbar();
 
@@ -124,6 +137,12 @@ public class ProfileDarkActivity extends AppCompatActivity {
         if (jwt == null) {
             //redirect to login
         }
+
+       fab.setOnClickListener(view -> {
+            DialogFragment dialogFragment = new ProfileDialogFragment(userId);
+            dialogFragment.show(getSupportFragmentManager(),"editUser");
+
+        });
 
         this.getUser();
 
@@ -178,36 +197,18 @@ public class ProfileDarkActivity extends AppCompatActivity {
     }
 
     public void getUser(){//obtain from the api the user logged
-        service = ServiceGenerator.createService(UserService.class,
-                jwt, AuthType.JWT);
-        Call<MyProfileResponse> getOneUser = service.getUser(userId);
-        getOneUser.enqueue(new Callback<MyProfileResponse>() {
-            @Override
-            public void onResponse(Call<MyProfileResponse> call, Response<MyProfileResponse> response) {
-                //Resources res = getResources();
-                String points = "";
-                if (response.isSuccessful()) {
-                    Log.d("Success", "user obtain successfully");
-                    setItemsInfo(response);
-                } else {
-                    Log.d("Fail", "user can't be obtain successfully");
-                    Toast.makeText(ProfileDarkActivity.this, "You have to log in!", Toast.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<MyProfileResponse> call, Throwable t) {
-                Log.d("Conexion failure", "FALLITO BUENO");
-                Toast.makeText(ProfileDarkActivity.this, "Fail in the request!", Toast.LENGTH_LONG).show();
-            }
+        profileViewModel.userProfile.observe(this, myProfileResponse -> {
+            setItemsInfo(myProfileResponse);
         });
+
     }
 
     @SuppressLint("RestrictedApi")
-    private void setItemsInfo(Response<MyProfileResponse> response) {
+    public void setItemsInfo(MyProfileResponse response) {
         String points="";
         Resources res = getResources();
-        myProfileResponse = response.body();
+        myProfileResponse = response;
+        userId = myProfileResponse.getId();
         textViewEmailWritten.setText(myProfileResponse.getEmail());
         textViewName.setText(myProfileResponse.getName());
         if (myProfileResponse.getLanguage() != null) {

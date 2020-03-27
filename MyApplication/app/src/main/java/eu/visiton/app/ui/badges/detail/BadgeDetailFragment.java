@@ -8,6 +8,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,6 +25,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestBuilder;
 
 import eu.visiton.app.R;
+import eu.visiton.app.data.BadgeViewModel;
 import eu.visiton.app.responses.BadgePoiResponse;
 import eu.visiton.app.responses.BadgeResponse;
 import eu.visiton.app.retrofit.generator.AuthType;
@@ -56,6 +59,8 @@ public class BadgeDetailFragment extends Fragment {
     RecyclerView recycler;
     private RequestBuilder<PictureDrawable> requestBuilder;
 
+    private BadgeViewModel badgeViewModel;
+
     public BadgeDetailFragment() {
         // Required empty public constructor
     }
@@ -65,30 +70,22 @@ public class BadgeDetailFragment extends Fragment {
     }
 
     private void getBadgeDetails(String badgeId, View layout) {
-        BadgeService service = ServiceGenerator.createService(BadgeService.class, jwt, AuthType.JWT);
-        Call<BadgeResponse> call = service.getBadge(badgeId);
-        call.enqueue(new Callback<BadgeResponse>() {
-            @Override
-            public void onResponse(Call<BadgeResponse> call, Response<BadgeResponse> response) {
-                if (response.code() != 200) {
-                    Toast.makeText(getActivity(), "Request Error", Toast.LENGTH_SHORT).show();
-                } else {
-                    badge = response.body();
 
-                    pois = badge.getPois();
-                    adapter = new PoisAdapter(ctx, pois, mListener);
-                    recycler.setAdapter(adapter);
+        badgeViewModel.getBadgeDetails(badgeId).observe(getActivity(), badgeResponse -> {
 
-                    // response.headers();
-                    setData(layout);
-                }
-            }
+            badge = badgeResponse;
 
-            @Override
-            public void onFailure(Call<BadgeResponse> call, Throwable t) {
-                Log.e("Network Failure", t.getMessage());
-                Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_SHORT).show();
-            }
+            pois = badge.getPois();
+
+            adapter = new PoisAdapter(
+                    ctx,
+                    pois,
+                    mListener
+            );
+
+            recycler.setAdapter(adapter);
+
+            setData(layout);
         });
     }
 
@@ -107,6 +104,9 @@ public class BadgeDetailFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        badgeViewModel = ViewModelProviders.of(getActivity())
+                .get(BadgeViewModel.class);
 //        if (getArguments() != null) {
 //            mParam1 = getArguments().getString(ARG_PARAM1);
 //            mParam2 = getArguments().getString(ARG_PARAM2);

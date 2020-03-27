@@ -16,6 +16,7 @@ import retrofit2.Call;
 public class BadgeViewModel extends AndroidViewModel {
     private BadgeRepository badgeRepository;
     private LiveData<List<BadgeResponse>> badges;
+    private LiveData<BadgeResponse> badgeDetails;
 
     public BadgeViewModel(@NonNull Application application) {
         super(application);
@@ -35,5 +36,10 @@ public class BadgeViewModel extends AndroidViewModel {
     public LiveData<List<BadgeResponse>> getBadgesAndEarnedSort(boolean asc){
         badges = badgeRepository.getBadgesAndEarnedSort(asc);
         return badges;
+    }
+
+    public LiveData<BadgeResponse> getBadgeDetails(String badgeId){
+        badgeDetails = badgeRepository.getBadgeDetails(badgeId);
+        return badgeDetails;
     }
 }

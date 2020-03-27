@@ -10,7 +10,9 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Environment;
@@ -35,6 +37,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import eu.visiton.app.R;
+import eu.visiton.app.data.ProfileViewModel;
 import eu.visiton.app.dto.UserEditDto;
 import eu.visiton.app.responses.CategoryMyProfileResponse;
 import eu.visiton.app.responses.LanguageResponse;
@@ -56,7 +59,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MyProfileEditFragment extends Fragment {
+public class MyProfileEditFragment extends DialogFragment {
 
     //variables
     private static final String ARG_PARAM1 = "param1";
@@ -88,6 +91,8 @@ public class MyProfileEditFragment extends Fragment {
     List<LanguageResponse> languages;
     private String urlUploadedPicture=null;
 
+    private ProfileViewModel profileViewModel;
+
 
     //variables for camera
 
@@ -97,6 +102,10 @@ public class MyProfileEditFragment extends Fragment {
 
     public MyProfileEditFragment() {
         //empty constructor
+    }
+
+    public MyProfileEditFragment(String id){
+        this.userId = id;
     }
 
     //default constructor
@@ -117,9 +126,21 @@ public class MyProfileEditFragment extends Fragment {
         ctx = getContext();
         jwt = UtilToken.getToken(ctx);
         userId = UtilToken.getId(ctx).toString();
-        View v= inflater.inflate(R.layout.fragment_my_profile_edit, container, false);
+        View v= inflater.from(getActivity())
+                .inflate(R.layout.fragment_my_profile_edit, container, false);
         loadItemsFragment(v);
         setItemsFragment(updatedUser);
+
+        profileViewModel.editedProfile.observe(getActivity(), new Observer<UserEditResponse>() {
+            @Override
+            public void onChanged(UserEditResponse userEditResponse) {
+                editTextName.setText(userEditResponse.getName());
+                editTextCity.setText(userEditResponse.getCity());
+                loadAllLanguages();
+                editTextemail.setText(userEditResponse.getEmail());
+            }
+        });
+
         return v;
     }
 
@@ -138,22 +159,30 @@ public class MyProfileEditFragment extends Fragment {
         mListener = null;
     }
 
+    @Override
     public void onCreate(Bundle savedInstanceState) {
 
 
         super.onCreate(savedInstanceState);
+
+        profileViewModel = ViewModelProviders.of(this)
+                .get(ProfileViewModel.class);
+
         //reset filePath
         filePath=null;
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
         mViewModel = ViewModelProviders.of(getActivity()).get(UserViewModel.class);
         //get user shared in view model class
-        mViewModel.getSelectedUser().observe(getActivity(),
-                user -> {
+        /*mViewModel.getSelectedUser().observe(getActivity(), user -> {
                 updatedUser = user;
 
                 //setItemsFragment(user);
-                });
+                });*/
+        profileViewModel.userProfile.observe(getActivity(), myProfileResponse -> {
+            updatedUser = myProfileResponse;
+            Log.d("updatedUSer",updatedUser.toString());
+        });
     }
 
     public void loadAllLanguages(){//take every language in node api
@@ -204,10 +233,10 @@ public class MyProfileEditFragment extends Fragment {
         editTextemail=view.findViewById(R.id.editTextEmail);
         editTextName=view.findViewById(R.id.editTextName);
         btn_save =view.findViewById(R.id.btn_edit_profile);
-        profile_image = view.findViewById(R.id.edit_profile_image);
+        //profile_image = view.findViewById(R.id.edit_profile_image);
     }
     public void updateUserCall(UserEditDto userEditDto) {//update an user
-        userService = ServiceGenerator.createService(UserService.class,
+        /*userService = ServiceGenerator.createService(UserService.class,
                 jwt, AuthType.JWT);
         Call<UserEditResponse> editUser = userService.editUser(updatedUser.getId(), userEditDto);
         editUser.enqueue(new Callback<UserEditResponse>() {
@@ -220,7 +249,7 @@ public class MyProfileEditFragment extends Fragment {
                     /*getFragmentManager()
                             .beginTransaction()
                             .replace(R.id.contenedor, new MyProfileFragment())
-                            .commit();*/
+                            .commit();CERRAR COMENTARIO AQUI
 
                 } else {
                     Toast.makeText(ctx, "You have to log in!", Toast.LENGTH_LONG).show();
@@ -232,7 +261,7 @@ public class MyProfileEditFragment extends Fragment {
                 Log.d("onFailure", "Fail in the request");
                 Toast.makeText(ctx, "Fail in the request!", Toast.LENGTH_LONG).show();
             }
-        });
+        });*/
     }
     public boolean validate(){//validate every edit text with a static class called validatorUserEdit
         ValidatorUserEdit.clearError(editTextCity);
@@ -294,15 +323,17 @@ public class MyProfileEditFragment extends Fragment {
             @Override
             public void onClick(View v) {
             if(validate()){//if the edit text are correct the user is updated
-                updateUserCall(myProfileResponseToUserEditDto(user));
+                profileViewModel.updateProfile(updatedUser.getId(), myProfileResponseToUserEditDto(user));
+                /*updateUserCall(myProfileResponseToUserEditDto(user));*/
             }
 
             }
         });
         //upload user image
-        Glide.with(ctx)
+        /*Glide.with(ctx)
                 .load(user.getPicture().toString())
-                .into(profile_image);
+                .into(profile_image);*/
+
         editTextName.setText(user.getName());
         editTextemail.setText(user.getEmail());
         if (user.getcity()!=null){
@@ -316,9 +347,7 @@ public class MyProfileEditFragment extends Fragment {
     //transform myProfileResponse to userEditDto taking edit text and spinner values
     public UserEditDto myProfileResponseToUserEditDto(MyProfileResponse user){
         UserEditDto userEditDto = new UserEditDto();
-        userEditDto.setPicture(user.getPicture());
         userEditDto.setCity(editTextCity.getText().toString());
-        List<String> likes = new ArrayList<>();
         userEditDto.setName(editTextName.getText().toString());
         LanguageResponse r = (LanguageResponse) spinnerLanguages.getSelectedItem();
         userEditDto.setLanguage(r.getId());
@@ -326,10 +355,11 @@ public class MyProfileEditFragment extends Fragment {
         userEditDto.setFavs(user.getFavs());
         userEditDto.setFriends(user.getFriends());
         //iterations
-        for (CategoryMyProfileResponse c:user.getLikes()){
-        likes.add(c.getId());
-        }
+       // for (CategoryMyProfileResponse c:user.getLikes()){
+        //likes.add(c.getId());
+       // }
        // userEditDto.setLikes(likes);
+
 
 
         return userEditDto;
@@ -416,7 +446,7 @@ public class MyProfileEditFragment extends Fragment {
             public void onSuccess(Uri uri) {//taking the url and uptading user
                 urlUploadedPicture=uri.toString();
                 UserEditDto u=myProfileResponseToUserEditDto(updatedUser, urlUploadedPicture);
-                updateUserCall(u);
+                profileViewModel.updateProfile(updatedUser.getId(),u);
 
             }
 
