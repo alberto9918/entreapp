@@ -101,10 +101,6 @@ export class PoiEditComponent implements OnInit {
       translateDescripcion: [this.poi.description.translations[0].translatedDescription]
     });
 
-    /*this.descriptionForm = this.fb.group({
-      originalDescription: [this.poi.description.originalDescription, Validators.compose([Validators.required])]
-    });*/
-
     this.form = this.fb.group({
       name: [this.poi.name, Validators.compose([Validators.required])],
       year: [this.poi.year, Validators.compose([Validators.required])],
@@ -124,7 +120,6 @@ export class PoiEditComponent implements OnInit {
   onSubmit() {
 
     const newPoi: PoiCreateDto = <PoiCreateDto>this.form.value;
-    //newPoi.images = this.imagesForm.value;
 
     //Subida de imagen
     const formData = new FormData();
@@ -141,8 +136,6 @@ export class PoiEditComponent implements OnInit {
       //Seteo los datos
 
       newPoi.loc = { coordinates: [this.coordinatesForm.controls['lat'].value, this.coordinatesForm.controls['lng'].value] };
-      //newPoi.audioguides = this.audioguidesForm.value;
-      //newPoi.description = this.descriptionForm.value;
       newPoi.description = this.poi.description;
       newPoi.description.translations = this.poi.description.translations;
 
@@ -153,7 +146,6 @@ export class PoiEditComponent implements OnInit {
       newPoi.coverImage = this.poi.coverImage;
 
       if (newPoi.images == null) newPoi.images = [];
-      //newPoi.coverImage ? null : newPoi.coverImage = newPoi.images[0]; Esto no haría falta pero lo dejo por si a caso
 
       //Comprobación de existencia de traducciones
       if (this.poi.description.translations == undefined) {
@@ -165,9 +157,7 @@ export class PoiEditComponent implements OnInit {
           translatedDescription: this.translateForm.controls['translateDescripcion'].value
         }];
       } else {
-        /*for(var i=0; i<newPoi.description.translations.length; i++) {
-            
-          }*/
+        
         var buscarIdioma = null;
         buscarIdioma = newPoi.description.translations.find(element => element.language.language == this.translateForm.controls['languageSelected'].value);
 
@@ -180,15 +170,6 @@ export class PoiEditComponent implements OnInit {
             },
             translatedDescription: this.translateForm.controls['translateDescripcion'].value
           }));
-
-          /*this.translateForm = this.fb.group({
-            languageSelected: [
-              this.translateForm.controls['languageSelected'].value
-            ],
-            translateDescripcion: [
-              newPoi.description.translations[i].translatedDescription = this.translateForm.controls['translateDescripcion'].value
-            ]
-          });*/
 
         } else {
           console.log('CREA NUEVO IDIOMA EN EL ARRAY');
@@ -222,12 +203,11 @@ export class PoiEditComponent implements OnInit {
         this.poiService.uploadAudio(formData2).subscribe(resp => {
           newPoi.audioguides = this.poi.audioguides;
           console.log(newPoi.audioguides)
+
           /*Dado que van a haber varios idiomas creo que es más 
           apropiado realizar el tratamiento del idioma de la audio guia mediante un switch
           Lo variable que le pasamos al switch debe ser en realidad un variable que recojamos del 
           formulario*/
-          //this.audioguidesForm.get('languageSelected')
-
 
           if (this.poi.audioguides.translations == undefined) {
             console.log('El array esta undefinido')
@@ -256,9 +236,6 @@ export class PoiEditComponent implements OnInit {
               }));
 
             } else {
-              //console.log('CREA NUEVO IDIOMA EN EL ARRAY DE AUDIOGUIAS'+ resp.key);
-              //console.log(newPoi.audioguides.translations)
-              //console.log('-----------------------------------------')
 
 
               newPoi.audioguides.translations.push({
@@ -284,17 +261,6 @@ export class PoiEditComponent implements OnInit {
         })
       }
 
-      //EDICIÓN
-
-      /*this.poiService.edit(this.poi.id, newPoi).subscribe(resp => {
-        this.router.navigate(['/home']);
-      }, error => {
-        this.snackBar.open('Error editing the POI', 'Close', { duration: 3000 })
-      });*/
-
-
-
-
     } else {
 
       //Esto ocurrirá si se quiere subir una imagen
@@ -305,13 +271,10 @@ export class PoiEditComponent implements OnInit {
         //Seteo los datos
 
         newPoi.loc = { coordinates: [this.coordinatesForm.controls['lat'].value, this.coordinatesForm.controls['lng'].value] };
-        //newPoi.audioguides = this.audioguidesForm.value;
-        //newPoi.description = this.descriptionForm.value;
         newPoi.coverImage = this.poi.coverImage;
         newPoi.description = this.poi.description;
         newPoi.description.translations = this.poi.description.translations;
 
-        //TESTEANDO
         if (this.poi.images[0] != null) {
           newPoi.images = this.poi.images;
         }
@@ -327,9 +290,7 @@ export class PoiEditComponent implements OnInit {
             translatedDescription: this.translateForm.controls['translateDescripcion'].value
           }];
         } else {
-          /*for(var i=0; i<newPoi.description.translations.length; i++) {
-              
-            }*/
+
           var buscarIdioma = null;
           buscarIdioma = newPoi.description.translations.find(element => element.language.language == this.translateForm.controls['languageSelected'].value);
 
@@ -384,9 +345,6 @@ export class PoiEditComponent implements OnInit {
           this.poiService.uploadAudio(formData2).subscribe(resp => {
             newPoi.audioguides = this.poi.audioguides;
            
-            //this.audioguidesForm.get('languageSelected')
-
-
             if (this.poi.audioguides.translations == undefined) {
               console.log('El array esta undefinido')
               console.log('this.poi.audioguides.translations indefinido')
@@ -437,13 +395,6 @@ export class PoiEditComponent implements OnInit {
             console.log(error);
           })
         }
-        //EDICIÓN
-
-        /*this.poiService.edit(this.poi.id, newPoi).subscribe(resp => {
-          this.router.navigate(['/home']);
-        }, error => {
-          this.snackBar.open('Error editing the POI', 'Close', { duration: 3000 })
-        });*/
 
       }, error => {
         console.log(error);
@@ -457,24 +408,6 @@ export class PoiEditComponent implements OnInit {
   }
 
 
-  /*     newPoi.loc = {coordinates: [this.coordinatesForm.controls['lat'].value, this.coordinatesForm.controls['lng'].value]};
-      newPoi.audioguides = this.audioguidesForm.value;
-      newPoi.description = this.descriptionForm.value;
-      //Con esta línea siempre va a haber una única imagen por monumento
-      newPoi.images = [];
-      newPoi.images.push(imgKey);
-      //newPoi.coverImage = imgKey;
-  
-      //newPoi.coverImage ? null : newPoi.coverImage = newPoi.images[0];
-      this.poiService.edit(this.poi.id, newPoi).subscribe(resp => {
-        this.router.navigate(['/home']);
-        console.log('Se ha "editado"')
-      }, error => {
-        this.snackBar.open('Error editing the POI', 'Close', { duration: 3000 })
-      })
-       */
-
-
   /** Function to change the translate description*/
   translateChange(e) {
     var searchLanguage;
@@ -485,7 +418,6 @@ export class PoiEditComponent implements OnInit {
       this.translateForm = this.fb.group({
         languageSelected: [searchLanguage.language.language],
         translateDescripcion: [
-          /*this.poi.description.translations[i].translatedDescription*/
           searchLanguage.translatedDescription
         ]
       });
@@ -498,7 +430,6 @@ export class PoiEditComponent implements OnInit {
 
     }
   }
-  //lomismoquearribaperoparaelaudio
 
   audioChange(e) {
     var searchLanguage;
@@ -509,7 +440,6 @@ export class PoiEditComponent implements OnInit {
       this.audioguidesForm = this.fb.group({
         languageSelected: [searchLanguage.language.language],
         translatedFile: [
-          /*this.poi.description.translations[i].translatedDescription*/
           searchLanguage.translatedFile
         ]
       });

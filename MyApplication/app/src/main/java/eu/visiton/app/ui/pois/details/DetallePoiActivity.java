@@ -1,9 +1,44 @@
 package eu.visiton.app.ui.pois.details;
 
+import android.Manifest;
+import android.app.Activity;
+import android.app.Dialog;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.PorterDuff;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.provider.MediaStore;
+import android.text.Html;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RatingBar;
+import android.widget.RelativeLayout;
+import android.widget.SeekBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatRatingBar;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatSeekBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
@@ -14,48 +49,35 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import android.Manifest;
-import android.app.Activity;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.PorterDuff;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.os.Bundle;
-import android.os.Handler;
-import android.text.Html;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RatingBar;
-import android.widget.RatingBar.OnRatingBarChangeListener;
-import android.widget.RelativeLayout;
-import android.widget.SeekBar;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.airbnb.lottie.LottieAnimationView;
 import com.balysv.materialripple.MaterialRippleLayout;
+import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.squareup.picasso.Picasso;
+
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 import dmax.dialog.SpotsDialog;
 import eu.visiton.app.R;
+import eu.visiton.app.dto.UserEditDto;
 import eu.visiton.app.materialx.utils.Tools;
 import eu.visiton.app.model.Image;
 import eu.visiton.app.responses.CreateRatingResponse;
 import eu.visiton.app.responses.ImageInvalidResponse;
+import eu.visiton.app.responses.ImageResponse;
 import eu.visiton.app.responses.PoiResponse;
+import eu.visiton.app.responses.UserEditResponse;
 import eu.visiton.app.responses.UserImageResponse;
 import eu.visiton.app.responses.UserSResponse;
 import eu.visiton.app.retrofit.generator.AuthType;
@@ -67,12 +89,9 @@ import eu.visiton.app.ui.pois.qrScanner.QrCodeActivity;
 import eu.visiton.app.util.Constantes;
 import eu.visiton.app.util.MusicUtils;
 import eu.visiton.app.util.UtilToken;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
-
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -94,13 +113,22 @@ public class DetallePoiActivity extends AppCompatActivity {
     private RatingBar ratingBarPoi;
     private CardView audioPlayer;
     private static final int PERMISSIONS_REQUEST_ACCESS_CAMERA = 2;
-    float valorRating = 0.0f;
+    private static final int READ_REQUEST_CODE = 42;
+    private static final int REQUEST_TAKE_PHOTO = 1;
+    private Uri uriSelected;
+    private ImageView previewPhoto;
+    private AppCompatButton postButton;
+    private Button dialogButton;
+    private String currentPhotoPath;
+    private UserImageResponse image;
+    private ImageResponse url;
+    private UserEditDto userEdit;
+    static final int REQUEST_IMAGE_CAPTURE = 1;
 
     private List<Image> items2;
     private static List<String> array_image_poi = new ArrayList<>();
     private static List<String> array_image_user = new ArrayList<>();
     private static List<String> array_invalid_image_user = new ArrayList<>();
-
 
     // MEDIA PLAYER
     private AppCompatSeekBar seek_song_progressbar;
@@ -159,6 +187,12 @@ public class DetallePoiActivity extends AppCompatActivity {
     private void initComponent() {
         layout_dots = findViewById(R.id.layout_dots);
         viewPager = findViewById(R.id.pager);
+
+        dialogButton = findViewById(R.id.button);
+
+        dialogButton.setOnClickListener(v -> {
+            showCustomDialog();
+        });
 
         RecyclerView recyclerStart = findViewById(R.id.recyclerStart);
 
@@ -791,6 +825,284 @@ public class DetallePoiActivity extends AppCompatActivity {
         builder.setView(v);
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode,
+                                 Intent resultData) {
+        Uri uri = null;
+
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+
+            Bitmap bitmap;
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uriSelected);
+                previewPhoto.setImageBitmap(bitmap);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            postButton.setEnabled(true);
+            /*Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            imageView.setImageBitmap(imageBitmap);*/
+        }
+        // The ACTION_OPEN_DOCUMENT intent was sent with the request code
+        // READ_REQUEST_CODE. If the request code seen here doesn't match, it's the
+        // response to some other intent, and the code below shouldn't run at all.
+
+        if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            // The document selected by the user won't be returned in the intent.
+            // Instead, a URI to that document will be contained in the return intent
+            // provided to this method as a parameter.
+            // Pull that URI using resultData.getData().
+
+            if (resultData != null) {
+                uri = resultData.getData();
+                Log.i("Filechooser URI", "Uri: " + uri.toString());
+                //showImage(uri);
+                Glide
+                        .with(this)
+                        .load(uri)
+                        .into(previewPhoto);
+                uriSelected = uri;
+                postButton.setEnabled(true);
+            }
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+    public void performFileSearch() {
+
+        // ACTION_OPEN_DOCUMENT is the intent to choose a file via the system's file
+        // browser.
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+
+        // Filter to only show results that can be "opened", such as a
+        // file (as opposed to a list of contacts or timezones)
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+
+        // Filter to show only images, using the image MIME data type.
+        // If one wanted to search for ogg vorbis files, the type would be "audio/ogg".
+        // To search for all documents available via installed storage providers,
+        // it would be "*/*".
+        intent.setType("image/*");
+
+        startActivityForResult(intent, READ_REQUEST_CODE);
+    }
+
+    private void checkExternalStoragePermission() {
+
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            Log.e("WRITE_EXTERNAL_STORAGE", "Permission not granted WRITE_EXTERNAL_STORAGE.");
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        225);
+            }
+        }if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            Log.e("Error CAMERA", "Permission not granted CAMERA.");
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.CAMERA)) {
+
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.CAMERA},
+                        226);
+            }
+        }
+
+        dispatchTakePictureIntent();
+
+    }
+
+    private void dispatchTakePictureIntent() {
+        /*Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }*/
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Images.Media.TITLE, "MyPicture");
+                values.put(MediaStore.Images.Media.DESCRIPTION, "Photo taken on " + System.currentTimeMillis());
+                uriSelected = getContentResolver().insert(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uriSelected);
+                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+            }
+        }
+    }
+
+    private void showCustomDialog() {
+        final Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.dialog_add_post);
+        dialog.setCancelable(true);
+        previewPhoto = dialog.findViewById(R.id.imageView);
+        postButton = dialog.findViewById(R.id.bt_submit);
+        postButton.setEnabled(false);
+
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.MATCH_PARENT;
+
+        //final AppCompatButton bt_submit = (AppCompatButton) dialog.findViewById(R.id.bt_submit);
+
+        /*bt_submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                Toast.makeText(getApplicationContext(), "Post Submitted", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        ((ImageButton) dialog.findViewById(R.id.bt_photo)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "Post Photo Clicked", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        ((ImageButton) dialog.findViewById(R.id.bt_gallery)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "Post Link Clicked", Toast.LENGTH_SHORT).show();
+            }
+        });*/
+
+        dialog.show();
+        dialog.getWindow().setAttributes(lp);
+
+        dialog.findViewById(R.id.bt_photo).setOnClickListener((view) -> { checkExternalStoragePermission(); });
+
+        dialog.findViewById(R.id.bt_gallery).setOnClickListener((view) -> { performFileSearch(); });
+
+        dialog.findViewById(R.id.bt_submit).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (uriSelected != null) {
+
+                    String jwt = UtilToken.getToken(Objects.requireNonNull(DetallePoiActivity.this));
+                    //PoiService service = ServiceGenerator.createService(PoiService.class, jwt, AuthType.JWT);
+                    PoiService service = ServiceGenerator.createService(PoiService.class, null, AuthType.NO_AUTH);
+                    UserService userService = ServiceGenerator.createService(UserService.class, jwt, AuthType.JWT);
+
+                    try {
+                        InputStream inputStream = getContentResolver().openInputStream(uriSelected);
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
+                        int cantBytes;
+                        byte[] buffer = new byte[1024*4];
+
+                        while ((cantBytes = bufferedInputStream.read(buffer,0,1024*4)) != -1) {
+                            baos.write(buffer,0,cantBytes);
+                        }
+
+                        RequestBody requestFile =
+                                RequestBody.create(
+                                        MediaType.parse(getContentResolver().getType(uriSelected)), baos.toByteArray());
+
+                        MultipartBody.Part body =
+                                MultipartBody.Part.createFormData("photo", "photo", requestFile);
+
+                        Call<ImageResponse> callUpload = service.uploadImage(body);
+
+                        callUpload.enqueue(new Callback<ImageResponse>() {
+                            @Override
+                            public void onResponse(Call<ImageResponse> call, Response<ImageResponse> response) {
+
+                                if (response.isSuccessful()) {
+                                    Log.d("Uploaded", "Éxito");
+                                    Log.d("Uploaded", response.body().toString());
+                                    Toast.makeText(DetallePoiActivity.this, response.body().getKey() + " hola" , Toast.LENGTH_SHORT).show();
+                                    image = new UserImageResponse(poi.getId(), response.body().getKey(), "");
+                                    user.getImages().add(image);
+
+                                    userEdit = new UserEditDto(user.getEmail(), user.getName(), user.getCountry(), user.getLanguage(), user.getPicture(), user.getLikes(), user.getFavs(), user.getFriends(), user.getImages());
+
+                                    Call<UserEditResponse> editUserImages = userService.editUser(user.getId(), userEdit);
+
+                                    editUserImages.enqueue(new Callback<UserEditResponse>() {
+                                        @Override
+                                        public void onResponse(Call<UserEditResponse> call, Response<UserEditResponse> response) {
+                                            Toast.makeText(DetallePoiActivity.this, "GG", Toast.LENGTH_SHORT).show();
+                                            dialog.dismiss();
+                                            getPoiDetails();
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<UserEditResponse> call, Throwable t) {
+                                            Toast.makeText(DetallePoiActivity.this, "F", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                } else {
+                                    Log.e("Upload error", response.message());
+                                    try {
+                                        Log.e("Upload error", response.errorBody().string());
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                    //Log.e("Upload error", response.errorBody().toString());
+                                    Toast.makeText(DetallePoiActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<ImageResponse> call, Throwable t) {
+                                Log.e("Upload error", t.getMessage());
+                            }
+
+                        });
+
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+
+                }
+            }
+
+        });
+
+
     }
 
     public void checkPerm() {

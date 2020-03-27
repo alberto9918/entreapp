@@ -42,7 +42,6 @@ export class DialogCreateUserComponent implements OnInit {
     this.createForm();
     this.obtainRoles();
     this.getAllCountries();
-    // this.getData();
   }
   //method to generate random password
   generateNewPassword() {

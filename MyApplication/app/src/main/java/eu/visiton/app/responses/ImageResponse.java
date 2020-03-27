@@ -1,6 +1,7 @@
 package eu.visiton.app.responses;
 
 public class ImageResponse {
+
     String key;
 
     public ImageResponse(String key) {

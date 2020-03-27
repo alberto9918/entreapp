@@ -28,11 +28,7 @@ export class CategoriesComponent implements OnInit {
     this.titleService.setTitle('Categories');
     this.getListCategories('List of categories loaded');
   }
-  // applyFilter(filterValue: string) {
-  //   filterValue = filterValue.trim(); // Remove whitespace
-  //   filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
-  //   this.dataSource.filter = filterValue;
-  // }
+
   applyFilter(filterValue: string) {
     filterValue = filterValue.trim(); // Remove whitespace
     filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
@@ -42,7 +38,6 @@ export class CategoriesComponent implements OnInit {
     const totalSum = 0;
     this.categoryService.getAllCategories().toPromise()
       .then(receivedCategories => {
-        // receivedUsers.rows.forEach(badges => {totalSum+=badge.points})
         this.dataSource = new MatTableDataSource(receivedCategories.rows);
         this.dataSource.paginator = this.paginator;
       })

@@ -97,44 +97,9 @@ export class PoiDetailsComponent implements OnInit {
     console.log("has salido de aqui")
   }
 
-  /*getAverageRating() {
-    console.log(localStorage.getItem('id'))
-    this.ratingService.getAll().subscribe(receivedRatings => {
-      this.ratings = receivedRatings;
-      this.averageRating = 0;
-      this.userRating = 0;
-
-      for(var i = 0; i<this.ratings.rows.length; i++){
-        if(this.ratings.rows[i].poi == this.poiService.selectedPoi.id){
-          if(this.poiRatings == undefined) {
-            this.poiRatings = [this.ratings.rows[i]];
-          }else {
-            this.poiRatings.push(this.ratings.rows[i]);
-          }
-        }
-      }
-      
-      for(var i = 0; i<this.poiRatings.length; i++){
-        if(this.poiRatings[i].user == localStorage.getItem('id')){
-          this.userRating = this.poiRatings[i].rating;
-        }   
-      }
-
-      for(var i = 0; i<this.poiRatings.length; i++) {
-        this.averageRating += this.poiRatings[i].rating;
-      }
-      
-      this.averageRating = (this.averageRating/this.poiRatings.length);
-    })
-  }*/
-
   getAllLanguages() {
     this.languageService.getAllLanguages(this.authService.getToken()).subscribe(receivedLanguages => {
       this.languages = receivedLanguages;
-      /*console.log(this.poi.description.translations)
-      console.log(this.languages.rows)
-      console.log('Este es el array de audios:')
-      console.log(this.arrayAudios)*/
 
       for(var i = 0; i<this.languages.rows.length; i++){
         if (this.arrayLanguages == undefined) {
@@ -175,41 +140,6 @@ export class PoiDetailsComponent implements OnInit {
           }
         }
       }
-
-      /*for(var i =0; i<this.poi.description.translations.length; i++) {
-        for(var x = 0; x<this.languages.rows.length; x++) {
-          if(this.poi.description.translations[i].language.language == this.languages.rows[x].id) {
-            for(var y = 0; y<this.poi.audioguides.translations.length; y++){
-              if(this.poi.audioguides.translations[y].language.language == this.poi.description.translations[i].language.language){
-                if (this.arrayAudios == undefined) {
-                  this.arrayAudios = [this.poi.audioguides.translations[y].translatedFile]
-                } else {
-                  this.arrayAudios.push(this.poi.audioguides.translations[y].translatedFile)
-                }
-              }
-            }
-            if (this.arrayLanguages == undefined) {
-              this.arrayLanguages = [this.languages.rows[x].name]
-            } else {
-              this.arrayLanguages.push(this.languages.rows[x].name)
-            }
-          }
-        }
-        if(this.poi.audioguides.translations == undefined || this.poi.audioguides.translations[this.poi.audioguides.translations.length-1].language.language != this.poi.description.translations[i].language.language){
-          console.log('La audioguia no existe')
-          if (this.arrayAudios == undefined) {
-            this.arrayAudios = ['']
-          } else {
-            this.arrayAudios.push('')
-          }
-        }else{
-          console.log('la audioguia existe')
-        }
-      }
-      console.log(this.arrayLanguages)
-      console.log('Este es el array de audios:')
-      console.log(this.arrayAudios)*/
-
     }, error => {
       this.snackBar.open('There was an error when we were loading data.', 'Close', { duration: 3000 });
     });

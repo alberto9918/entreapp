@@ -52,12 +52,6 @@ export class PoiComponent implements OnInit {
       err => this.snackBar.open('There was an error when we were deleting this POI.', 'Close', { duration: 3000 }));
   }
 
-  /** Open a modal to insert a new translation */
-  openDialogTranslatePoi(p) {
-    //const dialogTranslatePoi = this.dialog.open(DialogTranslatePoiComponent, { data: { poi: p } });
-    //dialogTranslatePoi.afterClosed().subscribe(res => this.getAll());
-  }
-
   /** Go to POIDetails view */
   goPoiDetails(p) {
     this.poiService.selectedPoi = p;

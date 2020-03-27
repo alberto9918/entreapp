@@ -13,7 +13,6 @@ export class DialogDeleteBadgeComponent implements OnInit {
   elementName: string;
   checkedRobot: boolean;
 
-  // tslint:disable-next-line:max-line-length
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private badgeService: BadgeService,
     public dialogRef: MatDialogRef<DialogDeleteBadgeComponent>, public snackBar: MatSnackBar) { }
 

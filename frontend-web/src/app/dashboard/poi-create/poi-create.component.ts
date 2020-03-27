@@ -73,7 +73,6 @@ export class PoiCreateComponent implements OnInit {
       name: [null, Validators.compose([Validators.required])],
       year: [null, Validators.compose([Validators.required])],
       creator: [localStorage.getItem('name')],
-      //images: [null, Validators.compose([Validators.required])],
       categories: [null, Validators.compose([Validators.required])],
       status: [null, Validators.compose([Validators.required])],
       schedule: [null, Validators.compose([Validators.required])],
@@ -86,10 +85,7 @@ export class PoiCreateComponent implements OnInit {
   onSubmit() {
     const newPoi: PoiCreateDto = <PoiCreateDto>this.form.value;
     newPoi.loc = { coordinates: [this.coordinatesForm.controls['lat'].value, this.coordinatesForm.controls['lng'].value] };
-    //newPoi.audioguides = this.audioguidesForm.value;
     newPoi.description = this.descriptionForm.value;
-    //TODO id del idioma español
-    //newPoi.description.language.language = this.spanishLanguage;
     newPoi.description.translations = [{
       language: {
         language: this.spanishLanguage
@@ -112,7 +108,6 @@ export class PoiCreateComponent implements OnInit {
   }
 
   /** Function to upload multiple images to Firebase-Firestorage */
-  // TODO Cambiar para que haga una llamada al servicio de subida de ficheros
   ImgUpload(e) {
     for (let i = 0; i < e.target.files.length; i++) {
       const id = Math.random().toString(36).substring(2);
@@ -132,7 +127,6 @@ export class PoiCreateComponent implements OnInit {
   }
 
   /** Function to upload only one audioguide to Firebase-Firestorage */
-  // TODO Cambiar para que haga una llamada al servicio de subida de ficheros
 
   audioUpload(e) {
     const id = Math.random().toString(36).substring(2);
