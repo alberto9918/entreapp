@@ -87,7 +87,7 @@ public class AdapterSnapGeneric extends RecyclerView.Adapter<RecyclerView.ViewHo
             view.brief.setText(obj.brief);
 
 
-            Glide.with(ctx).load(obj.image).into(view.image);
+            Glide.with(ctx).load("http://10.0.2.2:9000/files/" + obj.image).into(view.image);
             view.lyt_parent.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

@@ -2,17 +2,17 @@ package eu.visiton.app.responses;
 
 public class ImageResponse {
 
-    String url;
+    String key;
 
     public ImageResponse(String url) {
-        this.url = url;
+        this.key = url;
     }
 
-    public String getUrl() {
-        return url;
+    public String getKey() {
+        return key;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setKey(String url) {
+        this.key = url;
     }
 }

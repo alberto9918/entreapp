@@ -15,6 +15,8 @@ public class User {
     private Badge badges[];
     private String city;
     private Language language;
+
+    //TODO añadir el array de imagenes
     private User friends[];
 
     public User() {

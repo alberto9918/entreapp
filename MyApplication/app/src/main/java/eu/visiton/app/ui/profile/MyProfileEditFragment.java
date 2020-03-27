@@ -40,6 +40,7 @@ import eu.visiton.app.responses.CategoryMyProfileResponse;
 import eu.visiton.app.responses.LanguageResponse;
 import eu.visiton.app.responses.ResponseContainer;
 import eu.visiton.app.responses.UserEditResponse;
+import eu.visiton.app.responses.UserLikesResponse;
 import eu.visiton.app.retrofit.generator.AuthType;
 import eu.visiton.app.responses.MyProfileResponse;
 import eu.visiton.app.retrofit.generator.ServiceGenerator;
@@ -318,7 +319,7 @@ public class MyProfileEditFragment extends Fragment {
         UserEditDto userEditDto = new UserEditDto();
         userEditDto.setPicture(user.getPicture());
         userEditDto.setCity(editTextCity.getText().toString());
-        List<String> likes = new ArrayList<>();
+        List<UserLikesResponse> likes = new ArrayList<>();
         userEditDto.setName(editTextName.getText().toString());
         LanguageResponse r = (LanguageResponse) spinnerLanguages.getSelectedItem();
         userEditDto.setLanguage(r.getId());
@@ -326,9 +327,9 @@ public class MyProfileEditFragment extends Fragment {
         userEditDto.setFavs(user.getFavs());
         userEditDto.setFriends(user.getFriends());
         //iterations
-        for (CategoryMyProfileResponse c:user.getLikes()){
+        /*for (CategoryMyProfileResponse c:user.getLikes()){
         likes.add(c.getId());
-        }
+        }*/
         userEditDto.setLikes(likes);
 
 
@@ -349,7 +350,7 @@ public class MyProfileEditFragment extends Fragment {
         for (CategoryMyProfileResponse c:user.getLikes()){
             likes.add(c.getId());
         }
-        userEditDto.setLikes(likes);
+        //userEditDto.setLikes(likes);
         userEditDto.setPicture(profilePicture);
         updatedUser.setPicture(profilePicture);
         mViewModel.selectUser(updatedUser);

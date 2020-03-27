@@ -359,6 +359,7 @@ export class PoiEditComponent implements OnInit {
           }
         }
 
+        console.log(resp.key + 'minecraft')
         newPoi.images.push(resp.key)
 
         newPoi.coverImage ? null && newPoi.images[0] != null || newPoi.coverImage == notFoundImg && newPoi.images[0] != null : newPoi.coverImage = newPoi.images[0];

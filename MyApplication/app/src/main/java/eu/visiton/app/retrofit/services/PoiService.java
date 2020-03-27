@@ -24,7 +24,7 @@ public interface PoiService {
 
     @Multipart
     @POST("/files/upload/image")
-    Call<ImageResponse> uploadImage(@Part MultipartBody.Part photo, @Query("access_token") String token);
+    Call<ImageResponse> uploadImage(@Part MultipartBody.Part photo);
 
     @GET(BASE_URL)
     Call<ResponseContainer<PoiResponse>> listPois();

@@ -10,6 +10,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.PagerAdapter;
@@ -18,16 +19,20 @@ import androidx.viewpager.widget.ViewPager;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -51,11 +56,15 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import eu.visiton.app.R;
+import eu.visiton.app.dto.OnImageResponse;
+import eu.visiton.app.dto.UserEditDto;
+import eu.visiton.app.dto.UserImageDto;
 import eu.visiton.app.materialx.utils.Tools;
 import eu.visiton.app.model.Image;
 import eu.visiton.app.responses.ImageInvalidResponse;
 import eu.visiton.app.responses.ImageResponse;
 import eu.visiton.app.responses.PoiResponse;
+import eu.visiton.app.responses.UserEditResponse;
 import eu.visiton.app.responses.UserImageResponse;
 import eu.visiton.app.responses.UserSResponse;
 import eu.visiton.app.retrofit.generator.AuthType;
@@ -69,10 +78,14 @@ import eu.visiton.app.util.UtilToken;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Executable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -99,11 +112,16 @@ public class DetallePoiActivity extends AppCompatActivity {
     private CardView audioPlayer;
     private static final int PERMISSIONS_REQUEST_ACCESS_CAMERA = 2;
     private static final int READ_REQUEST_CODE = 42;
+    private static final int REQUEST_TAKE_PHOTO = 1;
     private Uri uriSelected;
     private ImageView previewPhoto;
     private AppCompatButton postButton;
     private Button dialogButton;
-
+    private String currentPhotoPath;
+    private UserImageResponse image;
+    private ImageResponse url;
+    private UserEditDto userEdit;
+    static final int REQUEST_IMAGE_CAPTURE = 1;
 
     private List<Image> items2;
     private static List<String> array_image_poi = new ArrayList<>();
@@ -512,8 +530,6 @@ public class DetallePoiActivity extends AppCompatActivity {
                         }
                     });
 
-
-
                 }
             }
 
@@ -670,7 +686,25 @@ public class DetallePoiActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode,
                                  Intent resultData) {
+        Uri uri = null;
 
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+
+            Bitmap bitmap;
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uriSelected);
+                previewPhoto.setImageBitmap(bitmap);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            postButton.setEnabled(true);
+            /*Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            imageView.setImageBitmap(imageBitmap);*/
+        }
         // The ACTION_OPEN_DOCUMENT intent was sent with the request code
         // READ_REQUEST_CODE. If the request code seen here doesn't match, it's the
         // response to some other intent, and the code below shouldn't run at all.
@@ -680,7 +714,7 @@ public class DetallePoiActivity extends AppCompatActivity {
             // Instead, a URI to that document will be contained in the return intent
             // provided to this method as a parameter.
             // Pull that URI using resultData.getData().
-            Uri uri = null;
+
             if (resultData != null) {
                 uri = resultData.getData();
                 Log.i("Filechooser URI", "Uri: " + uri.toString());
@@ -693,6 +727,22 @@ public class DetallePoiActivity extends AppCompatActivity {
                 postButton.setEnabled(true);
             }
         }
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
     }
 
     public void performFileSearch() {
@@ -714,6 +764,67 @@ public class DetallePoiActivity extends AppCompatActivity {
         startActivityForResult(intent, READ_REQUEST_CODE);
     }
 
+    private void checkExternalStoragePermission() {
+
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            Log.e("WRITE_EXTERNAL_STORAGE", "Permission not granted WRITE_EXTERNAL_STORAGE.");
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        225);
+            }
+        }if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            Log.e("Error CAMERA", "Permission not granted CAMERA.");
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.CAMERA)) {
+
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.CAMERA},
+                        226);
+            }
+        }
+
+        dispatchTakePictureIntent();
+
+    }
+
+    private void dispatchTakePictureIntent() {
+        /*Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }*/
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Images.Media.TITLE, "MyPicture");
+                values.put(MediaStore.Images.Media.DESCRIPTION, "Photo taken on " + System.currentTimeMillis());
+                uriSelected = getContentResolver().insert(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uriSelected);
+                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+            }
+        }
+    }
+
     private void showCustomDialog() {
         final Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.dialog_add_post);
@@ -727,9 +838,9 @@ public class DetallePoiActivity extends AppCompatActivity {
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.MATCH_PARENT;
 
-        final AppCompatButton bt_submit = (AppCompatButton) dialog.findViewById(R.id.bt_submit);
+        //final AppCompatButton bt_submit = (AppCompatButton) dialog.findViewById(R.id.bt_submit);
 
-        bt_submit.setOnClickListener(new View.OnClickListener() {
+        /*bt_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
@@ -749,10 +860,12 @@ public class DetallePoiActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), "Post Link Clicked", Toast.LENGTH_SHORT).show();
             }
-        });
+        });*/
 
         dialog.show();
         dialog.getWindow().setAttributes(lp);
+
+        dialog.findViewById(R.id.bt_photo).setOnClickListener((view) -> { checkExternalStoragePermission(); });
 
         dialog.findViewById(R.id.bt_gallery).setOnClickListener((view) -> { performFileSearch(); });
 
@@ -764,6 +877,7 @@ public class DetallePoiActivity extends AppCompatActivity {
                     String jwt = UtilToken.getToken(Objects.requireNonNull(DetallePoiActivity.this));
                     //PoiService service = ServiceGenerator.createService(PoiService.class, jwt, AuthType.JWT);
                     PoiService service = ServiceGenerator.createService(PoiService.class, null, AuthType.NO_AUTH);
+                    UserService userService = ServiceGenerator.createService(UserService.class, jwt, AuthType.JWT);
 
                     try {
                         InputStream inputStream = getContentResolver().openInputStream(uriSelected);
@@ -780,12 +894,10 @@ public class DetallePoiActivity extends AppCompatActivity {
                                 RequestBody.create(
                                         MediaType.parse(getContentResolver().getType(uriSelected)), baos.toByteArray());
 
-
                         MultipartBody.Part body =
                                 MultipartBody.Part.createFormData("photo", "photo", requestFile);
 
-
-                        Call<ImageResponse> callUpload = service.uploadImage(body, "WYGSKxg0IwVvtZAWjDtVAWfWcbnugIbX");
+                        Call<ImageResponse> callUpload = service.uploadImage(body);
 
                         callUpload.enqueue(new Callback<ImageResponse>() {
                             @Override
@@ -794,7 +906,25 @@ public class DetallePoiActivity extends AppCompatActivity {
                                 if (response.isSuccessful()) {
                                     Log.d("Uploaded", "Éxito");
                                     Log.d("Uploaded", response.body().toString());
-                                    Toast.makeText(DetallePoiActivity.this, "Funciona", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(DetallePoiActivity.this, response.body().getKey() + " hola" , Toast.LENGTH_SHORT).show();
+                                    image = new UserImageResponse(poi.getId(), response.body().getKey(), "");
+                                    user.getImages().add(image);
+
+                                    userEdit = new UserEditDto(user.getEmail(), user.getName(), user.getCountry(), user.getLanguage(), user.getPicture(), user.getLikes(), user.getFavs(), user.getFriends(), user.getImages());
+
+                                    Call<UserEditResponse> editUserImages = userService.editUser(user.getId(), userEdit);
+
+                                    editUserImages.enqueue(new Callback<UserEditResponse>() {
+                                        @Override
+                                        public void onResponse(Call<UserEditResponse> call, Response<UserEditResponse> response) {
+                                            Toast.makeText(DetallePoiActivity.this, "GG", Toast.LENGTH_SHORT).show();
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<UserEditResponse> call, Throwable t) {
+                                            Toast.makeText(DetallePoiActivity.this, "F", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
                                 } else {
                                     Log.e("Upload error", response.message());
                                     try {
@@ -811,8 +941,8 @@ public class DetallePoiActivity extends AppCompatActivity {
                             public void onFailure(Call<ImageResponse> call, Throwable t) {
                                 Log.e("Upload error", t.getMessage());
                             }
-                        });
 
+                        });
 
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
