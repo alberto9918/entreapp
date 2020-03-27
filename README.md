@@ -14,7 +14,7 @@ Technologies used:
 - MEN REST API can be found in 'api' folder.
 - Web App can be found in 'frontend-web' folder.
 
-## Descripción detallada del sistema.<a name="DDS"></a>
+## Descripción detallada del sistema
 ---
 VisitOn es una aplicación de turismo para estudiante ERASMUS+, en la que podremos encontrar información de los diferentes puntos de interés de sevilla para así visitarlos y podernos informar sobre ellos a través de los textos y audioguías que hay en la aplicación en varios idiomas. En el siguiente punto procederemos a explicar las diferente funcionalidades de la aplicación:
 
@@ -50,9 +50,24 @@ VisitOn es una aplicación de turismo para estudiante ERASMUS+, en la que podrem
       propias al punto que solo serán visibles para ti, estas imágenes tenemos la posibilidad de descargarlas.También tenemos la   
       posibilidad de valorar el punto de interés, ver la valoración del usuario y ver la media de valoración. Desde la lista de puntos   
       podemos abrir un mapa que nos muestras la localización de los puntos de interés, desde el mapa se puede abrir el escáner QR, puede       filtrar por visitados, favoritos y cercanos, y desde un botón del mapa puedes volver a la lista.
+      
+## Documento de historias de usuario
+---
+| ID   |      Historia de usuario      | Prueba  | Esfuerzo  | Asignado a |
+|------|:-----------------------------:|:--------:|:---------:|:----------:|
+|01    | Como usuario, quiero cambiar mi foto de perfil por una que este en la galeria de mi movil    |  Para comprobar esta funcionalidad, inicaremos sesión como usuario en la app, iremos hacia mi perfil, pulsaremos en la fotos , esta se hara más grande y tendra un icono de editar, el cual pulsandolo nos dejara cambiar la imagen por una de nuestra galeria |     60     |Antonio Durán Falero|
+|02  | Como un usuario, quiero subir imagenes de un monumento desde la galería, las cuales solo las va a poder ver el propio usuario y el administrador     |  Para comprobar esta funcionalidad, tendremos que entrar en los detalles de un punto de interés y clickar en el ícono de la cámara en el mismo, en ese dialogo debemos clickar en el icono de la galeria y seleccionar la imagen que quieras, después de eso subirlo la imagen desde el botón post   |     40     |José Miguel Zamorano|
+|03    | Como un usuario, quiero poder editar los datos de mi perfil en la aplicación android             |  Para comprobar esta funcionalidad, se inicia sesión como usuario en la app, se va al apartado de 'Mi perfil', y se le dará al botón e editar que aparece en la esquina inferior derecha de la pantalla. Una vez que se haya editado los campos deseados, se le dará al botón de confirmar para hacer efectivos esos cambios. |     40     |Alberto Santiago Rodríguez|
+|04    | Como un contribuidor quiero ver unificada la interfaz de angular e impecable      |  Revisar la interfaz de la aplicación web   |     15     |José María Ruíz Laguna|
+|05    | Corregir errores de la aplicación de angular y limpiar el código  |  Corregir errores menores   |     20     |José María Ruíz Laguna|
+|06    | Como un usuario, quiero subir imagenes de un monumento desde la cámara, las cuales solo las va a poder ver el propio usuario y el administrador   |  Para comprobar esta funcionalidad, tendremos que entrar en los detalles de un punto de interés y clickar en el ícono de la cámara en el mismo, en ese dialogo debemos clickar en el icono de la cámara y hacer la foto, después de eso subirlo la imagen desde el botón post.   |     60     |José Miguel Zamorano|
+|07    | Como usuario, quiero poder ver ampliada la foto de mi perfil de una manera nítida   |  para comprobar esta funcionalidad, iremos hacien nuestro perfil y pulsaremos en la foto de perfil está se hara más grande pudiendose ver en perfecta resolución.   |     30     |Antonio Durán Falero|
+|08    | Como usuario, quiero cambiar mi foto de perfil por una foto que puede sacar con mi camara en el mismo momento               |  Para comprobar esta funcionalidad, inicaremos sesión como usuario en la app, iremos hacia mi perfil, pulsaremos en la fotos , esta se hara más grande y tendra un icono de editar, el cual pulsandolo nos dejara cambiar la imagen por que podremos sacar al instante   |     60     |Antonio Durán Falero|
+|09    | Solucionar sustitución de atributos adicionales en el usuario actual al editar imagenes del usuario y el perfil de usuario          |  Corregir error en el formulario de edición de usuario y en el añadir imagenes a los POI   |     15     |José Miguel Zamorano|
 
 
-#### ©2019
+
+#### ©2020
 
 #### Authors:
 - [José María Ruiz Laguna](https://github.com/raykrai)
