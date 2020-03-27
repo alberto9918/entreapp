@@ -130,6 +130,8 @@ public class ProfileDarkActivity extends AppCompatActivity {
             DialogFragment dialogFragment = new ProfileDialogFragment(userId);
             dialogFragment.show(getSupportFragmentManager(),"editUser");
 
+
+
         });
 
         this.getUser();
@@ -409,7 +411,7 @@ public class ProfileDarkActivity extends AppCompatActivity {
                                     Toast.makeText(ProfileDarkActivity.this, response.body().getKey() + " hola" , Toast.LENGTH_SHORT).show();
 
                                     user.setPicture(response.body().getKey());
-                                    userEdit = new UserEditDto(user.getEmail(), user.getName(), user.getCountry(), user.getLanguage(), user.getPicture(), user.getLikes(), user.getFavs(), user.getFriends(), user.getImages());
+                                    userEdit = new UserEditDto(user.getEmail(), user.getName(), myProfileResponse.getcity(), user.getLanguage(), user.getPicture(), user.getLikes(), user.getFavs(), user.getFriends(), user.getImages());
 
 
 
@@ -568,4 +570,6 @@ public class ProfileDarkActivity extends AppCompatActivity {
             }
         });
     }
+
+
 }

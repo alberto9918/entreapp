@@ -1,9 +1,11 @@
 package eu.visiton.app.ui.profile;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -123,11 +125,21 @@ public class ProfileDialogFragment extends DialogFragment {
                 if(validate()){//if the edit text are correct the user is updated
                     profileViewModel.updateProfile(updatedUser.getId(), myProfileResponseToUserEditDto(updatedUser));
                     dialog.dismiss();
+                    reiniciarActivity((Activity) ctx);
                 }
             }
         });
 
         return builder.create();
+    }
+
+    public static void reiniciarActivity(Activity actividad){
+        Intent intent=new Intent();
+        intent.setClass(actividad, actividad.getClass());
+        //llamamos a la actividad
+        actividad.startActivity(intent);
+        //finalizamos la actividad actual
+        actividad.finish();
     }
 
     public void loadAllLanguages(){//take every language in node api

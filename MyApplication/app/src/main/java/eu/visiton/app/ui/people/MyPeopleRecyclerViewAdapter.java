@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide;
 
 import eu.visiton.app.R;
 import eu.visiton.app.responses.PeopleResponse;
+import eu.visiton.app.util.Constantes;
 
 import java.util.List;
 
@@ -47,11 +48,9 @@ public class MyPeopleRecyclerViewAdapter extends RecyclerView.Adapter<MyPeopleRe
             //holder.idUser.setText(mValues.get(position).getId());
             holder.name.setText(mValues.get(position).getName());
             holder.country.setText(mValues.get(position).getCity());
-            Glide.with(holder.mView).load(mValues.get(position).getPicture()).into(holder.picture);
+            Glide.with(holder.mView).load(Constantes.FILES_BASE_URL+mValues.get(position).getPicture()).into(holder.picture);
             holder.mView.setOnClickListener(v -> {
-                if (null != mListener) {
-                    mListener.onPeopleClick(holder.mItem);
-                }
+
             });
 
             /* holder.action.setOnClickListener(v -> {
@@ -65,6 +64,8 @@ public class MyPeopleRecyclerViewAdapter extends RecyclerView.Adapter<MyPeopleRe
         }
 
     }
+
+
 
     public void setData(List<PeopleResponse> peopleList){
         this.mValues = peopleList;
