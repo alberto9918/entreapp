@@ -1,7 +1,6 @@
 package eu.visiton.app.ui.profile;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
@@ -11,10 +10,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import androidx.fragment.app.DialogFragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
@@ -32,7 +29,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.squareup.picasso.Picasso;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -42,28 +38,20 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
-import dmax.dialog.SpotsDialog;
 import eu.visiton.app.R;
 import eu.visiton.app.dto.UserEditDto;
 import eu.visiton.app.dto.UserImageDto;
-import eu.visiton.app.data.PoiViewModel;
 import eu.visiton.app.data.ProfileViewModel;
 import eu.visiton.app.materialx.utils.Tools;
-import eu.visiton.app.model.Image;
-import eu.visiton.app.responses.ImageInvalidResponse;
 import eu.visiton.app.responses.ImageResponse;
 import eu.visiton.app.responses.MyProfileResponse;
 import eu.visiton.app.responses.UserEditResponse;
-import eu.visiton.app.responses.UserImageResponse;
 import eu.visiton.app.responses.UserSResponse;
 import eu.visiton.app.retrofit.generator.AuthType;
 import eu.visiton.app.retrofit.generator.ServiceGenerator;
 import eu.visiton.app.retrofit.services.PoiService;
 import eu.visiton.app.retrofit.services.UserService;
-import eu.visiton.app.ui.pois.details.DetallePoiActivity;
-import eu.visiton.app.ui.pois.details.SaveImageHelper;
 import eu.visiton.app.util.Constantes;
 import eu.visiton.app.util.UtilToken;
 
@@ -196,6 +184,8 @@ public class ProfileDarkActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+
     public void getUser(){//obtain from the api the user logged
         profileViewModel.userProfile.observe(this, myProfileResponse -> {
             setItemsInfo(myProfileResponse);
@@ -251,6 +241,53 @@ public class ProfileDarkActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressLint("RestrictedApi")
+    public void setItemsInfo2(Response<MyProfileResponse> response) {
+        String points="";
+        Resources res = getResources();
+        myProfileResponse = response.body();
+        textViewEmailWritten.setText(myProfileResponse.getEmail());
+        textViewName.setText(myProfileResponse.getName());
+        if (myProfileResponse.getLanguage() != null) {
+            textViewLanguageWritten.setText(myProfileResponse.getLanguage().getName());
+        } else {
+            textViewLanguageWritten.setText(R.string.no_language);
+        }
+        if (myProfileResponse.getcity() != null) {
+            texViewCityWritten.setText(myProfileResponse.getcity());
+        } else {
+            texViewCityWritten.setText(R.string.no_city);
+        }
+        textViewPoisWritten.setText(String.valueOf(countPoisVisited(myProfileResponse)));
+        textViewBadgesWritten.setText(String.valueOf(countBadges(myProfileResponse)));
+        textViewFriendsWritten.setText(String.valueOf(myProfileResponse.getFriends().size()));
+        points = String.valueOf(countPoints(myProfileResponse));
+        //points = String.valueOf(countPoints(myProfileResponse));
+        textViewPointsWritten.setText(points);
+
+        //image
+        Glide.with(this)
+                .load(Constantes.FILES_BASE_URL+myProfileResponse.getPicture())
+                .into(imageViewProfile);
+
+        int idFlag = this.getResources().getIdentifier("ic_flag_"+myProfileResponse.getLanguage().getIsoCode().toLowerCase(), "drawable", this.getPackageName());
+        ivFlag.setImageResource(idFlag);
+
+        if(!isProfile) {
+            fab.setVisibility(View.GONE);
+        }
+
+        imageViewProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                showDialogImageFull();
+
+
+            }
+        });
+    }
+
     private void showDialogImageFull() {
         Toast.makeText(this, "Imagen Perfil", Toast.LENGTH_SHORT).show();
         final Dialog dialog = new Dialog(this);
@@ -260,7 +297,6 @@ public class ProfileDarkActivity extends AppCompatActivity {
         // Button btnDownload =  dialog.findViewById(R.id.button_download);
         // onClickListener
         CardView cardView = dialog.findViewById(R.id.cardViewDescarga);
-
 
         Glide.with(this).load( Constantes.FILES_BASE_URL+myProfileResponse.getPicture()).into((ImageView) dialog.findViewById(R.id.ImageView_photo));
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
@@ -384,10 +420,11 @@ public class ProfileDarkActivity extends AppCompatActivity {
                                         @Override
                                         public void onResponse(Call<UserEditResponse> call, Response<UserEditResponse> response) {
                                             Toast.makeText(ProfileDarkActivity.this, "GG", Toast.LENGTH_SHORT).show();
-                                            getUser();
+                                            getUser2();
                                             Glide.with(ProfileDarkActivity.this)
                                                     .load(Constantes.FILES_BASE_URL+userEdit.getPicture())
                                                     .into(imageViewProfile);
+
 
                                         }
 
@@ -502,5 +539,33 @@ public class ProfileDarkActivity extends AppCompatActivity {
     //it counts our pois visited
     public int countPoisVisited(MyProfileResponse u) {
         return u.getVisited().size();
+    }
+
+
+
+    public void getUser2() {//obtain from the api the user logged
+        service = ServiceGenerator.createService(UserService.class,
+                jwt, AuthType.JWT);
+        Call<MyProfileResponse> getOneUser = service.getUser(userId);
+        getOneUser.enqueue(new Callback<MyProfileResponse>() {
+            @Override
+            public void onResponse(Call<MyProfileResponse> call, Response<MyProfileResponse> response) {
+                //Resources res = getResources();
+                String points = "";
+                if (response.isSuccessful()) {
+                    Log.d("Success", "user obtain successfully");
+                    setItemsInfo2(response);
+                } else {
+                    Log.d("Fail", "user can't be obtain successfully");
+                    Toast.makeText(ProfileDarkActivity.this, "You have to log in!", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MyProfileResponse> call, Throwable t) {
+                Log.d("Conexion failure", "FALLITO BUENO");
+                Toast.makeText(ProfileDarkActivity.this, "Fail in the request!", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }

@@ -222,6 +222,7 @@ public class ProfileDialogFragment extends DialogFragment {
         userEditDto.setEmail(editTextemail.getText().toString());
         userEditDto.setFavs(user.getFavs());
         userEditDto.setFriends(user.getFriends());
+
         //iterations
         for (CategoryMyProfileResponse c:user.getLikes()){
             likes.add(c.getId());
