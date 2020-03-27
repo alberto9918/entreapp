@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -116,7 +117,13 @@ public class ProfileDialogFragment extends DialogFragment {
                 if(validate()){//if the edit text are correct the user is updated
                     profileViewModel.updateProfile(updatedUser.getId(), myProfileResponseToUserEditDto(updatedUser));
                     dialog.dismiss();
-                    reiniciarActivity((Activity) ctx);
+                    (new Handler()).postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            reiniciarActivity((Activity) ctx);
+                        }
+                    }, 500);
+
                 }
             }
         });
