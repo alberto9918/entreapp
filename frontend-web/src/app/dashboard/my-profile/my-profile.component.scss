@@ -3,7 +3,7 @@ body{
 
 }
 mat-card{
-    width: 90%;
+    width: 35%;
     height: 100%;;
 }
 
@@ -12,10 +12,16 @@ img{
     width: 150px;
 }
 
-button{
-    margin-top: 30px;
-    float: right;
-    margin-right: 20px;
+#addFloatingButton {
+    position: fixed;
+    right: 5%;
+    bottom: 5%;
+    z-index: 9999999;
+    background-color: var(--color-primary-dark);
+
+    .mat-icon {
+        color: white;
+    }
 }
 
 .roleusu {

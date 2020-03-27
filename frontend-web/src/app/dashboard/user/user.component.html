@@ -21,7 +21,7 @@
       <ng-container matColumnDef="picture" >
         <th mat-header-cell *matHeaderCellDef> </th>
         <td mat-cell *matCellDef="let element">
-            <img src="{{element.picture}}" alt="Avatar">
+            <img [src]="loadImages(element.picture)" alt="Avatar">
         </td>
       </ng-container>
       <ng-container matColumnDef="name">

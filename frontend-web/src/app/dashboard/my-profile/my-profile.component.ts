@@ -9,6 +9,7 @@ import { DialogEditUserComponent } from '../../dialogs/dialog-edit-user/dialog-e
 import { DialogUpdateProfileComponent } from 'src/app/dialogs/dialog-update-profile/dialog-update-profile.component';
 import { UserUpdateMyProfileDto } from 'src/app/dto/user-update-my-profile.dto';
 import { Title } from '@angular/platform-browser';
+import { environment } from 'src/environments/environment';
 @Component({
   selector: 'app-my-profile',
   templateUrl: './my-profile.component.html',
@@ -54,6 +55,10 @@ export class MyProfileComponent implements OnInit {
     });
   }
 
+  loadImages(key: String) {
+    return `${environment.apiUrl}/files/` + key;
+  }
+  
   openDialogEditUser(user: UserResponse) {
     const dialogEditUser = this.dialog.open(DialogUpdateProfileComponent, {
       data: {user: user},

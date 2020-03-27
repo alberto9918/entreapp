@@ -1,11 +1,12 @@
 <div class="card">
+  <h1>My profile</h1>
   <mat-card>
     <mat-card-content>
       <div fxLayout="row">
           <div fxFlex="45">
               <figure fxShow.lt-md="false">
                 <div class="text-xs-center">
-                  <img src="https://api.adorable.io/avatars/285/1234.png" alt="" class="radius-circle">
+                  <img [src]="loadImages(user.picture)" alt="" class="radius-circle">
                 </div>
               </figure>
             </div>
@@ -13,6 +14,7 @@
           <h1 class="ma-0" >{{user?.name}}</h1>
           <small >{{user?.email}}</small>
           <p>Role: <span class="roleusu">{{user?.role}}</span></p>
+          <!-- <p>Language: <span class="roleusu">{{user.language}}</span></p> -->
           <!-- <p href="javascript:;" class="block mt-xs mb-xs">Phone: {{user.phone}}</p> -->
           <p href="javascript:;" class="block mt-xs mb-xs">Register date: {{user?.createAt}}</p>
           <!-- <button mat-raised-button color="primary">Edit Profile</button> -->

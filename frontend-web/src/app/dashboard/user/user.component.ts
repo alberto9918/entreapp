@@ -9,6 +9,7 @@ import { UserService } from 'src/app/services/user.service';
 
 import { DialogEditUserComponent } from '../../dialogs/dialog-edit-user/dialog-edit-user.component';
 import { UserResponse } from '../../interfaces/user-response';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-user',
@@ -55,7 +56,9 @@ export class UserComponent implements OnInit {
     });
   }
 
-
+  loadImages(key: String) {
+    return `${environment.apiUrl}/files/` + key;
+  }
   openPhotoUser(element){
     console.log(element)
     this.userService.selectedUser = element;

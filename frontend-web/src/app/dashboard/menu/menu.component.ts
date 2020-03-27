@@ -6,6 +6,7 @@ import { DialogUpdateProfileComponent } from 'src/app/dialogs/dialog-update-prof
 import { UserService } from 'src/app/services/user.service';
 
 import { AuthenticationService } from '../../services/authentication.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-menu',
@@ -25,6 +26,10 @@ export class MenuComponent implements OnInit {
     this.loggedUser = this.getLoggedUserInfo();
   }
 
+  loadImages(key: String) {
+    return `${environment.apiUrl}/files/` + key;
+  }
+  
   getLoggedUserInfo() {
     return {
       'username': this.authService.getName(),
