@@ -16,7 +16,7 @@ Technologies used:
 
 ## IMPORTANTE - Antes de iniciar Angular
 ---
-- En Angular utilizamos una librería llamada ngx-bar-rating la cual necesita ser instalada(haciendo un npm install --save ngx-bar-rating). Dentro de la carpeta que se cree en node modules de esta librería, y dentro de la carpeta themes, hay que añadir el archivo variables.scss y br-default-theme.scss
+- En Angular utilizamos una librería llamada ngx-bar-rating la cual necesita ser instalada(haciendo un npm install --save ngx-bar-rating). Dentro de la carpeta que se cree en node modules de esta librería, y dentro de la carpeta themes, hay que añadir el archivo variables.scss y br-default-theme.scss(disponibles en la carpeta Recursos)
 
 ## Proyecto de empresa AlarmMe
 ---
