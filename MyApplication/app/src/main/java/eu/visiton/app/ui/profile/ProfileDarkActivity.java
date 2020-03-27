@@ -6,17 +6,26 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,10 +41,13 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -84,6 +96,9 @@ public class ProfileDarkActivity extends AppCompatActivity {
     private boolean isProfile = false;
 
     /* Edicion foto usuario*/
+    private String currentPhotoPath;
+    private static final int REQUEST_TAKE_PHOTO = 1;
+    static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int READ_REQUEST_CODE = 42;
     private Uri uriSelected;
     private UserImageDto image;
@@ -362,6 +377,8 @@ public class ProfileDarkActivity extends AppCompatActivity {
         dialog2.show();
         dialog2.getWindow().setAttributes(lp);
 
+
+        dialog2.findViewById(R.id.bt_photo).setOnClickListener((view) -> { checkExternalStoragePermission(); });
         dialog2.findViewById(R.id.bt_gallery).setOnClickListener((view) -> { performFileSearch(); });
 
         dialog2.findViewById(R.id.bt_submit).setOnClickListener(new View.OnClickListener() {
@@ -492,7 +509,25 @@ public class ProfileDarkActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode,
                                  Intent resultData) {
+        Uri uri = null;
 
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+
+            Bitmap bitmap;
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uriSelected);
+                previewPhoto.setImageBitmap(bitmap);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            postButton.setEnabled(true);
+            /*Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            imageView.setImageBitmap(imageBitmap);*/
+        }
         // The ACTION_OPEN_DOCUMENT intent was sent with the request code
         // READ_REQUEST_CODE. If the request code seen here doesn't match, it's the
         // response to some other intent, and the code below shouldn't run at all.
@@ -502,7 +537,7 @@ public class ProfileDarkActivity extends AppCompatActivity {
             // Instead, a URI to that document will be contained in the return intent
             // provided to this method as a parameter.
             // Pull that URI using resultData.getData().
-            Uri uri = null;
+
             if (resultData != null) {
                 uri = resultData.getData();
                 Log.i("Filechooser URI", "Uri: " + uri.toString());
@@ -516,6 +551,84 @@ public class ProfileDarkActivity extends AppCompatActivity {
             }
         }
     }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+    private void checkExternalStoragePermission() {
+
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            Log.e("WRITE_EXTERNAL_STORAGE", "Permission not granted WRITE_EXTERNAL_STORAGE.");
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        225);
+            }
+        }if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            Log.e("Error CAMERA", "Permission not granted CAMERA.");
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.CAMERA)) {
+
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.CAMERA},
+                        226);
+            }
+        }
+
+        dispatchTakePictureIntent();
+
+    }
+
+    private void dispatchTakePictureIntent() {
+        /*Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }*/
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Images.Media.TITLE, "MyPicture");
+                values.put(MediaStore.Images.Media.DESCRIPTION, "Photo taken on " + System.currentTimeMillis());
+                uriSelected = getContentResolver().insert(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uriSelected);
+                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+            }
+        }
+    }
+
 
     //it counts badges points of our users
     public int countPoints(MyProfileResponse u) {
