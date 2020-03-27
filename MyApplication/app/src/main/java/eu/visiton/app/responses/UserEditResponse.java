@@ -19,11 +19,12 @@ public class UserEditResponse {
     private List<String> friends = new ArrayList<>();
     private String createAt;
     private String updateAt;
+    private List<UserImageResponse> images = new ArrayList<>();
 
     public UserEditResponse() {
     }
 
-    public UserEditResponse(String id, String name, String picture, String city, List<String> badges, String role, String email, List<String> likes, List<String> favs, List<String> visited, String language, List<String> friends, String createAt, String updateAt) {
+    public UserEditResponse(String id, String name, String picture, String city, List<String> badges, String role, String email, List<String> likes, List<String> favs, List<String> visited, String language, List<String> friends, String createAt, String updateAt, List<UserImageResponse> images) {
         this.id = id;
         this.name = name;
         this.picture = picture;
@@ -38,6 +39,7 @@ public class UserEditResponse {
         this.friends = friends;
         this.createAt = createAt;
         this.updateAt = updateAt;
+        this.images = images;
     }
 
     public String getId() {
@@ -152,6 +154,14 @@ public class UserEditResponse {
         this.updateAt = updateAt;
     }
 
+    public List<UserImageResponse> getImages() {
+        return images;
+    }
+
+    public void setImages(List<UserImageResponse> images) {
+        this.images = images;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -170,12 +180,13 @@ public class UserEditResponse {
                 Objects.equals(language, that.language) &&
                 Objects.equals(friends, that.friends) &&
                 Objects.equals(createAt, that.createAt) &&
-                Objects.equals(updateAt, that.updateAt);
+                Objects.equals(updateAt, that.updateAt) &&
+                Objects.equals(images, that.images);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, picture, city, badges, role, email, likes, favs, visited, language, friends, createAt, updateAt);
+        return Objects.hash(id, name, picture, city, badges, role, email, likes, favs, visited, language, friends, createAt, updateAt, images);
     }
 
     @Override
@@ -195,6 +206,7 @@ public class UserEditResponse {
                 ", friends=" + friends +
                 ", createAt='" + createAt + '\'' +
                 ", updateAt='" + updateAt + '\'' +
+                ", images='" + images + '\'' +
                 '}';
     }
 }

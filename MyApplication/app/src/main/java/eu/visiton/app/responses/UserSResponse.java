@@ -15,7 +15,7 @@ public class UserSResponse {
     private String password;
     private String email;
     private String createAt;
-    private String country;
+    private String city;
     private String language;
     private List<String> favs = new ArrayList<>();
     private List<String> visited = new ArrayList<>();
@@ -26,7 +26,8 @@ public class UserSResponse {
     public UserSResponse() {
     }
 
-    public UserSResponse(String id, String name, String role, boolean friended, String picture,List<UserImageResponse> images,List<ImageInvalidResponse> invalidImages, String password, String email, String createAt, String country, String language, List<String> favs, List<String> visited, List<BadgeUserResponse> badges, List<UserLikesResponse> likes, List<String> friends) {        this.id = id;
+    public UserSResponse(String id, String name, String role, boolean friended, String picture,List<UserImageResponse> images,List<ImageInvalidResponse> invalidImages, String password, String email, String createAt, String city, String language, List<String> favs, List<String> visited, List<BadgeUserResponse> badges, List<UserLikesResponse> likes, List<String> friends) {
+        this.id = id;
         this.name = name;
         this.role = role;
         this.picture = picture;
@@ -35,7 +36,7 @@ public class UserSResponse {
         this.password = password;
         this.email = email;
         this.createAt = createAt;
-        this.country = country;
+        this.city = city;
         this.language = language;
         this.favs = favs;
         this.visited = visited;
@@ -108,12 +109,12 @@ public class UserSResponse {
         this.createAt = createAt;
     }
 
-    public String getCountry() {
-        return country;
+    public String getCity() {
+        return city;
     }
 
-    public void setCountry(String country) {
-        this.country = country;
+    public void setCity(String city) {
+        this.city = city;
     }
 
     public String getLanguage() {
@@ -166,7 +167,7 @@ public class UserSResponse {
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
                 ", createAt='" + createAt + '\'' +
-                ", country='" + country + '\'' +
+                ", city='" + city + '\'' +
                 ", language=" + language +
                 ", visited=" + visited +
                 ", badges=" + badges +

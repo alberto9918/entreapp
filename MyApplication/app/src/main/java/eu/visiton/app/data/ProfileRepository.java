@@ -1,28 +1,19 @@
 package eu.visiton.app.data;
 
-import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import java.util.List;
 import java.util.Objects;
 
 import eu.visiton.app.common.MyApp;
 import eu.visiton.app.dto.UserEditDto;
-import eu.visiton.app.model.User;
 import eu.visiton.app.responses.MyProfileResponse;
-import eu.visiton.app.responses.PoiResponse;
-import eu.visiton.app.responses.ResponseContainer;
 import eu.visiton.app.responses.UserEditResponse;
 import eu.visiton.app.retrofit.generator.AuthType;
 import eu.visiton.app.retrofit.generator.ServiceGenerator;
-import eu.visiton.app.retrofit.services.PoiService;
 import eu.visiton.app.retrofit.services.UserService;
-import eu.visiton.app.ui.profile.ProfileDarkActivity;
 import eu.visiton.app.util.UtilToken;
 import retrofit2.Call;
 import retrofit2.Callback;

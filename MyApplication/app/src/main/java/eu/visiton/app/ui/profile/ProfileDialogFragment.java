@@ -21,14 +21,8 @@ import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import eu.visiton.app.R;
 import eu.visiton.app.data.ProfileViewModel;
@@ -41,9 +35,6 @@ import eu.visiton.app.retrofit.generator.AuthType;
 import eu.visiton.app.retrofit.generator.ServiceGenerator;
 import eu.visiton.app.retrofit.services.LanguageService;
 import eu.visiton.app.util.UtilToken;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -234,6 +225,7 @@ public class ProfileDialogFragment extends DialogFragment {
         userEditDto.setEmail(editTextemail.getText().toString());
         userEditDto.setFavs(user.getFavs());
         userEditDto.setFriends(user.getFriends());
+        userEditDto.setImages(user.getImages());
 
         //iterations
         for (CategoryMyProfileResponse c:user.getLikes()){

@@ -188,11 +188,11 @@ public class DetallePoiActivity extends AppCompatActivity {
         layout_dots = findViewById(R.id.layout_dots);
         viewPager = findViewById(R.id.pager);
 
-        dialogButton = findViewById(R.id.button);
+        /*dialogButton = findViewById(R.id.button);
 
         dialogButton.setOnClickListener(v -> {
             showCustomDialog();
-        });
+        });*/
 
         RecyclerView recyclerStart = findViewById(R.id.recyclerStart);
 
@@ -205,11 +205,8 @@ public class DetallePoiActivity extends AppCompatActivity {
         audioPlayer = findViewById(R.id.audioPlayer);
         imgbtRated = findViewById(R.id.imageButtonRated);
 
-        // Log.e("rating",poi.getAverageRating().toString());
         ratingBarPoi.setRating(poi.getAverageRating());
         tvReviews.setText(poi.getAverageRating().toString());
-        // ratingBarPoi.setRating(poi.getStars());
-        // tvReviews.setText(poi.getStars() + "/5.0");
         recyclerStart.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
         tvTitulo.setText(Html.fromHtml(poi.getName()));
@@ -505,6 +502,8 @@ public class DetallePoiActivity extends AppCompatActivity {
             finish();
         } else if(item.getItemId() == R.id.action_qr_scan) {
             showQrScanner();
+        } else if(item.getItemId() == R.id.add_photo) {
+            showCustomDialog();
         } else {
             Toast.makeText(getApplicationContext(), item.getTitle(), Toast.LENGTH_SHORT).show();
         }
@@ -583,7 +582,6 @@ public class DetallePoiActivity extends AppCompatActivity {
                     Toast.makeText(DetallePoiActivity.this, "Request Error", Toast.LENGTH_SHORT).show();
                 } else {
                     poi = response.body();
-                    // Log.i("rating", poi.getAverageRating().toString());
                     array_image_poi = new ArrayList<>();
                     if(poi.getImages().size() > 0) {
                         array_image_poi.addAll(poi.getImages());
@@ -630,8 +628,8 @@ public class DetallePoiActivity extends AppCompatActivity {
 
                         @Override
                         public void onFailure(@NonNull Call<UserSResponse> call, @NonNull Throwable t) {
-                            Log.e("Network Failure estoy ", t.getMessage());
-                            Toast.makeText(DetallePoiActivity.this, "Network Error churra", Toast.LENGTH_SHORT).show();
+                            Log.e("Network Failure", t.getMessage());
+                            Toast.makeText(DetallePoiActivity.this, "Network Error", Toast.LENGTH_SHORT).show();
 
                         }
                     });
@@ -674,7 +672,6 @@ public class DetallePoiActivity extends AppCompatActivity {
                     }
                     tvReviews.setText(response.body().getAverageRating().toString());
 
-                    // Log.i("rating", poi.getAverageRating().toString());
                 }
             }
 
@@ -793,7 +790,7 @@ public class DetallePoiActivity extends AppCompatActivity {
                     startActivity(i);
                 } else {
                     // El usuario ha denegado el permiso de Cámara
-                    Toast.makeText(DetallePoiActivity.this, "Sin el permiso de cámara no podrá escanear códigos Qr", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DetallePoiActivity.this, "Without camera permission you will not be able to scan Qr codes", Toast.LENGTH_SHORT).show();
 
                 }
                 return;
@@ -926,7 +923,7 @@ public class DetallePoiActivity extends AppCompatActivity {
         }if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
-            Log.e("Error CAMERA", "Permission not granted CAMERA.");
+            Log.e("Camera error", "Permission not granted CAMERA.");
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.CAMERA)) {
 
@@ -982,30 +979,6 @@ public class DetallePoiActivity extends AppCompatActivity {
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.MATCH_PARENT;
 
-        //final AppCompatButton bt_submit = (AppCompatButton) dialog.findViewById(R.id.bt_submit);
-
-        /*bt_submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                Toast.makeText(getApplicationContext(), "Post Submitted", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        ((ImageButton) dialog.findViewById(R.id.bt_photo)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Post Photo Clicked", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        ((ImageButton) dialog.findViewById(R.id.bt_gallery)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Post Link Clicked", Toast.LENGTH_SHORT).show();
-            }
-        });*/
-
         dialog.show();
         dialog.getWindow().setAttributes(lp);
 
@@ -1050,25 +1023,24 @@ public class DetallePoiActivity extends AppCompatActivity {
                                 if (response.isSuccessful()) {
                                     Log.d("Uploaded", "Éxito");
                                     Log.d("Uploaded", response.body().toString());
-                                    Toast.makeText(DetallePoiActivity.this, response.body().getKey() + " hola" , Toast.LENGTH_SHORT).show();
                                     image = new UserImageResponse(poi.getId(), response.body().getKey(), "");
                                     user.getImages().add(image);
 
-                                    userEdit = new UserEditDto(user.getEmail(), user.getName(), user.getCountry(), user.getLanguage(), user.getPicture(), user.getLikes(), user.getFavs(), user.getFriends(), user.getImages());
+                                    userEdit = new UserEditDto(user.getEmail(), user.getName(), user.getCity(), user.getLanguage(), user.getPicture(), user.getLikes(), user.getFavs(), user.getFriends(), user.getImages());
 
                                     Call<UserEditResponse> editUserImages = userService.editUser(user.getId(), userEdit);
 
                                     editUserImages.enqueue(new Callback<UserEditResponse>() {
                                         @Override
                                         public void onResponse(Call<UserEditResponse> call, Response<UserEditResponse> response) {
-                                            Toast.makeText(DetallePoiActivity.this, "GG", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(DetallePoiActivity.this, "Image successfully uploaded", Toast.LENGTH_SHORT).show();
                                             dialog.dismiss();
                                             getPoiDetails();
                                         }
 
                                         @Override
                                         public void onFailure(Call<UserEditResponse> call, Throwable t) {
-                                            Toast.makeText(DetallePoiActivity.this, "F", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(DetallePoiActivity.this, "Error uploading image", Toast.LENGTH_SHORT).show();
                                         }
                                     });
                                 } else {
@@ -1078,7 +1050,6 @@ public class DetallePoiActivity extends AppCompatActivity {
                                     } catch (IOException e) {
                                         e.printStackTrace();
                                     }
-                                    //Log.e("Upload error", response.errorBody().toString());
                                     Toast.makeText(DetallePoiActivity.this, "Error", Toast.LENGTH_SHORT).show();
                                 }
                             }

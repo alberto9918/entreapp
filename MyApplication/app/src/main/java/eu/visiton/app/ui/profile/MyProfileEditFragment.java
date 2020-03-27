@@ -8,13 +8,6 @@ import android.content.Intent;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
-
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -28,6 +21,11 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -36,25 +34,24 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import eu.visiton.app.R;
-import eu.visiton.app.data.ProfileViewModel;
-import eu.visiton.app.dto.UserEditDto;
-import eu.visiton.app.responses.CategoryMyProfileResponse;
-import eu.visiton.app.responses.LanguageResponse;
-import eu.visiton.app.responses.ResponseContainer;
-import eu.visiton.app.responses.UserEditResponse;
-import eu.visiton.app.retrofit.generator.AuthType;
-import eu.visiton.app.responses.MyProfileResponse;
-import eu.visiton.app.retrofit.generator.ServiceGenerator;
-import eu.visiton.app.retrofit.services.LanguageService;
-import eu.visiton.app.retrofit.services.UserService;
-import eu.visiton.app.util.UtilToken;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import eu.visiton.app.R;
+import eu.visiton.app.data.ProfileViewModel;
+import eu.visiton.app.dto.UserEditDto;
+import eu.visiton.app.responses.CategoryMyProfileResponse;
+import eu.visiton.app.responses.LanguageResponse;
+import eu.visiton.app.responses.MyProfileResponse;
+import eu.visiton.app.responses.ResponseContainer;
+import eu.visiton.app.responses.UserEditResponse;
+import eu.visiton.app.retrofit.generator.AuthType;
+import eu.visiton.app.retrofit.generator.ServiceGenerator;
+import eu.visiton.app.retrofit.services.LanguageService;
+import eu.visiton.app.retrofit.services.UserService;
+import eu.visiton.app.util.UtilToken;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -426,15 +423,6 @@ public class MyProfileEditFragment extends DialogFragment {
                         }
                     });
 
-            /*if (resultData != null) {
-                filePath =resultData.getData();
-                Log.i("Filechooser URI", "Uri: " + filePath.toString());
-                Glide
-                        .with(this)
-                        .load(filePath)
-                        .into(profile_image);
-                uploadImage();
-            }*/
         }
     }
 

@@ -3,17 +3,13 @@ package eu.visiton.app.ui.pois.details;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.provider.MediaStore;
 import android.widget.Toast;
 
-
-
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
-
 
 import java.lang.ref.WeakReference;
 
@@ -40,9 +36,9 @@ public class SaveImageHelper implements Target {
         if (r != null){
 
             MediaStore.Images.Media.insertImage(r, bitmap, name, desc);
-            Toast.makeText(context, "SE HA DESCARGADO LA IMAGEN", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Image has been downloaded", Toast.LENGTH_SHORT).show();
         }else{
-            Toast.makeText(context, "YA ESTABA DESCARGADO", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "The image was already downloaded", Toast.LENGTH_SHORT).show();
 
         }
         dialog.show();

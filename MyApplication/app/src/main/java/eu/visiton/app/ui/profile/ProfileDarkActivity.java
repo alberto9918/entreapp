@@ -1,21 +1,9 @@
 package eu.visiton.app.ui.profile;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
-
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.DialogFragment;
-import androidx.lifecycle.ViewModelProviders;
-
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -36,6 +24,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelProviders;
+
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -51,10 +49,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import eu.visiton.app.R;
+import eu.visiton.app.data.ProfileViewModel;
 import eu.visiton.app.dto.UserEditDto;
 import eu.visiton.app.dto.UserImageDto;
-import eu.visiton.app.data.ProfileViewModel;
 import eu.visiton.app.materialx.utils.Tools;
 import eu.visiton.app.responses.ImageResponse;
 import eu.visiton.app.responses.MyProfileResponse;
@@ -66,9 +66,6 @@ import eu.visiton.app.retrofit.services.PoiService;
 import eu.visiton.app.retrofit.services.UserService;
 import eu.visiton.app.util.Constantes;
 import eu.visiton.app.util.UtilToken;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -168,7 +165,7 @@ public class ProfileDarkActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Call<UserSResponse> call, @NonNull Throwable t) {
                 Log.e("Network Failure estoy ", t.getMessage());
-                Toast.makeText(ProfileDarkActivity.this, "Network Error churra", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ProfileDarkActivity.this, "Network Error", Toast.LENGTH_SHORT).show();
 
             }
 
@@ -306,7 +303,7 @@ public class ProfileDarkActivity extends AppCompatActivity {
     }
 
     private void showDialogImageFull() {
-        Toast.makeText(this, "Imagen Perfil", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Profile picture", Toast.LENGTH_SHORT).show();
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
         dialog.setContentView(R.layout.dialog_image_profile);
@@ -349,30 +346,6 @@ public class ProfileDarkActivity extends AppCompatActivity {
         lp.copyFrom(dialog2.getWindow().getAttributes());
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.MATCH_PARENT;
-
-        //final AppCompatButton bt_submit = (AppCompatButton) dialog.findViewById(R.id.bt_submit);
-
-        /*bt_submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                Toast.makeText(getApplicationContext(), "Post Submitted", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        ((ImageButton) dialog.findViewById(R.id.bt_photo)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Post Photo Clicked", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        ((ImageButton) dialog.findViewById(R.id.bt_gallery)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Post Link Clicked", Toast.LENGTH_SHORT).show();
-            }
-        });*/
 
         dialog2.show();
         dialog2.getWindow().setAttributes(lp);
@@ -425,7 +398,6 @@ public class ProfileDarkActivity extends AppCompatActivity {
                                 if (response.isSuccessful()) {
                                     Log.d("Uploaded", "Éxito");
                                     Log.d("Uploaded", response.body().toString());
-                                    Toast.makeText(ProfileDarkActivity.this, response.body().getKey() + " hola" , Toast.LENGTH_SHORT).show();
 
                                     user.setPicture(response.body().getKey());
                                     userEdit = new UserEditDto(user.getEmail(), user.getName(), myProfileResponse.getcity(), user.getLanguage(), user.getPicture(), user.getLikes(), user.getFavs(), user.getFriends(), user.getImages());
@@ -438,7 +410,6 @@ public class ProfileDarkActivity extends AppCompatActivity {
                                     editUserImages.enqueue(new Callback<UserEditResponse>() {
                                         @Override
                                         public void onResponse(Call<UserEditResponse> call, Response<UserEditResponse> response) {
-                                            Toast.makeText(ProfileDarkActivity.this, "GG", Toast.LENGTH_SHORT).show();
                                             getUser2();
                                             Glide.with(ProfileDarkActivity.this)
                                                     .load(Constantes.FILES_BASE_URL+userEdit.getPicture())
@@ -449,7 +420,7 @@ public class ProfileDarkActivity extends AppCompatActivity {
 
                                         @Override
                                         public void onFailure(Call<UserEditResponse> call, Throwable t) {
-                                            Toast.makeText(ProfileDarkActivity.this, "F", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(ProfileDarkActivity.this, "Error editing user", Toast.LENGTH_SHORT).show();
                                         }
                                     });
 

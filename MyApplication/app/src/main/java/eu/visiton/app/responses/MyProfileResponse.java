@@ -34,11 +34,12 @@ public class MyProfileResponse {
     private List<String> visited = new ArrayList<>();
     private List<BadgesMyProfileResponse> badges = new ArrayList<>();
     private List<CategoryMyProfileResponse> likes  = new ArrayList<>();
+    private List<UserImageResponse> images = new ArrayList<>();
 
     public MyProfileResponse() {
     }
 
-    public MyProfileResponse(String id, String name, String role, String picture, String password, String email, String createAt, String city, LanguageResponse language, List<String> favs, List<String> friends, List<String> visited, List<BadgesMyProfileResponse> badges, List<CategoryMyProfileResponse> likes) {
+    public MyProfileResponse(String id, String name, String role, String picture, String password, String email, String createAt, String city, LanguageResponse language, List<String> favs, List<String> friends, List<String> visited, List<BadgesMyProfileResponse> badges, List<CategoryMyProfileResponse> likes, List<UserImageResponse> images) {
         this.id = id;
         this.name = name;
         this.role = role;
@@ -53,6 +54,7 @@ public class MyProfileResponse {
         this.visited = visited;
         this.badges = badges;
         this.likes = likes;
+        this.images = images;
     }
 
     public String getId() {
@@ -167,6 +169,14 @@ public class MyProfileResponse {
         this.likes = likes;
     }
 
+    public List<UserImageResponse> getImages() {
+        return images;
+    }
+
+    public void setImages(List<UserImageResponse> images) {
+        this.images = images;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -179,12 +189,13 @@ public class MyProfileResponse {
                 Objects.equals(password, that.password) &&
                 Objects.equals(email, that.email) &&
                 Objects.equals(createAt, that.createAt) &&
-                Objects.equals(city, that.city);
+                Objects.equals(city, that.city) &&
+                Objects.equals(images, that.images);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, role, picture, password, email, createAt, city);
+        return Objects.hash(id, name, role, picture, password, email, createAt, city, images);
     }
 
     @Override
@@ -204,6 +215,7 @@ public class MyProfileResponse {
                 ", visited=" + visited +
                 ", badges=" + badges +
                 ", likes=" + likes +
+                ", images=" + images +
                 '}';
     }
 }
