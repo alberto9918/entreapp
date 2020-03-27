@@ -64,6 +64,7 @@ VisitOn es una aplicación de turismo para estudiante ERASMUS+, en la que podrem
 |07    | Como usuario, quiero poder ver ampliada la foto de mi perfil de una manera nítida   |  para comprobar esta funcionalidad, iremos hacien nuestro perfil y pulsaremos en la foto de perfil está se hara más grande pudiendose ver en perfecta resolución.   |     30     |Antonio Durán Falero|
 |08    | Como usuario, quiero cambiar mi foto de perfil por una foto que puede sacar con mi camara en el mismo momento               |  Para comprobar esta funcionalidad, inicaremos sesión como usuario en la app, iremos hacia mi perfil, pulsaremos en la fotos , esta se hara más grande y tendra un icono de editar, el cual pulsandolo nos dejara cambiar la imagen por que podremos sacar al instante   |     60     |Antonio Durán Falero|
 |09    | Solucionar sustitución de atributos adicionales en el usuario actual al editar imagenes del usuario y el perfil de usuario          |  Corregir error en el formulario de edición de usuario y en el añadir imagenes a los POI   |     15     |José Miguel Zamorano|
+|10    | Pasar todos los elementos posibles al formato de Viewmodel            |  Comprobar que elementos dentro de android studio no están en formato de Viewmodel y cambiarlos |     30     |Alberto Santiago Rodríguez|
 
 
 
