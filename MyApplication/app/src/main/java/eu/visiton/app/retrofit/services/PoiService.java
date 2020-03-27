@@ -20,7 +20,6 @@ import retrofit2.http.Query;
 public interface PoiService {
 
     String BASE_URL = "pois";
-    String masterKeyTemporal = "access_token=WYGSKxg0IwVvtZAWjDtVAWfWcbnugIbX";
 
     @Multipart
     @POST("/files/upload/image")

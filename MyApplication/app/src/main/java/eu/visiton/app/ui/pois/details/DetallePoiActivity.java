@@ -953,7 +953,9 @@ public class DetallePoiActivity extends AppCompatActivity {
 
                 }
             }
+
         });
 
+        dialog.dismiss();
     }
 }
