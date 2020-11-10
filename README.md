@@ -83,7 +83,7 @@ VisitOn es una aplicación de turismo para estudiante ERASMUS+, en la que podrem
 #### Authors:
 - [José María Ruiz Laguna](https://github.com/raykrai)
 - Antonio Durán Falero
-- Alberto Santiago Rodríguez
+- [Alberto Santiago Rodríguez](https://github.com/alberto9918)
 - José Miguel Zamorano Rodríguez
 - Mario Martinez Sanz
 - Jesus Palma Lopez
